@@ -1,0 +1,140 @@
+:root {
+  --main_color: rgb(135, 206, 235);
+  --p_color: #7b7b7b;
+  --bg_color: #f3f3f3;
+  --white_color: #fff;
+  --color_heading: #253237;
+  --color_h1: #112028;
+  --color_h2: #012d3b;
+  --border_color: #d6d6d6d5;
+}
+
+
+.btm_header {
+  background: var(--main_color);
+}
+
+.btm_header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btm_header .nav {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  height: 50px;
+}
+
+.btm_header .category_nav {
+  width: 220px;
+  height: 100%;
+  position: relative;
+}
+
+.btm_header .category_nav .category_btn {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  background: var(--main_color);
+  cursor: pointer;
+}
+
+.btm_header .category_nav .category_btn p {
+  margin: 0;
+  color: var(--color_h1);
+}
+
+.btm_header .category_nav .category_nav_list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  background: var(--white_color);
+  border: 1px solid #999;
+  border-top: none;
+  overflow-y: auto;
+  z-index: 100;
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  transition: clip-path 0.3s ease;
+}
+
+.btm_header .category_nav .category_nav_list.active {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.btm_header .category_nav .category_nav_list a {
+  padding: 14px 10px;
+  color: var(--color_heading);
+  font-size: 14px;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border_color);
+}
+
+.btm_header .category_nav .category_nav_list a:last-child {
+  border-bottom: none;
+}
+
+.btm_header .category_nav .category_nav_list a:hover {
+  background: var(--bg_color);
+}
+
+.btm_header .nav_links {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.btm_header .nav_links li {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 25px;
+  list-style: none;
+}
+
+.btm_header .nav_links li a {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  color: var(--color_h1);
+  text-decoration: none;
+}
+
+.btm_header .nav_links li:hover {
+  background: rgb(230, 233, 235);
+}
+
+.btm_header .nav_links li.active {
+  background: rgb(230, 233, 235);
+}
+
+.btm_header .sign_regs_icon {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btm_header .sign_regs_icon a {
+  display: flex;
+  align-items: center;
+  color: var(--color_h1);
+  text-decoration: none;
+}
+
+.btm_header .sign_regs_icon svg {
+  font-size: 22px;
+}
+
+.btm_header .sign_regs_icon a:hover {
+  color: var(--white_color);
+}

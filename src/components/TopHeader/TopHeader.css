@@ -1,0 +1,276 @@
+:root {
+  --main_color: rgb(135, 206, 235);
+  --p_color: #7b7b7b;
+  --bg_color: #f3f3f3;
+  --white_color: #fff;
+  --color_heading: #253237;
+  --color_h1: #112028;
+  --border_color: #e5e5e5;
+}
+
+.top_header {
+  width: 100%;
+  background: var(--white_color);
+  border-bottom: 1px solid var(--border_color);
+}
+
+/* Container */
+
+.top_header .container {
+  max-width: 1200px;
+  margin: auto;
+
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+}
+
+/* Logo */
+
+.top_header .logo {
+  width: 105px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.top_header .logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Navigation */
+
+.top_header .nav_links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.top_header .nav_links a {
+  position: relative;
+
+  color: var(--color_heading);
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: 0.25s ease;
+}
+
+.top_header .nav_links a:hover {
+  color: var(--main_color);
+}
+
+.top_header .nav_links a::after {
+  content: "";
+
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+
+  width: 0;
+  height: 2px;
+
+  background: var(--main_color);
+
+  transform: translateX(-50%);
+  transition: 0.25s ease;
+}
+
+.top_header .nav_links a:hover::after {
+  width: 100%;
+}
+
+/* Search */
+
+.top_header .search_box {
+  width: 360px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+
+  background: #fafafa;
+
+  border: 1px solid var(--border_color);
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  transition: 0.25s ease;
+}
+
+.top_header .search_box:focus-within {
+  border-color: var(--main_color);
+  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.12);
+}
+
+.top_header .search_box input {
+  flex: 1;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0 15px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: var(--color_heading);
+  font-size: 13px;
+}
+
+.top_header .search_box input::placeholder {
+  color: #aaa;
+}
+
+.top_header .search_box button {
+  width: 45px;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 19px;
+
+  transition: 0.2s ease;
+}
+
+.top_header .search_box button:hover {
+  background: #eefaff;
+}
+
+/* Icons */
+
+.top_header .header_icons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.top_header .header_icons .icon {
+  position: relative;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--color_heading);
+  text-decoration: none;
+
+  border-radius: 50%;
+
+  transition: 0.25s ease;
+}
+
+.top_header .header_icons .icon:hover {
+  color: var(--main_color);
+  background: #f5fbfd;
+}
+
+.top_header .header_icons .icon svg {
+  font-size: 21px;
+}
+
+/* Count */
+
+.top_header .header_icons .icon .count {
+  position: absolute;
+
+  top: -3px;
+  right: -4px;
+
+  min-width: 16px;
+  height: 16px;
+
+  padding: 0 3px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--main_color);
+  color: var(--white_color);
+
+  border-radius: 50%;
+
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Tablet */
+
+@media (max-width: 950px) {
+
+  .top_header .container {
+    padding: 12px 20px;
+    gap: 18px;
+  }
+
+  .top_header .nav_links {
+    gap: 15px;
+  }
+
+  .top_header .search_box {
+    width: 280px;
+  }
+
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+  .top_header .container {
+    min-height: auto;
+
+    padding: 12px 20px;
+
+    flex-wrap: wrap;
+  }
+
+  .top_header .logo {
+    width: 90px;
+  }
+
+  .top_header .nav_links {
+    order: 3;
+
+    width: 100%;
+
+    justify-content: center;
+
+    padding-top: 5px;
+  }
+
+  .top_header .search_box {
+    flex: 1;
+    width: auto;
+    min-width: 180px;
+  }
+
+  .top_header .header_icons {
+    gap: 8px;
+  }
+
+}
