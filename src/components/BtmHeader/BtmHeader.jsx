@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { IoMdMenu } from "react-icons/io";
 import { MdArrowDropDown } from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
-import { PiSignInFill } from "react-icons/pi";
-import './BtmHeader.css';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { PiSignOutFill } from "react-icons/pi";
+
+import "./BtmHeader.css";
 
 const NavLinks = [
   { title: "Home", link: "/" },
@@ -16,28 +17,32 @@ function BtmHeader() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
-useEffect(() => {
-  fetch('https://dummyjson.com/products/categories')
-    .then((res) => res.json())
-    .then((data) => {
-      const selectedCategories = data.filter((category, index) =>
-        [6, 13, ,10, 16].includes(index)
-      );
+  const token = localStorage.getItem("access_token");
 
-      setCategories(selectedCategories);
-    });
-}, []);
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    navigate("/signin");
+  };
 
+  useEffect(() => {
+    fetch("https://dummyjson.com/products/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        const selectedCategories = data.filter((category, index) =>
+          [6, 13, 10, 16].includes(index)
+        );
+
+        setCategories(selectedCategories);
+      });
+  }, []);
 
   return (
     <div className="btm_header">
       <div className="container">
-
         <nav className="nav">
-
           <div className="category_nav">
-
             <div
               className="category_btn"
               onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
@@ -62,31 +67,30 @@ useEffect(() => {
                 </Link>
               ))}
             </div>
-
           </div>
 
           <div className="nav_links">
-
             {NavLinks.map((item) => (
               <li
                 key={item.link}
                 className={location.pathname === item.link ? "active" : ""}
               >
-                <Link to={item.link}>
-                  {item.title}
-                </Link>
+                <Link to={item.link}>{item.title}</Link>
               </li>
             ))}
-
           </div>
-
         </nav>
 
-        <div className="sign_regs_icon">
-            <PiSignInFill />
-
-        </div>
-
+        {token && (
+          <div
+            className="sign_regs_icon"
+            onClick={handleLogout}
+            style={{ cursor: "pointer" }}
+            title="Logout"
+          >
+            <PiSignOutFill />
+          </div>
+        )}
       </div>
     </div>
   );

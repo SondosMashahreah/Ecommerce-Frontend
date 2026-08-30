@@ -8,6 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 
+import { sendContactMessage } from "../../services/api";
+
 function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,25 +29,15 @@ const handleSubmit = async (event) => {
   };
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(contactData),
-    });
+const data = await sendContactMessage(contactData);
 
-    const data = await response.json();
+  setResponseMessage(data.message);
 
-    if (response.ok) {
-      window.location.reload();
-    } else {
-      setResponseMessage(data.message);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    setResponseMessage("Could not connect to the backend.");
-  }
+  window.location.reload();
+} catch (error) {
+  console.error("Error:", error);
+  setResponseMessage("Could not connect to the backend.");
+}
 };
 
   return (
