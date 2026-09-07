@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PiSignOutFill } from "react-icons/pi";
 
 import "./BtmHeader.css";
+import { getCategories } from "../../services/api";
 
 const NavLinks = [
   { title: "Home", link: "/" },
@@ -21,22 +22,51 @@ function BtmHeader() {
 
   const token = localStorage.getItem("access_token");
 
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to load categories:", error);
+      }
+    }
+
+    loadCategories();
+  }, []);
+
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    navigate("/signin");
+localStorage.removeItem("access_token");
+localStorage.removeItem("refresh_token");
+
+window.dispatchEvent(
+  new Event("authChanged")
+);
+
+navigate("/signin");
   };
 
-  useEffect(() => {
-    fetch("https://dummyjson.com/products/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        const selectedCategories = data.filter((category, index) =>
-          [6, 13, 10, 16].includes(index)
-        );
+  const handleCategoryClick = (category) => {
+    setIsCategoriesOpen(false);
 
-        setCategories(selectedCategories);
+    const categoryId = `category-${category
+      .toLowerCase()
+      .replace(/\s+/g, "-")}`;
+
+    if (location.pathname !== "/") {
+      navigate(`/#${categoryId}`);
+      return;
+    }
+
+    const element = document.getElementById(categoryId);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
-  }, []);
+    }
+  };
 
   return (
     <div className="btm_header">
@@ -45,7 +75,9 @@ function BtmHeader() {
           <div className="category_nav">
             <div
               className="category_btn"
-              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+              onClick={() =>
+                setIsCategoriesOpen(!isCategoriesOpen)
+              }
             >
               <IoMdMenu />
               <p>Browse Category</p>
@@ -58,39 +90,47 @@ function BtmHeader() {
               }`}
             >
               {categories.map((category) => (
-                <Link
-                  key={category.slug}
-                  to={`/category/${category.slug}`}
-                  onClick={() => setIsCategoriesOpen(false)}
+                <button
+                  type="button"
+                  key={category}
+                  onClick={() =>
+                    handleCategoryClick(category)
+                  }
                 >
-                  {category.name}
-                </Link>
+                  {category}
+                </button>
               ))}
             </div>
           </div>
 
-          <div className="nav_links">
+          <ul className="nav_links">
             {NavLinks.map((item) => (
               <li
                 key={item.link}
-                className={location.pathname === item.link ? "active" : ""}
+                className={
+                  location.pathname === item.link
+                    ? "active"
+                    : ""
+                }
               >
-                <Link to={item.link}>{item.title}</Link>
+                <Link to={item.link}>
+                  {item.title}
+                </Link>
               </li>
             ))}
-          </div>
+          </ul>
         </nav>
 
-        {token && (
-          <div
-            className="sign_regs_icon"
-            onClick={handleLogout}
-            style={{ cursor: "pointer" }}
-            title="Logout"
-          >
-            <PiSignOutFill />
-          </div>
-        )}
+{token && (
+  <button
+    className="logout_btn"
+    onClick={handleLogout}
+    type="button"
+  >
+    <PiSignOutFill />
+    <span>Logout</span>
+  </button>
+)}
       </div>
     </div>
   );

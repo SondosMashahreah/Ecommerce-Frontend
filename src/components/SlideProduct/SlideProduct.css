@@ -1,38 +1,183 @@
-:root{
---main_color:rgb(135,206,235);
---p_color:#7b7b7b;
---bg_color:#F3F3F3;
---white_color:#fff;
---color_heading:#253237;
---color_h1:#112028;
---color_h2:#012d3b;
---border_color:#d6d6d6d5;
+:root {
+    --main_color: rgb(135, 206, 235);
+    --p_color: #7b7b7b;
+    --bg_color: #F3F3F3;
+    --white_color: #fff;
+    --color_heading: #253237;
+    --color_h1: #112028;
+    --color_h2: #012d3b;
+    --border_color: #d6d6d6d5;
+}
+
+.Slide_product {
+    padding: 50px 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.Slide_product .container {
+    width: 90%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .top_slide {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     border-bottom: 1px solid var(--border_color);
     padding: 15px 20px 20px 0;
 }
 
 .top_slide::after {
-    content: '';
+    content: "";
     position: absolute;
+    left: 0;
     bottom: -1px;
-    width: 100px;
+    width: 125px;
     height: 2px;
     background: var(--main_color);
 }
 
-.top_slide h2{
+.top_slide h2 {
     font-size: 30px;
     color: var(--color_h2);
-    margin-bottom: 10px;
+    margin: 0 0 10px;
     text-transform: capitalize;
 }
 
-.Slide_product{
-    padding: 50px 0;
+.top_slide p {
+    color: var(--p_color);
+    font-size: 18px;
+    margin: 0;
 }
 
+.mySwiper {
+    width: 100%;
+    padding: 10px 5px 25px;
+    overflow: visible;
+}
+
+.mySwiper .swiper-slide {
+    height: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.mySwiper .swiper-button-next,
+.mySwiper .swiper-button-prev {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--white_color);
+    border: 1px solid var(--border_color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.mySwiper .swiper-button-next::after,
+.mySwiper .swiper-button-prev::after {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--color_heading);
+}
+
+@media (max-width: 1024px) {
+    .Slide_product {
+        padding: 40px 0;
+    }
+
+    .Slide_product .container {
+        width: 92%;
+    }
+
+    .top_slide h2 {
+        font-size: 27px;
+    }
+
+    .top_slide p {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 768px) {
+    .Slide_product {
+        padding: 35px 0;
+    }
+
+    .Slide_product .container {
+        width: 94%;
+    }
+
+    .top_slide {
+        margin-bottom: 20px;
+        padding: 10px 10px 18px 0;
+    }
+
+    .top_slide::after {
+        width: 100px;
+    }
+
+    .top_slide h2 {
+        font-size: 24px;
+    }
+
+    .top_slide p {
+        font-size: 15px;
+    }
+
+    .mySwiper {
+        padding-bottom: 20px;
+    }
+
+    .mySwiper .swiper-button-next,
+    .mySwiper .swiper-button-prev {
+        width: 34px;
+        height: 34px;
+    }
+
+    .mySwiper .swiper-button-next::after,
+    .mySwiper .swiper-button-prev::after {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .Slide_product {
+        padding: 30px 0;
+    }
+
+    .Slide_product .container {
+        width: 95%;
+    }
+
+    .top_slide {
+        margin-bottom: 18px;
+        padding-bottom: 15px;
+    }
+
+    .top_slide::after {
+        width: 80px;
+    }
+
+    .top_slide h2 {
+        font-size: 22px;
+        margin-bottom: 7px;
+    }
+
+    .top_slide p {
+        font-size: 14px;
+    }
+
+    .mySwiper {
+        padding: 5px 2px 18px;
+    }
+}
+
+@media (max-width: 360px) {
+    .top_slide h2 {
+        font-size: 20px;
+    }
+
+    .top_slide p {
+        font-size: 13px;
+    }
+}

@@ -33,12 +33,23 @@ function Signin() {
 
       localStorage.setItem("access_token", data.access_token);
 
+      localStorage.setItem(
+  "refresh_token",
+  data.refresh_token
+);
+
+window.dispatchEvent(
+  new Event("authChanged")
+);
+
       navigate("/");
     } catch (error) {
       setError(error.message);
     }
   };
 
+
+  
   return (
     <Container maxWidth="sm">
       <Box

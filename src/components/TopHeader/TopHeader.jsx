@@ -1,39 +1,351 @@
-import React from 'react'
-import logo from './img/logo.png'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import logo from "./img/logo.png";
+import {
+  Link,
+  useNavigate
+} from "react-router-dom";
 import { FcSearch } from "react-icons/fc";
 import { FiHeart } from "react-icons/fi";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import './TopHeader.css';
+import "./TopHeader.css";
 
+import {
+  searchProducts,
+  getCart,
+  getFavorites,
+  getCurrentUser
+} from "../../services/api";
 
+import { FaUserCircle } from "react-icons/fa";
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import { MdLockReset } from "react-icons/md";
+import { FiUser } from "react-icons/fi";
+import { PiSignOutFill } from "react-icons/pi";
 
 function TopHeader() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [favoritesCount, setFavoritesCount] = useState(0);
+
+  const [headerUser, setHeaderUser] = useState(null);
+
+  useEffect(() => {
+    const searchTimer = setTimeout(async () => {
+      const searchText = query.trim();
+
+      if (searchText.length < 3) {
+        setResults([]);
+        return;
+      } 
+
+      try {
+        const data = await searchProducts(searchText);
+        setResults(data);
+      } catch (error) {
+        console.error("Search failed:", error);
+        setResults([]);
+      }
+    }, 150);
+
+    return () => {
+      clearTimeout(searchTimer);
+    };
+  }, [query]);
+
+  const handleProductClick = (productId) => {
+    const productElement = document.getElementById(
+      `product-${productId}`
+    );
+
+    if (productElement) {
+      productElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      productElement.classList.add("search-highlight");
+
+      setTimeout(() => {
+        productElement.classList.remove("search-highlight");
+      }, 1000);
+
+      setResults([]);
+      setQuery("");
+    } else {
+      console.log("Product not found:", productId);
+    }
+  };
+
+  const loadCartCount = async () => {
+    try {
+      const cart = await getCart();
+
+      const count = cart.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+
+      setCartCount(count);
+    } catch (error) {
+      console.error("Failed to load cart count:", error);
+    }
+  };
+
+  const loadFavoritesCount = async () => {
+    try {
+      const favorites = await getFavorites();
+      setFavoritesCount(favorites.length);
+    } catch (error) {
+      console.error("Failed to load favorites count:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadCartCount();
+
+    window.addEventListener(
+      "cartUpdated",
+      loadCartCount
+    );
+
+    return () => {
+      window.removeEventListener(
+        "cartUpdated",
+        loadCartCount
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    loadFavoritesCount();
+
+    window.addEventListener(
+      "favoritesUpdated",
+      loadFavoritesCount
+    );
+
+    return () => {
+      window.removeEventListener(
+        "favoritesUpdated",
+        loadFavoritesCount
+      );
+    };
+  }, []);
+
+const navigate = useNavigate();
+
+const [isProfileOpen, setIsProfileOpen] =
+  useState(false);
+
+const handleProfileLogout = () => {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+
+  window.dispatchEvent(
+    new Event("authChanged")
+  );
+
+  navigate("/signin");
+}; 
+useEffect(() => {
+  const loadHeaderUser = async () => {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      setHeaderUser(null);
+      return;
+    }
+
+    try {
+      const data = await getCurrentUser();
+
+      setHeaderUser(data);
+
+    } catch (error) {
+      console.error(
+        "Failed to load header user:",
+        error
+      );
+
+      setHeaderUser(null);
+    }
+  };
+
+  loadHeaderUser();
+
+  window.addEventListener(
+    "profileUpdated",
+    loadHeaderUser
+  );
+
+  window.addEventListener(
+    "authChanged",
+    loadHeaderUser
+  );
+
+  return () => {
+    window.removeEventListener(
+      "profileUpdated",
+      loadHeaderUser
+    );
+
+    window.removeEventListener(
+      "authChanged",
+      loadHeaderUser
+    );
+  };
+}, []);
+
   return (
-    <div className='top_header'>
-        <div className="container">
-            <Link className='logo' to="/"><img src={logo} alt="Logo" /></Link>
-            <form action="" className="search_box">
-                <input type="text" name='search' id='search' placeholder='Srearch for products'/>
-                <button type='submit'><FcSearch /></button>
-            </form>
+    <div className="top_header">
+      <div className="container">
 
-            <div className="header_icons">
-                <div className="icon">
-                    <FiHeart />
-                    <span className='count'>0</span>
-                </div>
+        <Link className="logo" to="/">
+          <img src={logo} alt="Logo" />
+        </Link>
 
-                <div className="icon">
-                    <MdOutlineShoppingCart />
-                    <span className='count'>0</span>
+        <div className="profile_menu_wrapper">
+
+<button
+  type="button"
+  className="profile_btn"
+  onClick={() =>
+    setIsProfileOpen(!isProfileOpen)
+  }
+>
+  {headerUser?.profile_image_path ? (
+    <img
+      className="header_profile_image"
+      src={
+        `${import.meta.env.VITE_API_URL}` +
+        `/api/v1/assets/${headerUser.profile_image_path}`
+      }
+      alt={headerUser.name}
+    />
+  ) : (
+    <FaUserCircle />
+  )}
+
+  <span>
+    {headerUser?.name || "Profile"}
+  </span>
+</button>
+
+
+  <div
+    className={`profile_sidebar ${
+      isProfileOpen ? "active" : ""
+    }`}
+  >
+
+    <button
+      type="button"
+      onClick={() => {
+        setIsProfileOpen(false);
+        navigate("/profile");
+      }}
+    >
+      <FiUser />
+      <span>My Profile</span>
+    </button>
+
+    <button
+  type="button"
+  onClick={() => {
+    setIsProfileOpen(false);
+    navigate("/orders");
+  }}
+>
+  <MdOutlineShoppingCart />
+  <span>My Orders</span>
+</button>
+
+
+    <button
+      type="button"
+      className="profile_logout"
+      onClick={handleProfileLogout}
+    >
+      <PiSignOutFill />
+      <span>Logout</span>
+    </button>
+
+  </div>
+
+</div>
+
+        <div className="search_wrapper">
+
+          <form
+            className="search_box"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search for products"
+              value={query}
+              onChange={(e) =>
+                setQuery(e.target.value)
+              }
+            />
+
+            <button type="submit">
+              <FcSearch />
+            </button>
+          </form>
+
+          {results.length > 0 && (
+            <div className="search_results">
+
+              {results.map((product) => (
+                <div
+                  className="search_result_item"
+                  key={product.id}
+                  onClick={() =>
+                    handleProductClick(product.id)
+                  }
+                >
+                  <p>{product.name}</p>
                 </div>
+              ))}
 
             </div>
-         </div>
-      
+          )}
+
+        </div>
+
+        <div className="header_icons">
+
+          <Link
+            to="/favorites"
+            className="icon"
+          >
+            <FiHeart />
+
+            <span className="count">
+              {favoritesCount}
+            </span>
+          </Link>
+
+          <Link
+            to="/cart"
+            className="icon"
+          >
+            <MdOutlineShoppingCart />
+
+            <span className="count">
+              {cartCount}
+            </span>
+          </Link>
+
+        </div>
+
+      </div>
     </div>
-  )
+  );
 }
 
-export default TopHeader
+export default TopHeader;
