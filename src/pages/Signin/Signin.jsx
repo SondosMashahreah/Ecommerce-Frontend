@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   Alert,
   Box,
@@ -8,21 +9,40 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
 
-import { signinUser } from "../../services/api";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
+import {
+  signinUser,
+  getCurrentUser,
+} from "../../services/api";
+
 
 function Signin() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState(location.state?.email || "");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success] = useState(location.state?.message || "");
+  const [email, setEmail] = useState(
+    location.state?.email || ""
+  );
+
+  const [password, setPassword] =
+    useState("");
+
+  const [error, setError] =
+    useState("");
+
+  const [success] = useState(
+    location.state?.message || ""
+  );
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     setError("");
 
     try {
@@ -31,27 +51,41 @@ function Signin() {
         password,
       });
 
-      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem(
+        "access_token",
+        data.access_token
+      );
 
       localStorage.setItem(
-  "refresh_token",
-  data.refresh_token
-);
+        "refresh_token",
+        data.refresh_token
+      );
 
-window.dispatchEvent(
-  new Event("authChanged")
-);
+      const user = await getCurrentUser();
 
-      navigate("/");
+      window.dispatchEvent(
+        new Event("authChanged")
+      );
+
+      if (user.role === "admin") {
+        navigate("/admin", {
+          replace: true,
+        });
+      } else {
+        navigate("/", {
+          replace: true,
+        });
+      }
+
     } catch (error) {
       setError(error.message);
     }
   };
 
 
-  
   return (
     <Container maxWidth="sm">
+
       <Box
         sx={{
           minHeight: "80vh",
@@ -60,6 +94,7 @@ window.dispatchEvent(
           justifyContent: "center",
         }}
       >
+
         <Paper
           elevation={3}
           sx={{
@@ -68,6 +103,7 @@ window.dispatchEvent(
             borderRadius: 3,
           }}
         >
+
           <Typography
             variant="h4"
             textAlign="center"
@@ -76,6 +112,7 @@ window.dispatchEvent(
           >
             Sign In
           </Typography>
+
 
           <Typography
             variant="body2"
@@ -86,19 +123,32 @@ window.dispatchEvent(
             Sign in to your account
           </Typography>
 
+
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <Alert
+              severity="error"
+              sx={{ mb: 2 }}
+            >
               {error}
             </Alert>
           )}
 
+
           {success && (
-            <Alert severity="success" sx={{ mb: 2 }}>
+            <Alert
+              severity="success"
+              sx={{ mb: 2 }}
+            >
               {success}
             </Alert>
           )}
 
-          <Box component="form" onSubmit={handleSubmit}>
+
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+          >
+
             <TextField
               label="Email"
               type="email"
@@ -106,8 +156,11 @@ window.dispatchEvent(
               required
               margin="normal"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) =>
+                setEmail(event.target.value)
+              }
             />
+
 
             <TextField
               label="Password"
@@ -116,8 +169,13 @@ window.dispatchEvent(
               required
               margin="normal"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) =>
+                setPassword(
+                  event.target.value
+                )
+              }
             />
+
 
             <Button
               type="submit"
@@ -129,19 +187,28 @@ window.dispatchEvent(
               Sign In
             </Button>
 
+
             <Button
               fullWidth
               variant="text"
               sx={{ mt: 1 }}
-              onClick={() => navigate("/signup")}
+              onClick={() =>
+                navigate("/signup")
+              }
             >
-              Don't have an account? Sign Up
+              Don't have an account?
+              Sign Up
             </Button>
+
           </Box>
+
         </Paper>
+
       </Box>
+
     </Container>
   );
 }
+
 
 export default Signin;

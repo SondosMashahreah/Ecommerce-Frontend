@@ -25,6 +25,19 @@ import Favorites from "./pages/Favorites/Favorites";
 import Orders from "./pages/Orders/Orders";
 import OrderDetails from "./pages/OrderDetails/OrderDetails";
 
+import AdminRoute from "./components/AdminRoute/AdminRoute";
+import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
+
+import AdminProducts from "./pages/Admin/Products/AdminProducts";
+
+import AdminLayout from "./layouts/AdminLayout/AdminLayout";
+
+import AdminProductCreate from "./pages/Admin/Products/AdminProductCreate";
+import AdminProductEdit from "./pages/Admin/Products/AdminProductEdit";
+
+import AdminCategories from "./pages/Admin/Categories/AdminCategories";
+import AdminInventory from "./pages/Admin/Inventory/AdminInventory";
+
 function App() {
   const location = useLocation();
 
@@ -38,11 +51,14 @@ function App() {
     location.pathname
   );
 
+  const isAdminPage =
+    location.pathname.startsWith("/admin");
+
   return (
     <>
       <SessionManager />
 
-      {!isAuthPage && (
+      {!isAuthPage && !isAdminPage && (
         <header>
           <TopHeader />
           <BtmHeader />
@@ -145,6 +161,46 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+<Route
+  path="/admin"
+  element={
+    <AdminRoute>
+      <AdminLayout />
+    </AdminRoute>
+  }
+>
+  <Route
+    index
+    element={<AdminDashboard />}
+  />
+
+  <Route
+    path="products"
+    element={<AdminProducts />}
+  />
+
+  <Route
+    path="products/new"
+    element={<AdminProductCreate />}
+  />
+
+  <Route
+    path="products/:id"
+    element={<AdminProductEdit />}
+  />
+
+  <Route
+    path="categories"
+    element={<AdminCategories />}
+  />
+
+  <Route
+    path="inventory"
+    element={<AdminInventory />}
+  />
+</Route>
+
       </Routes>
     </>
   );

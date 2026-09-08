@@ -1,0 +1,188 @@
+.admin_dashboard_page {
+  min-height: 100vh;
+  padding: 40px;
+  background: #f4f7fb;
+}
+
+.admin_dashboard_container {
+  max-width: 1400px;
+  margin: auto;
+}
+
+.admin_dashboard_header {
+  margin-bottom: 30px;
+}
+
+.admin_dashboard_header span {
+  color: #1687d9;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.admin_dashboard_header h1 {
+  margin: 6px 0;
+  font-size: 36px;
+  color: #172b40;
+}
+
+.admin_dashboard_header p {
+  margin: 0;
+  color: #758496;
+}
+
+.admin_stats_grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.admin_stat_card {
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  background: white;
+
+  border: 1px solid #e6edf4;
+  border-radius: 16px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(25, 70, 110, 0.05);
+}
+
+.admin_stat_icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #e9f5ff;
+  color: #1687d9;
+
+  font-size: 20px;
+}
+
+.admin_stat_card div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.admin_stat_card span {
+  font-size: 12px;
+  color: #8190a0;
+}
+
+.admin_stat_card strong {
+  color: #1e3348;
+  font-size: 22px;
+}
+
+.admin_charts_grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.admin_chart_card {
+  padding: 22px;
+
+  background: white;
+
+  border: 1px solid #e4ecf3;
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(25, 70, 110, 0.04);
+}
+
+.admin_chart_card h2,
+.admin_top_products h2 {
+  margin: 0 0 20px;
+
+  color: #253b50;
+  font-size: 17px;
+}
+
+.admin_top_products {
+  margin-top: 20px;
+  padding: 22px;
+
+  background: white;
+
+  border: 1px solid #e4ecf3;
+  border-radius: 18px;
+}
+
+.admin_top_product {
+  min-height: 52px;
+
+  display: grid;
+  grid-template-columns:
+    45px 1fr auto;
+
+  align-items: center;
+  gap: 10px;
+
+  border-bottom:
+    1px solid #edf2f6;
+}
+
+.admin_top_product:last-child {
+  border-bottom: none;
+}
+
+.admin_top_product span {
+  color: #1687d9;
+  font-weight: 800;
+}
+
+.admin_top_product strong {
+  color: #34495e;
+}
+
+.admin_top_product small {
+  color: #8493a3;
+}
+
+.admin_state,
+.admin_error {
+  margin: 100px auto;
+  text-align: center;
+}
+
+.admin_error {
+  color: #c63e3e;
+}
+
+@media (max-width: 1050px) {
+  .admin_stats_grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 750px) {
+  .admin_dashboard_page {
+    padding: 25px 15px;
+  }
+
+  .admin_stats_grid,
+  .admin_charts_grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -10,7 +10,7 @@
 }
 
 .Slide_product {
-    padding: 50px 0;
+    padding: 25px 0;
     width: 100%;
     overflow: hidden;
 }
@@ -53,8 +53,8 @@
 
 .mySwiper {
     width: 100%;
-    padding: 10px 5px 25px;
-    overflow: visible;
+    padding: 10px 5px 5px;
+    overflow: hidden;
 }
 
 .mySwiper .swiper-slide {
@@ -63,26 +63,64 @@
     justify-content: center;
 }
 
-.mySwiper .swiper-button-next,
-.mySwiper .swiper-button-prev {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--white_color);
-    border: 1px solid var(--border_color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.mySwiper .swiper-pagination {
+    position: relative !important;
+
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    width: 100% !important;
+
+    margin-top: 22px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 7px;
 }
 
-.mySwiper .swiper-button-next::after,
-.mySwiper .swiper-button-prev::after {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--color_heading);
+.mySwiper .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+
+    margin: 0 !important;
+
+    border-radius: 50%;
+
+    background: #aeb8bd;
+
+    opacity: 1;
+
+    cursor: pointer;
+
+    transition:
+        width 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease,
+        border-radius 0.25s ease;
+}
+
+.mySwiper .swiper-pagination-bullet:hover {
+    background: #87ceeb;
+    transform: scale(1.15);
+}
+
+.mySwiper .swiper-pagination-bullet-active {
+    width: 30px;
+    height: 8px;
+
+    border-radius: 20px;
+
+    background: #87ceeb;
+
+    transform: none;
 }
 
 @media (max-width: 1024px) {
     .Slide_product {
-        padding: 40px 0;
+        padding: 22px 0;
     }
 
     .Slide_product .container {
@@ -96,11 +134,15 @@
     .top_slide p {
         font-size: 17px;
     }
+
+    .mySwiper {
+        padding-bottom: 44px;
+    }
 }
 
 @media (max-width: 768px) {
     .Slide_product {
-        padding: 35px 0;
+        padding: 20px 0;
     }
 
     .Slide_product .container {
@@ -125,24 +167,22 @@
     }
 
     .mySwiper {
-        padding-bottom: 20px;
+        padding-bottom: 42px;
     }
 
-    .mySwiper .swiper-button-next,
-    .mySwiper .swiper-button-prev {
-        width: 34px;
-        height: 34px;
+    .mySwiper .swiper-pagination-bullet {
+        width: 8px;
+        height: 8px;
     }
 
-    .mySwiper .swiper-button-next::after,
-    .mySwiper .swiper-button-prev::after {
-        font-size: 14px;
+    .mySwiper .swiper-pagination-bullet-active {
+        width: 27px;
     }
 }
 
 @media (max-width: 480px) {
     .Slide_product {
-        padding: 30px 0;
+        padding: 18px 0;
     }
 
     .Slide_product .container {
@@ -168,7 +208,7 @@
     }
 
     .mySwiper {
-        padding: 5px 2px 18px;
+        padding: 5px 2px 40px;
     }
 }
 

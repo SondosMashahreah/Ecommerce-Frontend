@@ -792,3 +792,287 @@ export async function downloadOrderInvoice(
 
   window.URL.revokeObjectURL(url);
 }
+
+export async function getAdminDashboard() {
+  const token =
+    localStorage.getItem("access_token");
+
+  const response = await fetch(
+    `${API_URL}/admin/dashboard`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load admin dashboard"
+    );
+  }
+
+  return data;
+}
+
+export async function getAdminProducts() {
+  const response = await fetch(
+    `${API_URL}/admin/products/`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load admin products"
+    );
+  }
+
+  return data;
+}
+
+
+export async function createAdminProduct(
+  formData
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/`,
+    {
+      method: "POST",
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to create product"
+    );
+  }
+
+  return data;
+}
+
+
+export async function updateAdminProduct(
+  productId,
+  productData
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/${productId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify(productData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to update product"
+    );
+  }
+
+  return data;
+}
+
+
+export async function deleteAdminProduct(
+  productId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/${productId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to delete product"
+    );
+  }
+
+  return data;
+}
+
+
+export async function uploadAdminProductImage(
+  productId,
+  image
+) {
+  const formData = new FormData();
+
+  formData.append(
+    "image",
+    image
+  );
+
+  const response = await fetch(
+    `${API_URL}/admin/products/${productId}/image`,
+    {
+      method: "POST",
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to upload image"
+    );
+  }
+
+  return data;
+}
+
+
+export async function createAdminProductItem(
+  productId,
+  itemData
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/${productId}/items`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify(itemData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to create product item"
+    );
+  }
+
+  return data;
+}
+
+
+export async function updateAdminProductItem(
+  itemId,
+  itemData
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/items/${itemId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify(itemData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to update product item"
+    );
+  }
+
+  return data;
+}
+
+
+export async function deleteAdminProductItem(
+  itemId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/items/${itemId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to delete product item"
+    );
+  }
+
+  return data;
+}
+
+export async function getAdminProduct(
+  productId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/products/${productId}`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load product"
+    );
+  }
+
+  return data;
+}

@@ -1,0 +1,341 @@
+.admin_sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  width: 280px;
+  height: 100vh;
+
+  padding: 32px 20px 22px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border-right: 1px solid #dfeaf1;
+
+  box-shadow:
+    6px 0 24px rgba(31, 79, 112, 0.05);
+
+  z-index: 100;
+}
+
+.admin_sidebar_brand {
+  padding: 0 15px;
+
+  color: #0f2f46;
+
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 5px;
+}
+
+.admin_sidebar_label {
+  margin: 32px 15px 22px;
+
+  color: #7a99aa;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.admin_sidebar_nav {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  overflow-y: auto;
+}
+
+.admin_nav_item {
+  min-height: 52px;
+
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  border-radius: 11px;
+
+  text-decoration: none;
+
+  color: #628294;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin_nav_item svg {
+  width: 18px;
+  height: 18px;
+
+  color: #79c7e8;
+}
+
+.admin_nav_item:hover {
+  background: #eef8fc;
+  color: #1a5f85;
+  transform: translateX(2px);
+}
+
+.admin_nav_item.active {
+  background: #e4f4fb;
+  color: #167eb5;
+}
+
+.admin_nav_item.active svg {
+  color: #168ed0;
+}
+
+.admin_nav_button {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin_nav_button:hover {
+  background: #eef8fc;
+  color: #1a5f85;
+}
+
+.admin_account {
+  margin-top: 18px;
+  padding: 13px 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-radius: 10px;
+}
+
+.admin_account_text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin_account_text strong {
+  color: #17374a;
+  font-size: 13px;
+}
+
+.admin_account_text span {
+  color: #8ea3af;
+  font-size: 12px;
+}
+
+.admin_logout_icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #517487;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin_logout_icon:hover {
+  background: #eaf7fc;
+  color: #168ed0;
+}
+
+.admin_sidebar_divider {
+  margin: 10px 0;
+
+  border-top: 1px solid #e5eef3;
+}
+
+.admin_sidebar_bottom {
+  padding-top: 18px;
+}
+
+.admin_storefront_btn {
+  width: 100%;
+  height: 52px;
+
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid #d8e8f0;
+  border-radius: 10px;
+
+  background: #f9fdff;
+
+  color: #287ca6;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin_storefront_btn:hover {
+  background: #eaf7fc;
+  border-color: #bde2f2;
+  color: #176a95;
+}
+
+.admin_logout_btn {
+  width: 100%;
+
+  margin-top: 18px;
+  padding: 13px 8px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border: none;
+  border-radius: 10px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  color: #517487;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin_logout_btn:hover {
+  background: #f1f8fb;
+  color: #1f688d;
+}
+
+.admin_logout_btn div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.admin_logout_btn strong {
+  color: #17374a;
+  font-size: 13px;
+}
+
+.admin_logout_btn span {
+  margin-top: 4px;
+
+  color: #8ea3af;
+
+  font-size: 12px;
+}
+
+.admin_sidebar_nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.admin_sidebar_nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin_sidebar_nav::-webkit-scrollbar-thumb {
+  background: #c8e4f1;
+  border-radius: 10px;
+}
+
+.admin_sidebar_nav::-webkit-scrollbar-thumb:hover {
+  background: #9fd2e8;
+}
+
+@media (max-width: 900px) {
+  .admin_sidebar {
+    width: 86px;
+    padding: 25px 13px;
+  }
+
+  .admin_sidebar_brand {
+    padding: 0;
+    font-size: 0;
+    text-align: center;
+  }
+
+  .admin_sidebar_brand::after {
+    content: "E";
+
+    color: #168ed0;
+
+    font-size: 25px;
+    font-weight: 900;
+  }
+
+  .admin_sidebar_label,
+  .admin_nav_item span,
+  .admin_nav_item small,
+  .admin_storefront_btn span,
+  .admin_logout_btn div {
+    display: none;
+  }
+
+  .admin_nav_item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .admin_storefront_btn {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .admin_logout_btn {
+    justify-content: center;
+  }
+}
+
+.admin_nav_button {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent !important;
+  box-shadow: none !important;
+  appearance: none;
+  -webkit-appearance: none;
+
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.admin_nav_button:hover,
+.admin_nav_button:focus,
+.admin_nav_button:active {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none;
+}

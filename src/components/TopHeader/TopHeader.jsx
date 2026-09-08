@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useEffect,
+  useState
+} from "react";
+
 import logo from "./img/logo.png";
+
 import {
   Link,
   useNavigate
 } from "react-router-dom";
+
 import { FcSearch } from "react-icons/fc";
-import { FiHeart } from "react-icons/fi";
-import { MdOutlineShoppingCart } from "react-icons/md";
+import { FiHeart, FiUser } from "react-icons/fi";
+import {
+  MdOutlineShoppingCart,
+  MdDashboard
+} from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
+import { PiSignOutFill } from "react-icons/pi";
+
 import "./TopHeader.css";
 
 import {
@@ -16,19 +28,15 @@ import {
   getCurrentUser
 } from "../../services/api";
 
-import { FaUserCircle } from "react-icons/fa";
-import { MdDriveFileRenameOutline } from "react-icons/md";
-import { MdLockReset } from "react-icons/md";
-import { FiUser } from "react-icons/fi";
-import { PiSignOutFill } from "react-icons/pi";
-
 function TopHeader() {
+  const navigate = useNavigate();
+
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
-
   const [headerUser, setHeaderUser] = useState(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   useEffect(() => {
     const searchTimer = setTimeout(async () => {
@@ -37,7 +45,7 @@ function TopHeader() {
       if (searchText.length < 3) {
         setResults([]);
         return;
-      } 
+      }
 
       try {
         const data = await searchProducts(searchText);
@@ -88,7 +96,10 @@ function TopHeader() {
 
       setCartCount(count);
     } catch (error) {
-      console.error("Failed to load cart count:", error);
+      console.error(
+        "Failed to load cart count:",
+        error
+      );
     }
   };
 
@@ -97,7 +108,10 @@ function TopHeader() {
       const favorites = await getFavorites();
       setFavoritesCount(favorites.length);
     } catch (error) {
-      console.error("Failed to load favorites count:", error);
+      console.error(
+        "Failed to load favorites count:",
+        error
+      );
     }
   };
 
@@ -133,147 +147,163 @@ function TopHeader() {
     };
   }, []);
 
-const navigate = useNavigate();
+  const handleProfileLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
 
-const [isProfileOpen, setIsProfileOpen] =
-  useState(false);
+    window.dispatchEvent(
+      new Event("authChanged")
+    );
 
-const handleProfileLogout = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+    setIsProfileOpen(false);
 
-  window.dispatchEvent(
-    new Event("authChanged")
-  );
-
-  navigate("/signin");
-}; 
-useEffect(() => {
-  const loadHeaderUser = async () => {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
-      setHeaderUser(null);
-      return;
-    }
-
-    try {
-      const data = await getCurrentUser();
-
-      setHeaderUser(data);
-
-    } catch (error) {
-      console.error(
-        "Failed to load header user:",
-        error
-      );
-
-      setHeaderUser(null);
-    }
+    navigate("/signin");
   };
 
-  loadHeaderUser();
+  useEffect(() => {
+    const loadHeaderUser = async () => {
+      const token = localStorage.getItem(
+        "access_token"
+      );
 
-  window.addEventListener(
-    "profileUpdated",
-    loadHeaderUser
-  );
+      if (!token) {
+        setHeaderUser(null);
+        return;
+      }
 
-  window.addEventListener(
-    "authChanged",
-    loadHeaderUser
-  );
+      try {
+        const data = await getCurrentUser();
+        setHeaderUser(data);
+      } catch (error) {
+        console.error(
+          "Failed to load header user:",
+          error
+        );
 
-  return () => {
-    window.removeEventListener(
+        setHeaderUser(null);
+      }
+    };
+
+    loadHeaderUser();
+
+    window.addEventListener(
       "profileUpdated",
       loadHeaderUser
     );
 
-    window.removeEventListener(
+    window.addEventListener(
       "authChanged",
       loadHeaderUser
     );
-  };
-}, []);
+
+    return () => {
+      window.removeEventListener(
+        "profileUpdated",
+        loadHeaderUser
+      );
+
+      window.removeEventListener(
+        "authChanged",
+        loadHeaderUser
+      );
+    };
+  }, []);
 
   return (
     <div className="top_header">
       <div className="container">
 
-        <Link className="logo" to="/">
-          <img src={logo} alt="Logo" />
+        <Link
+          className="logo"
+          to="/"
+        >
+          <img
+            src={logo}
+            alt="Logo"
+          />
         </Link>
 
         <div className="profile_menu_wrapper">
 
-<button
-  type="button"
-  className="profile_btn"
-  onClick={() =>
-    setIsProfileOpen(!isProfileOpen)
-  }
->
-  {headerUser?.profile_image_path ? (
-    <img
-      className="header_profile_image"
-      src={
-        `${import.meta.env.VITE_API_URL}` +
-        `/api/v1/assets/${headerUser.profile_image_path}`
-      }
-      alt={headerUser.name}
-    />
-  ) : (
-    <FaUserCircle />
-  )}
+          <button
+            type="button"
+            className="profile_btn"
+            onClick={() =>
+              setIsProfileOpen(!isProfileOpen)
+            }
+          >
+            {headerUser?.profile_image_path ? (
+              <img
+                className="header_profile_image"
+                src={
+                  `${import.meta.env.VITE_API_URL}` +
+                  `/api/v1/assets/${headerUser.profile_image_path}`
+                }
+                alt={headerUser.name}
+              />
+            ) : (
+              <FaUserCircle />
+            )}
 
-  <span>
-    {headerUser?.name || "Profile"}
-  </span>
-</button>
+            <span>
+              {headerUser?.name || "Profile"}
+            </span>
+          </button>
 
+          <div
+            className={`profile_sidebar ${
+              isProfileOpen ? "active" : ""
+            }`}
+          >
 
-  <div
-    className={`profile_sidebar ${
-      isProfileOpen ? "active" : ""
-    }`}
-  >
+            <button
+              type="button"
+              onClick={() => {
+                setIsProfileOpen(false);
+                navigate("/profile");
+              }}
+            >
+              <FiUser />
+              <span>My Profile</span>
+            </button>
 
-    <button
-      type="button"
-      onClick={() => {
-        setIsProfileOpen(false);
-        navigate("/profile");
-      }}
-    >
-      <FiUser />
-      <span>My Profile</span>
-    </button>
+            {headerUser && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  navigate("/orders");
+                }}
+              >
+                <MdOutlineShoppingCart />
+                <span>My Orders</span>
+              </button>
+            )}
 
-    <button
-  type="button"
-  onClick={() => {
-    setIsProfileOpen(false);
-    navigate("/orders");
-  }}
->
-  <MdOutlineShoppingCart />
-  <span>My Orders</span>
-</button>
+            {headerUser?.role === "admin" && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  navigate("/admin");
+                }}
+              >
+                <MdDashboard />
+                <span>Dashboard</span>
+              </button>
+            )}
 
+            <button
+              type="button"
+              className="profile_logout"
+              onClick={handleProfileLogout}
+            >
+              <PiSignOutFill />
+              <span>Logout</span>
+            </button>
 
-    <button
-      type="button"
-      className="profile_logout"
-      onClick={handleProfileLogout}
-    >
-      <PiSignOutFill />
-      <span>Logout</span>
-    </button>
-
-  </div>
-
-</div>
+          </div>
+        </div>
 
         <div className="search_wrapper">
 
