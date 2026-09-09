@@ -5,7 +5,7 @@
   width: 280px;
   height: 100vh;
 
-  padding: 32px 20px 22px;
+  padding: 26px 20px 18px;
 
   display: flex;
   flex-direction: column;
@@ -17,46 +17,148 @@
   box-shadow:
     6px 0 24px rgba(31, 79, 112, 0.05);
 
+  overflow: hidden;
+
   z-index: 100;
+
+  transition:
+    width 0.28s ease,
+    padding 0.28s ease;
 }
 
-.admin_sidebar_brand {
-  padding: 0 15px;
 
+/* =========================
+   HEADER
+========================= */
+
+.admin_sidebar_header {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+
+.admin_sidebar_brand {
   color: #0f2f46;
 
   font-size: 26px;
   font-weight: 900;
+
   letter-spacing: 5px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
 }
 
+
+.admin_brand_short {
+  display: none;
+
+  color: #168ed0;
+
+  font-size: 27px;
+  font-weight: 900;
+
+  letter-spacing: 0;
+}
+
+
+.admin_sidebar_toggle {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dceaf1;
+  border-radius: 9px;
+
+  background: #f7fbfd;
+
+  color: #4f7d95;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.admin_sidebar_toggle svg {
+  width: 15px;
+  height: 15px;
+}
+
+
+.admin_sidebar_toggle:hover {
+  background: #e7f5fb;
+
+  border-color: #bee3f2;
+
+  color: #168ed0;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   LABEL
+========================= */
+
 .admin_sidebar_label {
-  margin: 32px 15px 22px;
+  margin: 25px 15px 17px;
 
   color: #7a99aa;
 
   font-size: 11px;
   font-weight: 700;
+
   letter-spacing: 2px;
+
+  white-space: nowrap;
 }
+
+
+/* =========================
+   NAVIGATION
+========================= */
 
 .admin_sidebar_nav {
   flex: 1;
 
+  min-height: 0;
+
   display: flex;
   flex-direction: column;
-  gap: 8px;
 
-  overflow-y: auto;
+  gap: 5px;
+
+  /* no internal scrollbar */
+  overflow: hidden;
 }
 
+
 .admin_nav_item {
-  min-height: 52px;
+  min-height: 48px;
 
   padding: 0 16px;
 
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
+
   gap: 14px;
 
   border-radius: 11px;
@@ -68,114 +170,67 @@
   font-size: 14px;
   font-weight: 600;
 
+  white-space: nowrap;
+
   transition:
     background 0.2s ease,
     color 0.2s ease,
     transform 0.2s ease;
 }
 
+
 .admin_nav_item svg {
   width: 18px;
   height: 18px;
 
+  min-width: 18px;
+
   color: #79c7e8;
 }
 
+
 .admin_nav_item:hover {
   background: #eef8fc;
+
   color: #1a5f85;
+
   transform: translateX(2px);
 }
 
+
 .admin_nav_item.active {
   background: #e4f4fb;
+
   color: #167eb5;
 }
+
 
 .admin_nav_item.active svg {
   color: #168ed0;
 }
 
-.admin_nav_button {
-  width: 100%;
-  border: none;
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.admin_nav_button:hover {
-  background: #eef8fc;
-  color: #1a5f85;
-}
-
-.admin_account {
-  margin-top: 18px;
-  padding: 13px 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  border-radius: 10px;
-}
-
-.admin_account_text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.admin_account_text strong {
-  color: #17374a;
-  font-size: 13px;
-}
-
-.admin_account_text span {
-  color: #8ea3af;
-  font-size: 12px;
-}
-
-.admin_logout_icon {
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: 8px;
-
-  background: transparent;
-
-  color: #517487;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.admin_logout_icon:hover {
-  background: #eaf7fc;
-  color: #168ed0;
-}
 
 .admin_sidebar_divider {
-  margin: 10px 0;
+  margin: 6px 0;
 
   border-top: 1px solid #e5eef3;
 }
 
+
+/* =========================
+   BOTTOM
+========================= */
+
 .admin_sidebar_bottom {
-  padding-top: 18px;
+  flex-shrink: 0;
+
+  padding-top: 12px;
 }
+
 
 .admin_storefront_btn {
   width: 100%;
-  height: 52px;
+  height: 50px;
 
   padding: 0 16px;
 
@@ -195,147 +250,409 @@
 
   cursor: pointer;
 
+  white-space: nowrap;
+
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease;
 }
 
+
 .admin_storefront_btn:hover {
   background: #eaf7fc;
+
   border-color: #bde2f2;
+
   color: #176a95;
 }
 
-.admin_logout_btn {
-  width: 100%;
 
-  margin-top: 18px;
-  padding: 13px 8px;
+.admin_account {
+  margin-top: 10px;
+
+  min-height: 54px;
+
+  padding: 8px;
 
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  border-radius: 10px;
+}
+
+
+.admin_account_text {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.admin_account_text strong {
+  color: #17374a;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+}
+
+
+.admin_account_text span {
+  color: #8ea3af;
+
+  font-size: 12px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.admin_logout_icon {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
 
   background: transparent;
 
-  cursor: pointer;
-
   color: #517487;
+
+  cursor: pointer;
 
   transition:
     background 0.2s ease,
     color 0.2s ease;
 }
 
-.admin_logout_btn:hover {
-  background: #f1f8fb;
-  color: #1f688d;
+
+.admin_logout_icon:hover {
+  background: #eaf7fc;
+
+  color: #168ed0;
 }
 
-.admin_logout_btn div {
-  display: flex;
+
+/* =========================
+   COLLAPSED SIDEBAR
+========================= */
+
+.admin_sidebar.collapsed {
+  width: 86px;
+
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+
+.admin_sidebar.collapsed
+.admin_sidebar_header {
   flex-direction: column;
-  align-items: flex-start;
+
+  justify-content: flex-start;
+
+  gap: 12px;
 }
 
-.admin_logout_btn strong {
-  color: #17374a;
-  font-size: 13px;
+
+.admin_sidebar.collapsed
+.admin_brand_full {
+  display: none;
 }
 
-.admin_logout_btn span {
-  margin-top: 4px;
 
-  color: #8ea3af;
-
-  font-size: 12px;
+.admin_sidebar.collapsed
+.admin_brand_short {
+  display: block;
 }
 
-.admin_sidebar_nav::-webkit-scrollbar {
-  width: 5px;
+
+.admin_sidebar.collapsed
+.admin_sidebar_label {
+  display: none;
 }
 
-.admin_sidebar_nav::-webkit-scrollbar-track {
-  background: transparent;
+
+.admin_sidebar.collapsed
+.admin_sidebar_nav {
+  margin-top: 18px;
 }
 
-.admin_sidebar_nav::-webkit-scrollbar-thumb {
-  background: #c8e4f1;
-  border-radius: 10px;
+
+.admin_sidebar.collapsed
+.admin_nav_item {
+  width: 58px;
+
+  min-height: 52px;
+
+  padding: 0;
+
+  justify-content: center;
+
+  gap: 0;
+
+  margin-inline: auto;
 }
 
-.admin_sidebar_nav::-webkit-scrollbar-thumb:hover {
-  background: #9fd2e8;
+
+.admin_sidebar.collapsed
+.admin_nav_item span {
+  display: none;
 }
+
+
+.admin_sidebar.collapsed
+.admin_nav_item:hover {
+  transform: none;
+}
+
+
+.admin_sidebar.collapsed
+.admin_sidebar_divider {
+  width: 58px;
+
+  margin:
+    6px auto;
+}
+
+
+.admin_sidebar.collapsed
+.admin_storefront_btn {
+  width: 58px;
+
+  height: 50px;
+
+  margin-inline: auto;
+
+  padding: 0;
+
+  justify-content: center;
+}
+
+
+.admin_sidebar.collapsed
+.admin_storefront_btn span {
+  display: none;
+}
+
+
+.admin_sidebar.collapsed
+.admin_account {
+  padding: 4px 0;
+
+  justify-content: center;
+}
+
+
+.admin_sidebar.collapsed
+.admin_account_text {
+  display: none;
+}
+
+
+.admin_sidebar.collapsed
+.admin_logout_icon {
+  margin-inline: auto;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 900px) {
+
   .admin_sidebar {
-    width: 86px;
-    padding: 25px 13px;
+    width: 76px;
+
+    padding:
+      18px 10px 14px;
   }
 
-  .admin_sidebar_brand {
-    padding: 0;
-    font-size: 0;
-    text-align: center;
+
+  .admin_sidebar_header {
+    flex-direction: column;
+
+    justify-content: flex-start;
+
+    gap: 10px;
   }
 
-  .admin_sidebar_brand::after {
-    content: "E";
 
-    color: #168ed0;
-
-    font-size: 25px;
-    font-weight: 900;
-  }
-
-  .admin_sidebar_label,
-  .admin_nav_item span,
-  .admin_nav_item small,
-  .admin_storefront_btn span,
-  .admin_logout_btn div {
+  .admin_brand_full {
     display: none;
   }
 
-  .admin_nav_item {
-    justify-content: center;
-    padding: 0;
+
+  .admin_brand_short {
+    display: block;
+
+    font-size: 25px;
   }
+
+
+  .admin_sidebar_toggle {
+    width: 31px;
+    height: 31px;
+  }
+
+
+  .admin_sidebar_label {
+    display: none;
+  }
+
+
+  .admin_sidebar_nav {
+    margin-top: 14px;
+
+    gap: 4px;
+  }
+
+
+  .admin_nav_item {
+    width: 54px;
+
+    min-height: 48px;
+
+    padding: 0;
+
+    justify-content: center;
+
+    margin-inline: auto;
+  }
+
+
+  .admin_nav_item span {
+    display: none;
+  }
+
+
+  .admin_nav_item:hover {
+    transform: none;
+  }
+
+
+  .admin_sidebar_divider {
+    width: 54px;
+
+    margin:
+      5px auto;
+  }
+
 
   .admin_storefront_btn {
-    justify-content: center;
+    width: 54px;
+    height: 46px;
+
+    margin-inline: auto;
+
     padding: 0;
-  }
 
-  .admin_logout_btn {
     justify-content: center;
   }
+
+
+  .admin_storefront_btn span {
+    display: none;
+  }
+
+
+  .admin_account {
+    min-height: auto;
+
+    margin-top: 7px;
+
+    padding: 2px 0;
+
+    justify-content: center;
+  }
+
+
+  .admin_account_text {
+    display: none;
+  }
+
+
+  /* smaller logout on phone */
+
+  .admin_logout_icon {
+    width: 29px;
+    height: 29px;
+
+    margin-inline: auto;
+
+    border-radius: 7px;
+  }
+
+
+  .admin_logout_icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+
+  .admin_sidebar.collapsed {
+    width: 76px;
+
+    padding:
+      18px 10px 14px;
+  }
 }
 
-.admin_nav_button {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent !important;
-  box-shadow: none !important;
-  appearance: none;
-  -webkit-appearance: none;
 
-  font-family: inherit;
-  font-size: inherit;
-  text-align: left;
+/* very short screens */
 
-  cursor: pointer;
-}
+@media (max-height: 680px) {
 
-.admin_nav_button:hover,
-.admin_nav_button:focus,
-.admin_nav_button:active {
-  background: transparent !important;
-  box-shadow: none !important;
-  outline: none;
+  .admin_sidebar {
+    padding-top: 14px;
+    padding-bottom: 10px;
+  }
+
+
+  .admin_sidebar_label {
+    margin-top: 14px;
+    margin-bottom: 10px;
+  }
+
+
+  .admin_sidebar_nav {
+    gap: 2px;
+  }
+
+
+  .admin_nav_item {
+    min-height: 42px;
+  }
+
+
+  .admin_sidebar_divider {
+    margin:
+      3px 0;
+  }
+
+
+  .admin_storefront_btn {
+    height: 42px;
+  }
+
+
+  .admin_account {
+    min-height: 42px;
+    margin-top: 4px;
+  }
 }

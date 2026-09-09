@@ -13,6 +13,8 @@ import {
   FaArrowRightFromBracket,
   FaArrowUpRightFromSquare,
   FaEnvelope,
+  FaBars,
+  FaChevronLeft,
 } from "react-icons/fa6";
 
 import {
@@ -27,7 +29,10 @@ import {
 import "./AdminSidebar.css";
 
 
-function AdminSidebar() {
+function AdminSidebar({
+  collapsed,
+  setCollapsed,
+}) {
   const navigate = useNavigate();
 
   const [adminUser, setAdminUser] =
@@ -79,16 +84,57 @@ function AdminSidebar() {
 
 
   return (
-    <aside className="admin_sidebar">
+    <aside
+      className={
+        `admin_sidebar ${
+          collapsed ? "collapsed" : ""
+        }`
+      }
+    >
 
-      <div className="admin_sidebar_brand">
-        ECOMMERCE
+      {/* TOP */}
+
+      <div className="admin_sidebar_header">
+
+        <div className="admin_sidebar_brand">
+          <span className="admin_brand_full">
+            ECOMMERCE
+          </span>
+
+          <span className="admin_brand_short">
+            E
+          </span>
+        </div>
+
+
+        <button
+          type="button"
+          className="admin_sidebar_toggle"
+          onClick={() =>
+            setCollapsed(!collapsed)
+          }
+          title={
+            collapsed
+              ? "Open sidebar"
+              : "Close sidebar"
+          }
+        >
+          {collapsed ? (
+            <FaBars />
+          ) : (
+            <FaChevronLeft />
+          )}
+        </button>
+
       </div>
+
 
       <p className="admin_sidebar_label">
         STORE ADMINISTRATION
       </p>
 
+
+      {/* NAVIGATION */}
 
       <nav className="admin_sidebar_nav">
 
@@ -96,6 +142,7 @@ function AdminSidebar() {
           to="/admin"
           end
           className={navClass}
+          title="Overview"
         >
           <FaChartPie />
           <span>Overview</span>
@@ -105,6 +152,7 @@ function AdminSidebar() {
         <NavLink
           to="/admin/products"
           className={navClass}
+          title="Products"
         >
           <FaBox />
           <span>Products</span>
@@ -114,6 +162,7 @@ function AdminSidebar() {
         <NavLink
           to="/admin/categories"
           className={navClass}
+          title="Categories"
         >
           <FaLayerGroup />
           <span>Categories</span>
@@ -123,6 +172,7 @@ function AdminSidebar() {
         <NavLink
           to="/admin/inventory"
           className={navClass}
+          title="Inventory"
         >
           <FaWarehouse />
           <span>Inventory</span>
@@ -132,34 +182,39 @@ function AdminSidebar() {
         <div className="admin_sidebar_divider" />
 
 
-        <button
-          type="button"
-          className="admin_nav_item admin_nav_button"
+        <NavLink
+          to="/admin/orders"
+          className={navClass}
+          title="Orders"
         >
           <FaBagShopping />
           <span>Orders</span>
-        </button>
+        </NavLink>
 
 
-        <button
-          type="button"
-          className="admin_nav_item admin_nav_button"
+        <NavLink
+          to="/admin/customers"
+          className={navClass}
+          title="Customers"
         >
           <FaUsers />
           <span>Customers</span>
-        </button>
+        </NavLink>
 
 
-        <button
-          type="button"
-          className="admin_nav_item admin_nav_button"
+        <NavLink
+          to="/admin/messages"
+          className={navClass}
+          title="Messages"
         >
           <FaEnvelope />
           <span>Messages</span>
-        </button>
+        </NavLink>
 
       </nav>
 
+
+      {/* BOTTOM */}
 
       <div className="admin_sidebar_bottom">
 
@@ -169,6 +224,7 @@ function AdminSidebar() {
           onClick={() =>
             navigate("/")
           }
+          title="View storefront"
         >
           <span>
             View storefront

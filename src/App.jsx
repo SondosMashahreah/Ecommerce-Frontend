@@ -29,14 +29,23 @@ import AdminRoute from "./components/AdminRoute/AdminRoute";
 import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
 
 import AdminProducts from "./pages/Admin/Products/AdminProducts";
-
-import AdminLayout from "./layouts/AdminLayout/AdminLayout";
-
 import AdminProductCreate from "./pages/Admin/Products/AdminProductCreate";
 import AdminProductEdit from "./pages/Admin/Products/AdminProductEdit";
 
 import AdminCategories from "./pages/Admin/Categories/AdminCategories";
 import AdminInventory from "./pages/Admin/Inventory/AdminInventory";
+
+import AdminOrders from "./pages/Admin/Orders/AdminOrders";
+import AdminOrderDetails from "./pages/Admin/Orders/AdminOrderDetails";
+
+import AdminCustomers from "./pages/Admin/Customers/AdminCustomers";
+import AdminCustomerDetails from "./pages/Admin/Customers/AdminCustomerDetails";
+
+import AdminMessages from "./pages/Admin/Messages/AdminMessages";
+import AdminMessageDetails from "./pages/Admin/Messages/AdminMessageDetails";
+
+import AdminLayout from "./layouts/AdminLayout/AdminLayout";
+
 
 function App() {
   const location = useLocation();
@@ -47,12 +56,16 @@ function App() {
     "/verify-otp"
   ];
 
-  const isAuthPage = authPages.includes(
-    location.pathname
-  );
+  const isAuthPage =
+    authPages.includes(
+      location.pathname
+    );
 
   const isAdminPage =
-    location.pathname.startsWith("/admin");
+    location.pathname.startsWith(
+      "/admin"
+    );
+
 
   return (
     <>
@@ -66,6 +79,7 @@ function App() {
       )}
 
       <Routes>
+
         <Route
           path="/"
           element={
@@ -74,6 +88,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/about"
@@ -84,6 +99,7 @@ function App() {
           }
         />
 
+
         <Route
           path="/contact"
           element={
@@ -92,6 +108,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/profile"
@@ -102,20 +119,24 @@ function App() {
           }
         />
 
+
         <Route
           path="/signup"
           element={<Signup />}
         />
+
 
         <Route
           path="/verify-otp"
           element={<VerifyOtp />}
         />
 
+
         <Route
           path="/signin"
           element={<Signin />}
         />
+
 
         <Route
           path="/products/:id"
@@ -126,6 +147,7 @@ function App() {
           }
         />
 
+
         <Route
           path="/cart"
           element={
@@ -134,6 +156,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/favorites"
@@ -144,6 +167,7 @@ function App() {
           }
         />
 
+
         <Route
           path="/orders"
           element={
@@ -152,6 +176,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/orders/:id"
@@ -162,48 +187,117 @@ function App() {
           }
         />
 
-<Route
-  path="/admin"
-  element={
-    <AdminRoute>
-      <AdminLayout />
-    </AdminRoute>
-  }
->
-  <Route
-    index
-    element={<AdminDashboard />}
-  />
 
-  <Route
-    path="products"
-    element={<AdminProducts />}
-  />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
 
-  <Route
-    path="products/new"
-    element={<AdminProductCreate />}
-  />
+          <Route
+            index
+            element={
+              <AdminDashboard />
+            }
+          />
 
-  <Route
-    path="products/:id"
-    element={<AdminProductEdit />}
-  />
 
-  <Route
-    path="categories"
-    element={<AdminCategories />}
-  />
+          <Route
+            path="products"
+            element={
+              <AdminProducts />
+            }
+          />
 
-  <Route
-    path="inventory"
-    element={<AdminInventory />}
-  />
-</Route>
+
+          <Route
+            path="products/new"
+            element={
+              <AdminProductCreate />
+            }
+          />
+
+
+          <Route
+            path="products/:id"
+            element={
+              <AdminProductEdit />
+            }
+          />
+
+
+          <Route
+            path="categories"
+            element={
+              <AdminCategories />
+            }
+          />
+
+
+          <Route
+            path="inventory"
+            element={
+              <AdminInventory />
+            }
+          />
+
+
+          <Route
+            path="orders"
+            element={
+              <AdminOrders />
+            }
+          />
+
+
+          <Route
+            path="orders/:id"
+            element={
+              <AdminOrderDetails />
+            }
+          />
+
+
+          <Route
+            path="customers"
+            element={
+              <AdminCustomers />
+            }
+          />
+
+
+          <Route
+            path="customers/:id"
+            element={
+              <AdminCustomerDetails />
+            }
+          />
+
+
+          <Route
+            path="messages"
+            element={
+              <AdminMessages />
+            }
+          />
+
+
+          <Route
+            path="messages/:id"
+            element={
+              <AdminMessageDetails />
+            }
+          />
+
+        </Route>
 
       </Routes>
     </>
   );
 }
+
 
 export default App;

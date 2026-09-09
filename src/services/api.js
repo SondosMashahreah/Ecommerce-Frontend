@@ -1076,3 +1076,459 @@ export async function getAdminProduct(
 
   return data;
 }
+
+export async function getAdminOrders(
+  search = "",
+  status = ""
+) {
+  const params =
+    new URLSearchParams();
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  if (status) {
+    params.set("status", status);
+  }
+
+  const query =
+    params.toString();
+
+  const response = await fetch(
+    `${API_URL}/admin/orders/${
+      query ? `?${query}` : ""
+    }`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load admin orders"
+    );
+  }
+
+  return data;
+}
+
+
+export async function getAdminOrderById(
+  orderId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/orders/${orderId}`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load order"
+    );
+  }
+
+  return data;
+}
+
+
+export async function updateAdminOrderStatus(
+  orderId,
+  status
+) {
+  const response = await fetch(
+    `${API_URL}/admin/orders/${orderId}/status`,
+    {
+      method: "PATCH",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+
+      body: JSON.stringify({
+        status,
+      }),
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to update order"
+    );
+  }
+
+  return data;
+}
+
+
+export async function cancelAdminOrder(
+  orderId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/orders/${orderId}/cancel`,
+    {
+      method: "PATCH",
+
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to cancel order"
+    );
+  }
+
+  return data;
+}
+
+
+export async function downloadAdminOrderInvoice(
+  orderId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/orders/${orderId}/invoice`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to download invoice"
+    );
+  }
+
+  const blob =
+    await response.blob();
+
+  const url =
+    window.URL.createObjectURL(
+      blob
+    );
+
+  const link =
+    document.createElement("a");
+
+  link.href = url;
+
+  link.download =
+    `invoice-${orderId}.pdf`;
+
+  document.body.appendChild(
+    link
+  );
+
+  link.click();
+  link.remove();
+
+  window.URL.revokeObjectURL(
+    url
+  );
+}
+
+
+export async function getAdminCustomers(
+  search = ""
+) {
+  const params =
+    new URLSearchParams();
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  const query =
+    params.toString();
+
+  const response = await fetch(
+    `${API_URL}/admin/customers/${
+      query ? `?${query}` : ""
+    }`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load customers"
+    );
+  }
+
+  return data;
+}
+
+
+export async function getAdminCustomerById(
+  userId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/customers/${userId}`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load customer"
+    );
+  }
+
+  return data;
+}
+
+
+export async function updateAdminCustomerStatus(
+  userId,
+  isActive
+) {
+  const response = await fetch(
+    `${API_URL}/admin/customers/${userId}/status`,
+    {
+      method: "PATCH",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+
+      body: JSON.stringify({
+        is_active: isActive,
+      }),
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to update customer"
+    );
+  }
+
+  return data;
+}
+
+
+export async function updateAdminCustomerRole(
+  userId,
+  role
+) {
+  const response = await fetch(
+    `${API_URL}/admin/customers/${userId}/role`,
+    {
+      method: "PATCH",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+
+      body: JSON.stringify({
+        role,
+      }),
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to change role"
+    );
+  }
+
+  return data;
+}
+
+
+export async function getAdminMessages(
+  search = "",
+  unreadOnly = false
+) {
+  const params =
+    new URLSearchParams();
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  if (unreadOnly) {
+    params.set(
+      "unread_only",
+      "true"
+    );
+  }
+
+  const query =
+    params.toString();
+
+  const response = await fetch(
+    `${API_URL}/admin/messages/${
+      query ? `?${query}` : ""
+    }`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load messages"
+    );
+  }
+
+  return data;
+}
+
+
+export async function getAdminMessageById(
+  messageId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/messages/${messageId}`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to load message"
+    );
+  }
+
+  return data;
+}
+
+
+export async function markAdminMessageRead(
+  messageId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/messages/${messageId}/read`,
+    {
+      method: "PATCH",
+
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to mark message"
+    );
+  }
+
+  return data;
+}
+
+
+export async function deleteAdminMessage(
+  messageId
+) {
+  const response = await fetch(
+    `${API_URL}/admin/messages/${messageId}`,
+    {
+      method: "DELETE",
+
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`,
+      },
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.detail ||
+      "Failed to delete message"
+    );
+  }
+
+  return data;
+}
