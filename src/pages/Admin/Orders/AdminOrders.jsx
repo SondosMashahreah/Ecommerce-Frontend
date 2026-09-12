@@ -121,21 +121,7 @@ function AdminOrders() {
             Cancelled
           </option>
 
-          <option value="RETURN_REQUESTED">
-            Return requested
-          </option>
-
-          <option value="RETURNED">
-            Returned
-          </option>
-
-          <option value="REFUND_REQUESTED">
-            Refund requested
-          </option>
-
-          <option value="REFUNDED">
-            Refunded
-          </option>
+          
         </select>
 
       </div>
