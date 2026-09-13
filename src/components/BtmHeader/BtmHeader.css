@@ -1037,3 +1037,240 @@
     height: 32px !important;
   }
 }
+
+/* Mobile BottomHeader — keep everything on one line */
+@media (max-width: 700px) {
+  .btm_header {
+    min-height: 52px !important;
+    overflow: visible !important;
+  }
+
+  .btm_header .container {
+    position: relative !important;
+
+    width: 100% !important;
+    min-height: 52px !important;
+    padding: 6px 6px 6px 49px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+
+    gap: 5px !important;
+    overflow: visible !important;
+  }
+
+  /*
+   * مهم: لا تستخدمي display: contents هنا.
+   * الـnav يحتوي Category والروابط بنفس السطر.
+   */
+  .btm_header .nav {
+    width: auto !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+
+    gap: 5px !important;
+    overflow: visible !important;
+  }
+
+  /* Category */
+  .btm_header .category_nav {
+    position: relative !important;
+
+    width: clamp(105px, 30vw, 190px) !important;
+    min-width: 105px !important;
+    max-width: 190px !important;
+    height: 30px !important;
+
+    flex: 0 1 clamp(105px, 30vw, 190px) !important;
+
+    margin: 0 !important;
+  }
+
+  .btm_header .category_nav .category_btn {
+    width: 100% !important;
+    height: 30px !important;
+
+    padding: 0 7px !important;
+    gap: 4px !important;
+
+    border-radius: 8px !important;
+  }
+
+  .btm_header .category_nav .category_btn p {
+    min-width: 0 !important;
+    margin: 0 !important;
+
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+
+  .btm_header .category_nav .category_btn svg {
+    font-size: 13px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Home / About / Contact */
+  .btm_header .nav_links {
+    width: auto !important;
+    min-width: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    flex: 1 1 auto !important;
+
+    gap: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+    order: initial !important;
+  }
+
+  .btm_header .nav_links li {
+    width: auto !important;
+    height: 25px !important;
+    min-height: 25px !important;
+
+    flex: 0 0 auto !important;
+    border-radius: 6px !important;
+  }
+
+  .btm_header .nav_links li a {
+    width: auto !important;
+    height: 25px !important;
+
+    padding: 0 4px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 6px !important;
+
+    font-size: 8px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Logout */
+  .btm_header .logout_btn {
+    position: static !important;
+
+    width: auto !important;
+    height: 30px !important;
+    flex: 0 0 auto !important;
+
+    margin: 0 !important;
+    padding: 0 7px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 3px !important;
+    border-radius: 7px !important;
+
+    font-size: 8px !important;
+    white-space: nowrap !important;
+
+    transform: none !important;
+    order: initial !important;
+  }
+
+  .btm_header .logout_btn span {
+    display: inline !important;
+    font-size: 8px !important;
+  }
+
+  .btm_header .logout_btn svg {
+    font-size: 13px !important;
+  }
+
+  /* Logo */
+  .top_header .logo {
+    position: absolute !important;
+
+    left: 7px !important;
+    top: -45px !important;
+
+    width: 38px !important;
+    height: 38px !important;
+
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 20000 !important;
+  }
+
+  .top_header .logo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+  .btm_header .container {
+    min-height: 48px !important;
+    padding-left: 42px !important;
+    gap: 2px !important;
+  }
+
+  .btm_header .nav {
+    gap: 2px !important;
+  }
+
+  .btm_header .category_nav {
+    width: clamp(82px, 28vw, 105px) !important;
+    min-width: 82px !important;
+    max-width: 105px !important;
+    height: 27px !important;
+
+    flex-basis: clamp(82px, 28vw, 105px) !important;
+  }
+
+  .btm_header .category_nav .category_btn {
+    height: 27px !important;
+    padding: 0 4px !important;
+  }
+
+  .btm_header .category_nav .category_btn p,
+  .btm_header .nav_links li a,
+  .btm_header .logout_btn,
+  .btm_header .logout_btn span {
+    font-size: 7px !important;
+  }
+
+  .btm_header .nav_links li,
+  .btm_header .nav_links li a {
+    height: 22px !important;
+    min-height: 22px !important;
+  }
+
+  .btm_header .nav_links li a {
+    padding: 0 2px !important;
+  }
+
+  .btm_header .logout_btn {
+    height: 27px !important;
+    padding: 0 4px !important;
+  }
+
+  .top_header .logo {
+    left: 4px !important;
+    top: -42px !important;
+    width: 34px !important;
+    height: 34px !important;
+  }
+}
