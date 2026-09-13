@@ -18,6 +18,7 @@ import ProductRating from "../../components/ProductRating/ProductRating";
 
 import "./ProductDetails.css";
 
+import ProductImage from "../../components/ProductImage/ProductImage";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -176,10 +177,11 @@ function ProductDetails() {
           <div className="product_details_image">
 
             {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt={product.name}
-              />
+<ProductImage
+  imagePath={product.image_path}
+  alt={product.name}
+  size="details"
+/>
             ) : (
               <div className="product_no_image">
                 No image available

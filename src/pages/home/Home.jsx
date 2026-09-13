@@ -48,7 +48,7 @@ function Home() {
   return (
     <div>
 
-      <HeroSlider />
+<HeroSlider products={products.slice(0, 3)} />
 
       {Object.entries(
         productsByCategory

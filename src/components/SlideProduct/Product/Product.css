@@ -23,25 +23,11 @@
 }
 
 .product .img_product {
-    position: relative;
-    width: 100%;
-    height: 180px;
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 25px;
-    box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  margin-bottom: 25px;
 }
 
-.product .img_product img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: 180px;
-    max-height: 160px;
-    object-fit: contain;
-}
 
 .product .name_product {
     margin-bottom: 10px;

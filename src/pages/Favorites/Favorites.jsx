@@ -20,6 +20,8 @@ import {
 import "./Favorites.css";
 
 
+
+
 function Favorites() {
   const navigate = useNavigate();
 
@@ -216,10 +218,12 @@ function Favorites() {
                   <div className="favorite_image">
 
                     {imageUrl && (
-                      <img
-                        src={imageUrl}
-                        alt={product.name}
-                      />
+<ProductImage
+  imagePath={product.image_path}
+  alt={product.name}
+  size="favorite"
+  className="favorite_image"
+/>
                     )}
 
                   </div>

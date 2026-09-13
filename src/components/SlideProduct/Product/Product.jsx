@@ -18,6 +18,8 @@ import {
 
 import ProductRating from "../../ProductRating/ProductRating";
 
+import ProductImage from "../../ProductImage/ProductImage";
+
 
 function Product({ item }) {
   const navigate = useNavigate();
@@ -25,10 +27,6 @@ function Product({ item }) {
   const [favoriteId, setFavoriteId] = useState(null);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
-
-  const imageUrl = item.image_path
-    ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${item.image_path}`
-    : "";
 
 
   useEffect(() => {
@@ -150,14 +148,12 @@ function Product({ item }) {
       id={`product-${item.id}`}
     >
 
-      <div className="img_product">
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt={item.name}
-          />
-        )}
-      </div>
+<ProductImage
+  imagePath={item.image_path}
+  alt={item.name}
+  size="card"
+  className="img_product"
+/>
 
 
       <p className="name_product">

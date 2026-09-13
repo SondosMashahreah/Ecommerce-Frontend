@@ -15,6 +15,8 @@ import "swiper/css/pagination";
 
 import { Pagination } from "swiper/modules";
 
+
+
 function SlideProduct({
   data = [],
   title

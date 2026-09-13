@@ -119,16 +119,6 @@
 }
 
 
-.product_details_image img {
-  width: 100%;
-  height: 430px;
-
-  object-fit: contain;
-
-  transition:
-    transform 0.35s ease;
-}
-
 
 .product_details_image:hover img {
   transform: scale(1.035);

@@ -15,6 +15,8 @@ import {
 
 import "./Cart.css";
 
+import ProductImage from "../../components/ProductImage/ProductImage";
+
 function Cart() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -249,15 +251,12 @@ const handleDecrement = async (id) => {
 
               return (
                 <article className="cart_item" key={item.id}>
-                  <div className="cart_item_image">
-                    {imageUrl ? (
-                      <img src={imageUrl} alt={product.name} />
-                    ) : (
-                      <div className="cart_image_placeholder">
-                        No image
-                      </div>
-                    )}
-                  </div>
+<ProductImage
+  imagePath={product.image_path}
+  alt={product.name}
+  size="cart"
+  className="cart_item_image"
+/>
 
                   <div className="cart_item_info">
                     <h3>{product.name}</h3>
