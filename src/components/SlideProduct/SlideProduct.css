@@ -221,3 +221,26 @@
         font-size: 13px;
     }
 }
+
+@media (max-width: 480px) {
+  .Slide_product .container {
+    width: calc(100% - 16px) !important;
+  }
+
+  .mySwiper {
+    width: 100% !important;
+    padding: 5px 0 40px !important;
+  }
+
+  .mySwiper .swiper-slide {
+    min-width: 0 !important;
+    height: auto !important;
+  }
+
+  .mySwiper .swiper-slide .product {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    margin: 0 !important;
+  }
+}
