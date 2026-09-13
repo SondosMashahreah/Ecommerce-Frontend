@@ -1,0 +1,603 @@
+From 1e62e6b952eb2d95dd141f0197fd528566d29b2c Mon Sep 17 00:00:00 2001
+From: SondosMashahreah <193234077+SondosMashahreah@users.noreply.github.com>
+Date: Sun, 13 Sep 2026 12:42:36 +0200
+Subject: [PATCH] Normalize product images across storefront
+
+---
+ src/components/HeroSlider/HeroSlider.css      |  10 +-
+ src/components/HeroSlider/HeroSlider.jsx      |  21 +--
+ src/components/ProductImage/ProductImage.css  |  89 +++-------
+ src/components/ProductImage/ProductImage.jsx  | 156 +++++++++++++++---
+ .../SlideProduct/Product/Product.css          |  27 +--
+ src/pages/Favorites/Favorites.css             |  20 +--
+ src/pages/Favorites/Favorites.jsx             |  26 ++-
+ src/pages/ProductDetails/ProductDetails.css   |  10 +-
+ 8 files changed, 183 insertions(+), 176 deletions(-)
+
+diff --git a/src/components/HeroSlider/HeroSlider.css b/src/components/HeroSlider/HeroSlider.css
+index 6cee7fa..423b758 100644
+--- a/src/components/HeroSlider/HeroSlider.css
++++ b/src/components/HeroSlider/HeroSlider.css
+@@ -117,10 +117,6 @@
+ }
+ 
+ 
+-.hero .swiper-slide-active .image img {
+-  animation: heroImage 0.9s ease 0.1s forwards;
+-}
+-
+ .hero .swiper-pagination {
+   bottom: 18px !important;
+ }
+@@ -241,10 +237,6 @@
+     margin-top: 20px;
+   }
+ 
+-  .hero .swiper-slide .image img {
+-    width: 80%;
+-    height: 100%;
+-  }
+ }
+ 
+ @media (max-width: 480px) {
+@@ -297,4 +289,4 @@
+ .hero .swiper-slide-active
+ .product_image_unified {
+   animation: heroImage 0.9s ease 0.1s forwards;
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/HeroSlider/HeroSlider.jsx b/src/components/HeroSlider/HeroSlider.jsx
+index e7f933d..820655d 100644
+--- a/src/components/HeroSlider/HeroSlider.jsx
++++ b/src/components/HeroSlider/HeroSlider.jsx
+@@ -69,11 +69,6 @@ function HeroSlider({ products = [] }) {
+         >
+ 
+           {products.map((product) => {
+-
+-            const imageUrl = product.image_path
+-              ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${product.image_path}`
+-              : "";
+-
+             return (
+               <SwiperSlide key={product.id}>
+ 
+@@ -105,13 +100,13 @@ function HeroSlider({ products = [] }) {
+ 
+                 </div>
+ 
+-<div className="image">
+-  <ProductImage
+-    imagePath={product.image_path}
+-    alt={product.name}
+-    size="hero"
+-  />
+-</div>
++                <div className="image">
++                  <ProductImage
++                    imagePath={product.image_path}
++                    alt={product.name}
++                    size="hero"
++                  />
++                </div>
+ 
+               </SwiperSlide>
+             );
+@@ -125,4 +120,4 @@ function HeroSlider({ products = [] }) {
+ }
+ 
+ 
+-export default HeroSlider;
+\ No newline at end of file
++export default HeroSlider;
+diff --git a/src/components/ProductImage/ProductImage.css b/src/components/ProductImage/ProductImage.css
+index 611b509..09cd9d3 100644
+--- a/src/components/ProductImage/ProductImage.css
++++ b/src/components/ProductImage/ProductImage.css
+@@ -1,103 +1,66 @@
+ .product_image_frame {
++  width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+-
+-  width: 100%;
+   overflow: hidden;
+   box-sizing: border-box;
+-
+-  background:
+-    radial-gradient(
+-      circle at center,
+-      #ffffff 0%,
+-      #f5f9fb 100%
+-    );
+-
+-  border-radius: 16px;
+ }
+ 
+ .product_image_unified {
+   display: block;
+-
+   width: 100%;
+   height: 100%;
+-
+   object-fit: contain;
+   object-position: center;
+-
+-  padding: 8%;
+-  box-sizing: border-box;
+-
+-  mix-blend-mode: multiply;
+-
+-  transition:
+-    transform 0.3s ease,
+-    filter 0.3s ease;
++  transition: transform 0.3s ease;
+ }
+ 
+-.product_image_frame:hover
+-.product_image_unified {
+-  transform: scale(1.04);
++.product_image_frame:hover .product_image_unified {
++  transform: scale(1.035);
+ }
+ 
+-.product_image_frame--card {
+-  height: 180px;
+-}
+-
+-.product_image_frame--hero {
+-  height: 390px;
+-  background: transparent;
+-}
+-
+-.product_image_frame--details {
+-  height: 430px;
+-}
++.product_image_frame--card { height: 180px; background: transparent; }
++.product_image_frame--hero { height: 390px; background: transparent; }
++.product_image_frame--details { height: 430px; background: transparent; }
+ 
+ .product_image_frame--cart {
+   width: 150px;
+   height: 150px;
++  padding: 12px;
++  background: #f7f9fa;
++  border-radius: 14px;
+ }
+ 
+ .product_image_frame--favorite {
+   height: 220px;
++  padding: 16px;
++  background: #f7f9fa;
++  border-radius: 14px;
+ }
+ 
+ .product_image_frame--admin {
+   width: 54px;
+   height: 54px;
++  padding: 4px;
++  background: #f7f9fa;
+   border-radius: 10px;
+ }
+ 
+-.product_image_placeholder {
+-  color: #94a3b8;
+-  font-size: 13px;
++.product_image_placeholder { color: #94a3b8; font-size: 13px; }
++
++@media (max-width: 1024px) {
++  .product_image_frame--card { height: 160px; }
+ }
+ 
+ @media (max-width: 768px) {
+-  .product_image_frame--card {
+-    height: 145px;
+-  }
+-
+-  .product_image_frame--hero {
+-    height: 280px;
+-  }
+-
+-  .product_image_frame--details {
+-    height: 300px;
+-  }
++  .product_image_frame--card { height: 145px; }
++  .product_image_frame--hero { height: 280px; }
++  .product_image_frame--details { height: 350px; }
+ }
+ 
+ @media (max-width: 480px) {
+-  .product_image_frame--card {
+-    height: 125px;
+-  }
+-
+-  .product_image_frame--hero {
+-    height: 230px;
+-  }
+-
+-  .product_image_frame--details {
+-    height: 270px;
+-  }
+-}
+\ No newline at end of file
++  .product_image_frame--card { height: 125px; }
++  .product_image_frame--hero { height: 230px; }
++  .product_image_frame--details { height: 270px; }
++}
+diff --git a/src/components/ProductImage/ProductImage.jsx b/src/components/ProductImage/ProductImage.jsx
+index 0923675..20ee7b3 100644
+--- a/src/components/ProductImage/ProductImage.jsx
++++ b/src/components/ProductImage/ProductImage.jsx
+@@ -1,40 +1,154 @@
+-import React from "react";
++import React, { useEffect, useState } from "react";
+ import "./ProductImage.css";
+ 
++const processedImages = new Map();
+ 
+-function ProductImage({
+-  imagePath,
+-  alt,
+-  size = "card",
+-  className = ""
+-}) {
++function colorDistance(first, second) {
++  return Math.sqrt(
++    ((first[0] - second[0]) ** 2) +
++    ((first[1] - second[1]) ** 2) +
++    ((first[2] - second[2]) ** 2)
++  );
++}
++
++function getCornerColor(data, width, height) {
++  const points = [[0, 0], [width - 1, 0], [0, height - 1], [width - 1, height - 1]];
++  const colors = points.map(([x, y]) => {
++    const offset = ((y * width) + x) * 4;
++    return [data[offset], data[offset + 1], data[offset + 2]];
++  });
++  const background = [0, 1, 2].map((channel) =>
++    colors.reduce((sum, color) => sum + color[channel], 0) / colors.length
++  );
++  return colors.every((color) => colorDistance(color, background) < 55)
++    ? background
++    : null;
++}
++
++function normalizeImage(image) {
++  const width = image.naturalWidth;
++  const height = image.naturalHeight;
++  if (!width || !height) return null;
++
++  const source = document.createElement("canvas");
++  source.width = width;
++  source.height = height;
++  const context = source.getContext("2d", { willReadFrequently: true });
++  context.drawImage(image, 0, 0);
++
++  const imageData = context.getImageData(0, 0, width, height);
++  const { data } = imageData;
++  const background = getCornerColor(data, width, height);
++  if (!background) return null;
++
++  const visited = new Uint8Array(width * height);
++  const queue = [];
++  const addPixel = (x, y) => {
++    const index = (y * width) + x;
++    if (visited[index]) return;
++    visited[index] = 1;
++    queue.push(index);
++  };
++
++  for (let x = 0; x < width; x += 1) {
++    addPixel(x, 0);
++    addPixel(x, height - 1);
++  }
++  for (let y = 1; y < height - 1; y += 1) {
++    addPixel(0, y);
++    addPixel(width - 1, y);
++  }
++
++  let cursor = 0;
++  while (cursor < queue.length) {
++    const index = queue[cursor];
++    cursor += 1;
++    const offset = index * 4;
++    const pixel = [data[offset], data[offset + 1], data[offset + 2]];
++    if (colorDistance(pixel, background) > 48) continue;
++
++    data[offset + 3] = 0;
++    const x = index % width;
++    const y = Math.floor(index / width);
++    if (x > 0) addPixel(x - 1, y);
++    if (x < width - 1) addPixel(x + 1, y);
++    if (y > 0) addPixel(x, y - 1);
++    if (y < height - 1) addPixel(x, y + 1);
++  }
++  context.putImageData(imageData, 0, 0);
++
++  let left = width;
++  let top = height;
++  let right = -1;
++  let bottom = -1;
++  for (let y = 0; y < height; y += 1) {
++    for (let x = 0; x < width; x += 1) {
++      const alpha = data[(((y * width) + x) * 4) + 3];
++      if (alpha > 18) {
++        left = Math.min(left, x);
++        top = Math.min(top, y);
++        right = Math.max(right, x);
++        bottom = Math.max(bottom, y);
++      }
++    }
++  }
++  if (right < left || bottom < top) return null;
++
++  const croppedWidth = right - left + 1;
++  const croppedHeight = bottom - top + 1;
++  const outputSize = 900;
++  const availableSize = outputSize * 0.82;
++  const scale = Math.min(availableSize / croppedWidth, availableSize / croppedHeight);
++  const drawWidth = croppedWidth * scale;
++  const drawHeight = croppedHeight * scale;
++  const output = document.createElement("canvas");
++  output.width = outputSize;
++  output.height = outputSize;
++  output.getContext("2d").drawImage(
++    source, left, top, croppedWidth, croppedHeight,
++    (outputSize - drawWidth) / 2, (outputSize - drawHeight) / 2,
++    drawWidth, drawHeight
++  );
++  return output.toDataURL("image/webp", 0.9);
++}
++
++function ProductImage({ imagePath, alt, size = "card", className = "" }) {
+   const imageUrl = imagePath
+     ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${imagePath}`
+     : "";
++  const [displayUrl, setDisplayUrl] = useState(processedImages.get(imageUrl) || imageUrl);
++
++  useEffect(() => {
++    setDisplayUrl(processedImages.get(imageUrl) || imageUrl);
++  }, [imageUrl]);
++
++  const handleLoad = (event) => {
++    if (!imageUrl || processedImages.has(imageUrl)) return;
++    try {
++      const normalized = normalizeImage(event.currentTarget);
++      processedImages.set(imageUrl, normalized || imageUrl);
++      setDisplayUrl(normalized || imageUrl);
++    } catch {
++      processedImages.set(imageUrl, imageUrl);
++    }
++  };
+ 
+   return (
+-    <div
+-      className={`
+-        product_image_frame
+-        product_image_frame--${size}
+-        ${className}
+-      `}
+-    >
++    <div className={`product_image_frame product_image_frame--${size} ${className}`}>
+       {imageUrl ? (
+         <img
+-          src={imageUrl}
++          src={displayUrl}
+           alt={alt}
+           className="product_image_unified"
+-          loading="lazy"
++          loading={size === "hero" ? "eager" : "lazy"}
++          crossOrigin="anonymous"
++          onLoad={handleLoad}
+         />
+       ) : (
+-        <span className="product_image_placeholder">
+-          No image
+-        </span>
++        <span className="product_image_placeholder">No image</span>
+       )}
+     </div>
+   );
+ }
+ 
+-
+-export default ProductImage;
+\ No newline at end of file
++export default ProductImage;
+diff --git a/src/components/SlideProduct/Product/Product.css b/src/components/SlideProduct/Product/Product.css
+index 1609390..4df2dd2 100644
+--- a/src/components/SlideProduct/Product/Product.css
++++ b/src/components/SlideProduct/Product/Product.css
+@@ -100,15 +100,9 @@
+     }
+ 
+     .product .img_product {
+-        height: 160px;
+         margin-bottom: 20px;
+     }
+ 
+-    .product .img_product img {
+-        max-width: 160px;
+-        max-height: 145px;
+-    }
+-
+     .product .name_product {
+         font-size: 15px;
+     }
+@@ -135,16 +129,9 @@
+     }
+ 
+     .product .img_product {
+-        height: 145px;
+-        padding: 0 10px;
+         margin-bottom: 15px;
+     }
+ 
+-    .product .img_product img {
+-        max-width: 140px;
+-        max-height: 130px;
+-    }
+-
+     .product .name_product {
+         font-size: 14px;
+         -webkit-line-clamp: 2;
+@@ -186,16 +173,9 @@
+     }
+ 
+     .product .img_product {
+-        height: 125px;
+-        padding: 0 5px;
+         margin-bottom: 12px;
+     }
+ 
+-    .product .img_product img {
+-        max-width: 120px;
+-        max-height: 115px;
+-    }
+-
+     .product .name_product {
+         font-size: 13px;
+         line-height: 1.3;
+@@ -234,11 +214,6 @@
+         height: 110px;
+     }
+ 
+-    .product .img_product img {
+-        max-width: 105px;
+-        max-height: 100px;
+-    }
+-
+     .product .name_product {
+         font-size: 12px;
+     }
+@@ -300,4 +275,4 @@
+ 
+   font-size: 12px;
+   font-weight: 700;
+-}
+\ No newline at end of file
++}
+diff --git a/src/pages/Favorites/Favorites.css b/src/pages/Favorites/Favorites.css
+index e2b2870..0aabb90 100644
+--- a/src/pages/Favorites/Favorites.css
++++ b/src/pages/Favorites/Favorites.css
+@@ -146,24 +146,6 @@
+ 
+ .favorite_image {
+   height: 220px;
+-
+-  padding: 20px;
+-
+-  display: flex;
+-  align-items: center;
+-  justify-content: center;
+-
+-  background: #f7f9fa;
+-
+-  border-radius: 14px;
+-}
+-
+-
+-.favorite_image img {
+-  width: 100%;
+-  height: 100%;
+-
+-  object-fit: contain;
+ }
+ 
+ 
+@@ -388,4 +370,4 @@
+   .favorite_image {
+     height: 200px;
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/src/pages/Favorites/Favorites.jsx b/src/pages/Favorites/Favorites.jsx
+index 89ec014..b497c1b 100644
+--- a/src/pages/Favorites/Favorites.jsx
++++ b/src/pages/Favorites/Favorites.jsx
+@@ -18,9 +18,7 @@ import {
+ } from "../../services/api";
+ 
+ import "./Favorites.css";
+-
+-
+-
++import ProductImage from "../../components/ProductImage/ProductImage";
+ 
+ function Favorites() {
+   const navigate = useNavigate();
+@@ -215,18 +213,14 @@ function Favorites() {
+                   </button>
+ 
+ 
+-                  <div className="favorite_image">
+-
+-                    {imageUrl && (
+-<ProductImage
+-  imagePath={product.image_path}
+-  alt={product.name}
+-  size="favorite"
+-  className="favorite_image"
+-/>
+-                    )}
+-
+-                  </div>
++                  {imageUrl && (
++                    <ProductImage
++                      imagePath={product.image_path}
++                      alt={product.name}
++                      size="favorite"
++                      className="favorite_image"
++                    />
++                  )}
+ 
+ 
+                   <div className="favorite_info">
+@@ -307,4 +301,4 @@ function Favorites() {
+ }
+ 
+ 
+-export default Favorites;
+\ No newline at end of file
++export default Favorites;
+diff --git a/src/pages/ProductDetails/ProductDetails.css b/src/pages/ProductDetails/ProductDetails.css
+index 0232ef6..fb7a9d8 100644
+--- a/src/pages/ProductDetails/ProductDetails.css
++++ b/src/pages/ProductDetails/ProductDetails.css
+@@ -463,9 +463,6 @@
+   }
+ 
+ 
+-  .product_details_image img {
+-    height: 350px;
+-  }
+ }
+ 
+ 
+@@ -493,11 +490,6 @@
+   }
+ 
+ 
+-  .product_details_image img {
+-    height: 270px;
+-  }
+-
+-
+   .product_category_badge {
+     top: 10px;
+     left: 10px;
+@@ -522,4 +514,4 @@
+   .product_details_actions button {
+     width: 100%;
+   }
+-}
+\ No newline at end of file
++}
+-- 
+2.51.1
+

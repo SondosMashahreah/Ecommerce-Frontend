@@ -117,10 +117,6 @@
 }
 
 
-.hero .swiper-slide-active .image img {
-  animation: heroImage 0.9s ease 0.1s forwards;
-}
-
 .hero .swiper-pagination {
   bottom: 18px !important;
 }
@@ -241,10 +237,6 @@
     margin-top: 20px;
   }
 
-  .hero .swiper-slide .image img {
-    width: 80%;
-    height: 100%;
-  }
 }
 
 @media (max-width: 480px) {

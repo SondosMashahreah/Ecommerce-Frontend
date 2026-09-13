@@ -463,9 +463,6 @@
   }
 
 
-  .product_details_image img {
-    height: 350px;
-  }
 }
 
 
@@ -490,11 +487,6 @@
     padding: 18px;
 
     border-radius: 14px;
-  }
-
-
-  .product_details_image img {
-    height: 270px;
   }
 
 

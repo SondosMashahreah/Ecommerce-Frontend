@@ -69,11 +69,6 @@ function HeroSlider({ products = [] }) {
         >
 
           {products.map((product) => {
-
-            const imageUrl = product.image_path
-              ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${product.image_path}`
-              : "";
-
             return (
               <SwiperSlide key={product.id}>
 
@@ -105,13 +100,13 @@ function HeroSlider({ products = [] }) {
 
                 </div>
 
-<div className="image">
-  <ProductImage
-    imagePath={product.image_path}
-    alt={product.name}
-    size="hero"
-  />
-</div>
+                <div className="image">
+                  <ProductImage
+                    imagePath={product.image_path}
+                    alt={product.name}
+                    size="hero"
+                  />
+                </div>
 
               </SwiperSlide>
             );

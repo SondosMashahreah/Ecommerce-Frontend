@@ -18,9 +18,7 @@ import {
 } from "../../services/api";
 
 import "./Favorites.css";
-
-
-
+import ProductImage from "../../components/ProductImage/ProductImage";
 
 function Favorites() {
   const navigate = useNavigate();
@@ -215,18 +213,14 @@ function Favorites() {
                   </button>
 
 
-                  <div className="favorite_image">
-
-                    {imageUrl && (
-<ProductImage
-  imagePath={product.image_path}
-  alt={product.name}
-  size="favorite"
-  className="favorite_image"
-/>
-                    )}
-
-                  </div>
+                  {imageUrl && (
+                    <ProductImage
+                      imagePath={product.image_path}
+                      alt={product.name}
+                      size="favorite"
+                      className="favorite_image"
+                    />
+                  )}
 
 
                   <div className="favorite_info">
