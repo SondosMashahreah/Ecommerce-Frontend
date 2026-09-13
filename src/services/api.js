@@ -365,7 +365,7 @@ export async function getCategories() {
   return response.json();
 }
 
-export async function rateProduct(productId, rating) {
+export async function rateProduct(productId, rating, comment = null) {
   const response = await fetch(
     `${API_URL}/ratings/`,
     {
@@ -376,7 +376,8 @@ export async function rateProduct(productId, rating) {
       },
       body: JSON.stringify({
         product_id: productId,
-        rating: rating
+        rating: rating,
+        comment
       })
     }
   );
@@ -533,14 +534,30 @@ export const uploadProfileImage = async (
   return data;
 };
 
-export async function createOrder() {
+export async function validateCoupon(code, subtotal) {
+  const response = await fetch(`${API_URL}/coupons/validate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`
+    },
+    body: JSON.stringify({ code, subtotal })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.detail || "Invalid coupon code");
+  return data;
+}
+
+export async function createOrder(couponCode = null) {
   const response = await fetch(
     `${API_URL}/orders/`,
     {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${getToken()}`
-      }
+      },
+      body: JSON.stringify({ coupon_code: couponCode || null })
     }
   );
 

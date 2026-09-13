@@ -231,6 +231,7 @@ function ProductDetails() {
             <ProductRating
               productId={product.id}
               size="large"
+              showReviews
             />
           </div>
 

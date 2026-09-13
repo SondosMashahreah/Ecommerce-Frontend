@@ -1,0 +1,530 @@
+From ce60ec17e67eee9d5a3faa56e96381198d87d875 Mon Sep 17 00:00:00 2001
+From: SondosMashahreah <193234077+SondosMashahreah@users.noreply.github.com>
+Date: Sun, 13 Sep 2026 13:03:57 +0200
+Subject: [PATCH] Add reviews coupons and Clarity integration
+
+---
+ .env.example                                  |   2 +
+ .../ProductRating/ProductRating.css           |  20 +++
+ .../ProductRating/ProductRating.jsx           | 152 +++++++++---------
+ src/main.jsx                                  |   3 +
+ src/pages/Cart/Cart.css                       |  18 ++-
+ src/pages/Cart/Cart.jsx                       |  59 ++++++-
+ src/pages/ProductDetails/ProductDetails.jsx   |   3 +-
+ src/services/api.js                           |  27 +++-
+ src/utils/clarity.js                          |  14 ++
+ 9 files changed, 212 insertions(+), 86 deletions(-)
+ create mode 100644 .env.example
+ create mode 100644 src/components/ProductRating/ProductRating.css
+ create mode 100644 src/utils/clarity.js
+
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000..183f9fa
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,2 @@
++VITE_API_URL=http://localhost:8000
++VITE_CLARITY_PROJECT_ID=your_clarity_project_id
+diff --git a/src/components/ProductRating/ProductRating.css b/src/components/ProductRating/ProductRating.css
+new file mode 100644
+index 0000000..561d252
+--- /dev/null
++++ b/src/components/ProductRating/ProductRating.css
+@@ -0,0 +1,20 @@
++.rating_summary { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
++.product_rating--reviews { display: block; width: 100%; }
++.review_form { display: grid; gap: 10px; margin-top: 18px; }
++.review_form textarea {
++  width: 100%; min-height: 100px; padding: 14px; resize: vertical;
++  border: 1px solid #dce7ec; border-radius: 12px; font: inherit; box-sizing: border-box;
++}
++.review_form textarea:focus { outline: 2px solid rgba(135, 206, 235, .35); border-color: #87ceeb; }
++.review_form button {
++  justify-self: start; padding: 11px 20px; border: 0; border-radius: 999px;
++  background: #87ceeb; color: white; font-weight: 700; cursor: pointer;
++}
++.review_form button:disabled { opacity: .55; cursor: not-allowed; }
++.review_message { color: #54707c; font-size: 13px; }
++.reviews_list { margin-top: 28px; }
++.reviews_list h3 { margin-bottom: 14px; }
++.review_item { padding: 14px 0; border-top: 1px solid #e6eef2; }
++.review_item div { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
++.review_item p { margin: 8px 0 0; color: #61717a; line-height: 1.6; overflow-wrap: anywhere; }
++.no_reviews { color: #7b8b93; }
+diff --git a/src/components/ProductRating/ProductRating.jsx b/src/components/ProductRating/ProductRating.jsx
+index d7399b7..0397ee5 100644
+--- a/src/components/ProductRating/ProductRating.jsx
++++ b/src/components/ProductRating/ProductRating.jsx
+@@ -1,31 +1,28 @@
+-import React, { useEffect, useState } from "react";
++import { useEffect, useState } from "react";
+ import Rating from "@mui/material/Rating";
+ 
+-import {
+-  rateProduct,
+-  getProductRating,
+-  getMyProductRating
+-} from "../../services/api";
++import { rateProduct, getProductRating, getMyProductRating } from "../../services/api";
++import "./ProductRating.css";
+ 
+-function ProductRating({ productId, size = "small" }) {
++function ProductRating({ productId, size = "small", showReviews = false }) {
+   const [userRating, setUserRating] = useState(null);
+-
++  const [comment, setComment] = useState("");
++  const [saving, setSaving] = useState(false);
++  const [message, setMessage] = useState("");
+   const [ratingInfo, setRatingInfo] = useState({
+     average_rating: 0,
+-    ratings_count: 0
++    ratings_count: 0,
++    reviews: []
+   });
+ 
+   const loadRatings = async () => {
+     try {
+       const summary = await getProductRating(productId);
+       setRatingInfo(summary);
+-
+       try {
+-        const myRating = await getMyProductRating(productId);
+-
+-        setUserRating(
+-          myRating ? myRating.rating : null
+-        );
++        const mine = await getMyProductRating(productId);
++        setUserRating(mine?.rating || null);
++        setComment(mine?.comment || "");
+       } catch {
+         setUserRating(null);
+       }
+@@ -34,75 +31,86 @@ function ProductRating({ productId, size = "small" }) {
+     }
+   };
+ 
+-  useEffect(() => {
+-    loadRatings();
+-  }, [productId]);
+-
+-  const handleRatingChange = async (event, newValue) => {
+-    if (!newValue) {
+-      return;
+-    }
++  useEffect(() => { loadRatings(); }, [productId]);
+ 
++  const saveRating = async (rating, reviewComment = null) => {
++    setSaving(true);
++    setMessage("");
+     try {
+-      await rateProduct(productId, newValue);
+-
+-      setUserRating(newValue);
+-
+-      const updatedSummary =
+-        await getProductRating(productId);
+-
+-      setRatingInfo(updatedSummary);
+-
+-      window.dispatchEvent(
+-        new CustomEvent("ratingUpdated", {
+-          detail: {
+-            productId
+-          }
+-        })
+-      );
++      await rateProduct(productId, rating, reviewComment);
++      setUserRating(rating);
++      setRatingInfo(await getProductRating(productId));
++      setMessage("Your review was saved.");
++      window.dispatchEvent(new CustomEvent("ratingUpdated", { detail: { productId } }));
+     } catch (error) {
+-      console.error("Failed to rate product:", error);
++      setMessage(error.message || "Failed to save your review.");
++    } finally {
++      setSaving(false);
+     }
+   };
+ 
+-  useEffect(() => {
+-    const handleRatingUpdated = (event) => {
+-      if (
+-        event.detail?.productId === productId
+-      ) {
+-        loadRatings();
+-      }
+-    };
+-
+-    window.addEventListener(
+-      "ratingUpdated",
+-      handleRatingUpdated
+-    );
++  const handleRatingChange = (_event, value) => {
++    if (!value) return;
++    setUserRating(value);
++    if (!showReviews) saveRating(value, comment);
++  };
+ 
+-    return () => {
+-      window.removeEventListener(
+-        "ratingUpdated",
+-        handleRatingUpdated
+-      );
++  useEffect(() => {
++    const refresh = (event) => {
++      if (event.detail?.productId === productId) loadRatings();
+     };
++    window.addEventListener("ratingUpdated", refresh);
++    return () => window.removeEventListener("ratingUpdated", refresh);
+   }, [productId]);
+ 
+   return (
+-    <div className="product_rating">
+-      <Rating
+-        name={`product-rating-${productId}`}
+-        value={userRating}
+-        onChange={handleRatingChange}
+-        size={size}
+-      />
+-
+-      <span className="rating_info">
+-        {ratingInfo.ratings_count > 0
+-          ? `${ratingInfo.average_rating} (${ratingInfo.ratings_count})`
+-          : "No ratings"}
+-      </span>
++    <div className={`product_rating ${showReviews ? "product_rating--reviews" : ""}`}>
++      <div className="rating_summary">
++        <Rating
++          name={`product-rating-${productId}`}
++          value={userRating}
++          onChange={handleRatingChange}
++          size={size}
++        />
++        <span className="rating_info">
++          {ratingInfo.ratings_count > 0
++            ? `${ratingInfo.average_rating} (${ratingInfo.ratings_count})`
++            : "No ratings"}
++        </span>
++      </div>
++
++      {showReviews && (
++        <>
++          <div className="review_form">
++            <textarea
++              value={comment}
++              onChange={(event) => setComment(event.target.value)}
++              maxLength={1000}
++              placeholder="Share your experience with this product..."
++            />
++            <button
++              type="button"
++              disabled={!userRating || saving}
++              onClick={() => saveRating(userRating, comment)}
++            >
++              {saving ? "Saving..." : "Submit review"}
++            </button>
++            {message && <span className="review_message">{message}</span>}
++          </div>
++
++          <div className="reviews_list">
++            <h3>Customer Reviews</h3>
++            {ratingInfo.reviews?.length ? ratingInfo.reviews.map((review) => (
++              <article key={review.id} className="review_item">
++                <div><strong>{review.user_name}</strong><Rating value={review.rating} readOnly size="small" /></div>
++                <p>{review.comment}</p>
++              </article>
++            )) : <p className="no_reviews">No written reviews yet.</p>}
++          </div>
++        </>
++      )}
+     </div>
+   );
+ }
+ 
+-export default ProductRating;
+\ No newline at end of file
++export default ProductRating;
+diff --git a/src/main.jsx b/src/main.jsx
+index b0713b0..5b574d0 100644
+--- a/src/main.jsx
++++ b/src/main.jsx
+@@ -5,6 +5,9 @@ import App from './App.jsx'
+ import React from 'react'
+ import ReactDOM from 'react-dom/client'
+ import { BrowserRouter } from 'react-router-dom'
++import { initializeClarity } from './utils/clarity.js'
++
++initializeClarity()
+ 
+ ReactDOM.createRoot(document.getElementById('root')).render(
+   <React.StrictMode>
+diff --git a/src/pages/Cart/Cart.css b/src/pages/Cart/Cart.css
+index 4b8c328..47a2a43 100644
+--- a/src/pages/Cart/Cart.css
++++ b/src/pages/Cart/Cart.css
+@@ -212,6 +212,22 @@
+   background: var(--cart-border);
+ }
+ 
++.coupon_box { margin: 20px 0; }
++.coupon_box > div { display: flex; gap: 8px; }
++.coupon_box input {
++  min-width: 0; flex: 1; padding: 11px 12px;
++  border: 1px solid var(--cart-border); border-radius: 10px;
++  text-transform: uppercase; outline: none;
++}
++.coupon_box input:focus { border-color: var(--cart-main); }
++.coupon_box button {
++  padding: 0 16px; border: 0; border-radius: 10px;
++  background: var(--cart-main); color: white; font-weight: 700; cursor: pointer;
++}
++.coupon_success, .coupon_error { margin: 8px 2px 0; font-size: 13px; }
++.coupon_success, .discount_row strong { color: #16844b !important; }
++.coupon_error { color: var(--cart-danger); }
++
+ .summary_total {
+   margin-bottom: 22px;
+   font-size: 18px;
+@@ -499,4 +515,4 @@
+   opacity: 0.6;
+   cursor: not-allowed;
+   transform: none;
+-}
+\ No newline at end of file
++}
+diff --git a/src/pages/Cart/Cart.jsx b/src/pages/Cart/Cart.jsx
+index 35e8e26..1309e6f 100644
+--- a/src/pages/Cart/Cart.jsx
++++ b/src/pages/Cart/Cart.jsx
+@@ -10,7 +10,8 @@ import {
+   removeCartItem,
+   incrementCartItem,
+   decrementCartItem,
+-  createOrder
++  createOrder,
++  validateCoupon
+ } from "../../services/api";
+ 
+ import "./Cart.css";
+@@ -23,6 +24,10 @@ function Cart() {
+ 
+   const [creatingOrder, setCreatingOrder] =
+   useState(false);
++  const [couponCode, setCouponCode] = useState("");
++  const [coupon, setCoupon] = useState(null);
++  const [couponError, setCouponError] = useState("");
++  const [applyingCoupon, setApplyingCoupon] = useState(false);
+ 
+ const navigate = useNavigate();
+ 
+@@ -55,6 +60,7 @@ const handleRemove = async (id) => {
+         (item) => item.id !== id
+       )
+     );
++    setCoupon(null);
+ 
+     window.dispatchEvent(
+       new Event("cartUpdated")
+@@ -93,6 +99,7 @@ const handleIncrement = async (id) => {
+           : item
+       )
+     );
++    setCoupon(null);
+ 
+     window.dispatchEvent(
+       new Event("cartUpdated")
+@@ -116,7 +123,7 @@ const handleCreateOrder = async () => {
+   try {
+     setCreatingOrder(true);
+ 
+-    const order = await createOrder();
++    const order = await createOrder(coupon?.code);
+ 
+     setCart([]);
+ 
+@@ -176,6 +183,7 @@ const handleDecrement = async (id) => {
+         )
+       );
+     }
++    setCoupon(null);
+ 
+     window.dispatchEvent(
+       new Event("cartUpdated")
+@@ -197,6 +205,21 @@ const handleDecrement = async (id) => {
+       total + Number(item.product.price) * item.quantity,
+     0
+   );
++  const total = coupon ? coupon.total : subtotal;
++
++  const handleApplyCoupon = async () => {
++    if (!couponCode.trim()) return;
++    try {
++      setApplyingCoupon(true);
++      setCouponError("");
++      setCoupon(await validateCoupon(couponCode, subtotal));
++    } catch (error) {
++      setCoupon(null);
++      setCouponError(error.message);
++    } finally {
++      setApplyingCoupon(false);
++    }
++  };
+ 
+   if (loading) {
+     return (
+@@ -242,10 +265,6 @@ const handleDecrement = async (id) => {
+             {cart.map((item) => {
+               const product = item.product;
+ 
+-              const imageUrl = product.image_path
+-                ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${product.image_path}`
+-                : "";
+-
+               const itemTotal =
+                 Number(product.price) * item.quantity;
+ 
+@@ -342,11 +361,37 @@ const handleDecrement = async (id) => {
+               <strong>Free</strong>
+             </div>
+ 
++            <div className="coupon_box">
++              <div>
++                <input
++                  value={couponCode}
++                  onChange={(event) => {
++                    setCouponCode(event.target.value.toUpperCase());
++                    setCoupon(null);
++                    setCouponError("");
++                  }}
++                  placeholder="Coupon code"
++                />
++                <button type="button" onClick={handleApplyCoupon} disabled={applyingCoupon}>
++                  {applyingCoupon ? "Applying..." : "Apply"}
++                </button>
++              </div>
++              {coupon && <p className="coupon_success">{coupon.code} applied — {coupon.discount_percent}% off</p>}
++              {couponError && <p className="coupon_error">{couponError}</p>}
++            </div>
++
++            {coupon && (
++              <div className="summary_row discount_row">
++                <span>Discount</span>
++                <strong>-${coupon.discount_amount.toFixed(2)}</strong>
++              </div>
++            )}
++
+             <div className="summary_divider" />
+ 
+             <div className="summary_total">
+               <span>Total</span>
+-              <strong>${subtotal.toFixed(2)}</strong>
++              <strong>${total.toFixed(2)}</strong>
+             </div>
+ 
+             <button
+diff --git a/src/pages/ProductDetails/ProductDetails.jsx b/src/pages/ProductDetails/ProductDetails.jsx
+index e0b50af..9502432 100644
+--- a/src/pages/ProductDetails/ProductDetails.jsx
++++ b/src/pages/ProductDetails/ProductDetails.jsx
+@@ -231,6 +231,7 @@ function ProductDetails() {
+             <ProductRating
+               productId={product.id}
+               size="large"
++              showReviews
+             />
+           </div>
+ 
+@@ -324,4 +325,4 @@ function ProductDetails() {
+ }
+ 
+ 
+-export default ProductDetails;
+\ No newline at end of file
++export default ProductDetails;
+diff --git a/src/services/api.js b/src/services/api.js
+index c4ed305..96051ed 100644
+--- a/src/services/api.js
++++ b/src/services/api.js
+@@ -365,7 +365,7 @@ export async function getCategories() {
+   return response.json();
+ }
+ 
+-export async function rateProduct(productId, rating) {
++export async function rateProduct(productId, rating, comment = null) {
+   const response = await fetch(
+     `${API_URL}/ratings/`,
+     {
+@@ -376,7 +376,8 @@ export async function rateProduct(productId, rating) {
+       },
+       body: JSON.stringify({
+         product_id: productId,
+-        rating: rating
++        rating: rating,
++        comment
+       })
+     }
+   );
+@@ -533,14 +534,30 @@ export const uploadProfileImage = async (
+   return data;
+ };
+ 
+-export async function createOrder() {
++export async function validateCoupon(code, subtotal) {
++  const response = await fetch(`${API_URL}/coupons/validate`, {
++    method: "POST",
++    headers: {
++      "Content-Type": "application/json",
++      Authorization: `Bearer ${getToken()}`
++    },
++    body: JSON.stringify({ code, subtotal })
++  });
++  const data = await response.json();
++  if (!response.ok) throw new Error(data.detail || "Invalid coupon code");
++  return data;
++}
++
++export async function createOrder(couponCode = null) {
+   const response = await fetch(
+     `${API_URL}/orders/`,
+     {
+       method: "POST",
+       headers: {
++        "Content-Type": "application/json",
+         Authorization: `Bearer ${getToken()}`
+-      }
++      },
++      body: JSON.stringify({ coupon_code: couponCode || null })
+     }
+   );
+ 
+@@ -1531,4 +1548,4 @@ export async function deleteAdminMessage(
+   }
+ 
+   return data;
+-}
+\ No newline at end of file
++}
+diff --git a/src/utils/clarity.js b/src/utils/clarity.js
+new file mode 100644
+index 0000000..98075e3
+--- /dev/null
++++ b/src/utils/clarity.js
+@@ -0,0 +1,14 @@
++export function initializeClarity() {
++  const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID?.trim();
++  if (!projectId || window.clarity) return;
++
++  window.clarity = window.clarity || function clarity() {
++    window.clarity.q = window.clarity.q || [];
++    window.clarity.q.push(arguments);
++  };
++
++  const script = document.createElement("script");
++  script.async = true;
++  script.src = `https://www.clarity.ms/tag/${projectId}`;
++  document.head.appendChild(script);
++}
+-- 
+2.51.1
+

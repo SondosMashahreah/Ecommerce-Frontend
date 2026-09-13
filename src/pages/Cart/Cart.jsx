@@ -10,7 +10,8 @@ import {
   removeCartItem,
   incrementCartItem,
   decrementCartItem,
-  createOrder
+  createOrder,
+  validateCoupon
 } from "../../services/api";
 
 import "./Cart.css";
@@ -23,6 +24,10 @@ function Cart() {
 
   const [creatingOrder, setCreatingOrder] =
   useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [coupon, setCoupon] = useState(null);
+  const [couponError, setCouponError] = useState("");
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
 
 const navigate = useNavigate();
 
@@ -55,6 +60,7 @@ const handleRemove = async (id) => {
         (item) => item.id !== id
       )
     );
+    setCoupon(null);
 
     window.dispatchEvent(
       new Event("cartUpdated")
@@ -93,6 +99,7 @@ const handleIncrement = async (id) => {
           : item
       )
     );
+    setCoupon(null);
 
     window.dispatchEvent(
       new Event("cartUpdated")
@@ -116,7 +123,7 @@ const handleCreateOrder = async () => {
   try {
     setCreatingOrder(true);
 
-    const order = await createOrder();
+    const order = await createOrder(coupon?.code);
 
     setCart([]);
 
@@ -176,6 +183,7 @@ const handleDecrement = async (id) => {
         )
       );
     }
+    setCoupon(null);
 
     window.dispatchEvent(
       new Event("cartUpdated")
@@ -197,6 +205,21 @@ const handleDecrement = async (id) => {
       total + Number(item.product.price) * item.quantity,
     0
   );
+  const total = coupon ? coupon.total : subtotal;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    try {
+      setApplyingCoupon(true);
+      setCouponError("");
+      setCoupon(await validateCoupon(couponCode, subtotal));
+    } catch (error) {
+      setCoupon(null);
+      setCouponError(error.message);
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -241,10 +264,6 @@ const handleDecrement = async (id) => {
           <section className="cart_items">
             {cart.map((item) => {
               const product = item.product;
-
-              const imageUrl = product.image_path
-                ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${product.image_path}`
-                : "";
 
               const itemTotal =
                 Number(product.price) * item.quantity;
@@ -342,11 +361,37 @@ const handleDecrement = async (id) => {
               <strong>Free</strong>
             </div>
 
+            <div className="coupon_box">
+              <div>
+                <input
+                  value={couponCode}
+                  onChange={(event) => {
+                    setCouponCode(event.target.value.toUpperCase());
+                    setCoupon(null);
+                    setCouponError("");
+                  }}
+                  placeholder="Coupon code"
+                />
+                <button type="button" onClick={handleApplyCoupon} disabled={applyingCoupon}>
+                  {applyingCoupon ? "Applying..." : "Apply"}
+                </button>
+              </div>
+              {coupon && <p className="coupon_success">{coupon.code} applied — {coupon.discount_percent}% off</p>}
+              {couponError && <p className="coupon_error">{couponError}</p>}
+            </div>
+
+            {coupon && (
+              <div className="summary_row discount_row">
+                <span>Discount</span>
+                <strong>-${coupon.discount_amount.toFixed(2)}</strong>
+              </div>
+            )}
+
             <div className="summary_divider" />
 
             <div className="summary_total">
               <span>Total</span>
-              <strong>${subtotal.toFixed(2)}</strong>
+              <strong>${total.toFixed(2)}</strong>
             </div>
 
             <button
