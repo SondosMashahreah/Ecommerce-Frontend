@@ -194,7 +194,8 @@
 
 @media (max-width: 480px) {
     .product {
-        max-width: 165px;
+        max-width: none;
+        height: 100%;
         padding: 12px 8px;
         border-radius: 7px;
     }
@@ -227,8 +228,8 @@
     }
 
     .product .icons span {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
         font-size: 14px;
     }
 
@@ -240,7 +241,7 @@
 
 @media (max-width: 360px) {
     .product {
-        max-width: 150px;
+        max-width: none;
         padding: 10px 7px;
     }
 

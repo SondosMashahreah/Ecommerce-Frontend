@@ -186,7 +186,7 @@
     }
 
     .Slide_product .container {
-        width: 95%;
+        width: calc(100% - 16px);
     }
 
     .top_slide {
@@ -208,7 +208,7 @@
     }
 
     .mySwiper {
-        padding: 5px 2px 40px;
+        padding: 5px 0 40px;
     }
 }
 
