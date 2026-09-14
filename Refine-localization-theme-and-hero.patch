@@ -1,0 +1,750 @@
+From 68b2839df30e473d776654534620def7588e2d9d Mon Sep 17 00:00:00 2001
+From: SondosMashahreah <193234077+SondosMashahreah@users.noreply.github.com>
+Date: Tue, 15 Sep 2026 00:31:34 +0200
+Subject: [PATCH] Refine original light theme and RTL product content
+
+---
+ index.html                                    |   8 +-
+ src/components/HeroSlider/HeroSlider.css      |  24 +-
+ src/components/HeroSlider/HeroSlider.jsx      |  10 +-
+ .../SlideProduct/Product/Product.jsx          |   8 +-
+ src/components/TopHeader/TopHeader.jsx        |   6 +-
+ src/i18n/index.js                             |   7 +-
+ src/i18n/productContent.js                    |  58 ++++
+ src/pages/Cart/Cart.jsx                       |   6 +-
+ src/pages/Favorites/Favorites.jsx             |   8 +-
+ src/pages/OrderDetails/OrderDetails.jsx       |   6 +-
+ src/pages/Orders/Orders.jsx                   |   6 +-
+ src/pages/ProductDetails/ProductDetails.jsx   |  10 +-
+ src/preferences/PreferencesProvider.jsx       |   7 +-
+ src/preferences/preferences.css               | 257 ++++--------------
+ 14 files changed, 179 insertions(+), 242 deletions(-)
+ create mode 100644 src/i18n/productContent.js
+
+diff --git a/index.html b/index.html
+index 5885bd4..994621c 100644
+--- a/index.html
++++ b/index.html
+@@ -4,10 +4,14 @@
+     <meta charset="UTF-8" />
+     <script>
+       (() => {
+-        let theme = 'system', language = 'en';
++        let theme = 'system';
++        const browserArabic = (navigator.languages || [navigator.language || 'en'])
++          .some((value) => String(value).toLowerCase().startsWith('ar'));
++        let language = browserArabic ? 'ar' : 'en';
+         try {
+           theme = localStorage.getItem('store.theme') || 'system';
+-          language = localStorage.getItem('store.language') === 'ar' ? 'ar' : 'en';
++          const savedLanguage = localStorage.getItem('store.language');
++          if (savedLanguage === 'ar' || savedLanguage === 'en') language = savedLanguage;
+         } catch {}
+         const dark = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+diff --git a/src/components/HeroSlider/HeroSlider.css b/src/components/HeroSlider/HeroSlider.css
+index 423b758..1128831 100644
+--- a/src/components/HeroSlider/HeroSlider.css
++++ b/src/components/HeroSlider/HeroSlider.css
+@@ -51,8 +51,8 @@
+ .hero .swiper-slide .content {
+   width: 48%;
+   z-index: 3;
+-  opacity: 0;
+-  transform: translateY(30px);
++  opacity: 1;
++  transform: none;
+ }
+ 
+ .hero .swiper-slide-active .content {
+@@ -282,11 +282,25 @@
+ }
+ 
+ .hero .swiper-slide .product_image_unified {
+-  opacity: 0;
+-  transform: translateX(70px) scale(0.9);
++  opacity: 1;
++  transform: none;
+ }
+ 
+ .hero .swiper-slide-active
+ .product_image_unified {
+-  animation: heroImage 0.9s ease 0.1s forwards;
++  animation: heroImage 0.75s ease 0.05s both;
++}
++
++html[dir='rtl'] .hero .swiper-slide::before { left: 8%; right: auto; }
++html[dir='rtl'] .hero .swiper-slide .content { text-align: right; }
++html[dir='rtl'] .hero .swiper-slide-active .product_image_unified { animation-name: heroImageRtl; }
++
++@keyframes heroImageRtl {
++  from { opacity: .6; transform: translateX(-35px) scale(.96); }
++  to { opacity: 1; transform: translateX(0) scale(1); }
++}
++
++@media (max-width: 768px) {
++  html[dir='rtl'] .hero .swiper-slide::before { left: 50%; right: auto; transform: translateX(-50%); }
++  html[dir='rtl'] .hero .swiper-slide .content { text-align: center; }
+ }
+diff --git a/src/components/HeroSlider/HeroSlider.jsx b/src/components/HeroSlider/HeroSlider.jsx
+index 77f202e..2a5e565 100644
+--- a/src/components/HeroSlider/HeroSlider.jsx
++++ b/src/components/HeroSlider/HeroSlider.jsx
+@@ -1,5 +1,6 @@
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import { localizedCategory, localizedProductName } from "../../i18n/productContent";
+ import React from "react";
+ import { Swiper, SwiperSlide } from "swiper/react";
+ 
+@@ -81,10 +82,13 @@ function HeroSlider({ products = [] }) {
+                   <span>{t("Introducing the new")}</span>
+ 
+                   <h3>
+-                    {product.name}
++                    {localizedProductName(product.name, i18n.language)}
+                   </h3>
+ 
+-                  <p>{t("hero.newProduct", { name: product.name, category: t(product.category, { defaultValue: product.category }) })}</p>
++                  <p>{t("hero.newProduct", {
++                    name: localizedProductName(product.name, i18n.language),
++                    category: localizedCategory(product.category, i18n.language)
++                  })}</p>
+ 
+                   <button
+                     type="button"
+@@ -99,7 +103,7 @@ function HeroSlider({ products = [] }) {
+                 <div className="image">
+                   <ProductImage
+                     imagePath={product.image_path}
+-                    alt={product.name}
++                    alt={localizedProductName(product.name, i18n.language)}
+                     size="hero"
+                   />
+                 </div>
+diff --git a/src/components/SlideProduct/Product/Product.jsx b/src/components/SlideProduct/Product/Product.jsx
+index b9372fd..34441db 100644
+--- a/src/components/SlideProduct/Product/Product.jsx
++++ b/src/components/SlideProduct/Product/Product.jsx
+@@ -1,5 +1,7 @@
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../../i18n";
++import i18n from "../../../i18n";
++import { localizedProductName } from "../../../i18n/productContent";
+ import React, { useEffect, useState } from "react";
+ 
+ import {
+@@ -154,14 +156,14 @@ function Product({ item }) {
+ 
+ <ProductImage
+   imagePath={item.image_path}
+-  alt={item.name}
++  alt={localizedProductName(item.name, i18n.language)}
+   size="card"
+   className="img_product"
+ />
+ 
+ 
+       <p className="name_product">
+-        {item.name}
++        {localizedProductName(item.name, i18n.language)}
+       </p>
+ 
+ 
+@@ -240,4 +242,4 @@ function Product({ item }) {
+ }
+ 
+ 
+-export default Product;
+\ No newline at end of file
++export default Product;
+diff --git a/src/components/TopHeader/TopHeader.jsx b/src/components/TopHeader/TopHeader.jsx
+index d7e2694..687e66f 100644
+--- a/src/components/TopHeader/TopHeader.jsx
++++ b/src/components/TopHeader/TopHeader.jsx
+@@ -1,5 +1,7 @@
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import i18n from "../../i18n";
++import { localizedProductName } from "../../i18n/productContent";
+ import { ThemeSelector } from '../../preferences/Controls';
+ import React, {
+   useEffect,
+@@ -349,7 +351,7 @@ function TopHeader() {
+                     handleProductClick(product.id)
+                   }
+                 >
+-                  <p>{product.name}</p>
++                  <p>{localizedProductName(product.name, i18n.language)}</p>
+                 </div>
+               ))}
+ 
+@@ -391,4 +393,4 @@ function TopHeader() {
+   );
+ }
+ 
+-export default TopHeader;
+\ No newline at end of file
++export default TopHeader;
+diff --git a/src/i18n/index.js b/src/i18n/index.js
+index 23545d1..9b60c17 100644
+--- a/src/i18n/index.js
++++ b/src/i18n/index.js
+@@ -4,6 +4,11 @@ import en from './en.json';
+ import ar from './ar.json';
+ import { readPreference, savePreference } from '../preferences/storage';
+ 
++function browserLanguage() {
++  const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
++  return languages.some((language) => String(language).toLowerCase().startsWith('ar')) ? 'ar' : 'en';
++}
++
+ function applyLanguage(language) {
+   const lang = language === 'ar' ? 'ar' : 'en';
+   document.documentElement.lang = lang;
+@@ -12,7 +17,7 @@ function applyLanguage(language) {
+ }
+ i18n.use(initReactI18next).init({
+   resources: { en: { translation: en }, ar: { translation: ar } },
+-  lng: readPreference('store.language', 'en', ['en', 'ar']),
++  lng: readPreference('store.language', browserLanguage(), ['en', 'ar']),
+   fallbackLng: 'en', supportedLngs: ['en', 'ar'],
+   keySeparator: false, nsSeparator: false,
+   interpolation: { escapeValue: false },
+diff --git a/src/i18n/productContent.js b/src/i18n/productContent.js
+new file mode 100644
+index 0000000..68fd641
+--- /dev/null
++++ b/src/i18n/productContent.js
+@@ -0,0 +1,58 @@
++const terms = [
++  ['smartphones', 'هواتف ذكية'], ['smartphone', 'هاتف ذكي'],
++  ['headphones', 'سماعات رأس'], ['headphone', 'سماعة رأس'],
++  ['earbuds', 'سماعات أذن'], ['laptops', 'أجهزة لابتوب'], ['laptop', 'لابتوب'],
++  ['tablets', 'أجهزة لوحية'], ['tablet', 'جهاز لوحي'],
++  ['smart watches', 'ساعات ذكية'], ['smart watch', 'ساعة ذكية'],
++  ['gaming', 'ألعاب'], ['wireless', 'لاسلكي'], ['portable', 'محمول'],
++  ['controller', 'وحدة تحكم'], ['keyboard', 'لوحة مفاتيح'], ['mouse', 'فأرة'],
++  ['camera', 'كاميرا'], ['speaker', 'مكبر صوت'], ['monitor', 'شاشة'],
++  ['charger', 'شاحن'], ['case', 'غطاء حماية'], ['black', 'أسود'], ['white', 'أبيض'],
++  ['blue', 'أزرق'], ['red', 'أحمر'], ['green', 'أخضر'], ['silver', 'فضي'],
++  ['gold', 'ذهبي'], ['pro max', 'برو ماكس'], ['pro', 'برو'], ['max', 'ماكس'],
++  ['apple', 'آبل'], ['iphone', 'آيفون'], ['samsung', 'سامسونج'], ['galaxy', 'جالكسي'],
++  ['microsoft', 'مايكروسوفت'], ['xbox', 'إكس بوكس'], ['sony', 'سوني'],
++  ['playstation', 'بلايستيشن'], ['google', 'جوجل'], ['pixel', 'بيكسل'],
++  ['huawei', 'هواوي'], ['xiaomi', 'شاومي'], ['lenovo', 'لينوفو'], ['dell', 'ديل'],
++  ['high performance', 'أداء عالٍ'], ['high-quality', 'عالي الجودة'],
++  ['high quality', 'عالي الجودة'], ['battery life', 'عمر بطارية'],
++  ['fast charging', 'شحن سريع'], ['noise cancellation', 'عزل الضوضاء'],
++  ['display', 'شاشة'], ['storage', 'مساحة تخزين'], ['memory', 'ذاكرة'],
++];
++
++const sentences = [
++  [/take your gaming experience to the next level/gi, 'ارتقِ بتجربة اللعب إلى مستوى جديد'],
++  [/perfect for everyday use/gi, 'مثالي للاستخدام اليومي'],
++  [/next level/gi, 'مستوى جديد'],
++  [/\bfeaturing\b/gi, 'يتميز بـ'], [/\bwith\b/gi, 'مع'], [/\band\b/gi, 'و'],
++  [/\bfor\b/gi, 'لـ'], [/\bthe\b/gi, 'الـ'], [/\ba\b/gi, ''],
++  [/\bpowerful\b/gi, 'قوي'], [/\badvanced\b/gi, 'متقدم'], [/\blatest\b/gi, 'الأحدث'],
++  [/\bexcellent\b/gi, 'ممتاز'], [/\bstunning\b/gi, 'مذهل'], [/\bdesign\b/gi, 'تصميم'],
++  [/\bperformance\b/gi, 'أداء'], [/\bprocessor\b/gi, 'معالج'], [/\bbattery\b/gi, 'بطارية'],
++  [/\bscreen\b/gi, 'شاشة'], [/\bresolution\b/gi, 'دقة'], [/\bmegapixel\b/gi, 'ميجابكسل'],
++  [/\bfast\b/gi, 'سريع'], [/\bdurable\b/gi, 'متين'], [/\bpremium\b/gi, 'فاخر'],
++  [/\boffers\b/gi, 'يوفر'], [/\bdelivers\b/gi, 'يقدم'], [/\benjoy\b/gi, 'استمتع بـ'],
++  [/\bexperience\b/gi, 'تجربة'], [/\btechnology\b/gi, 'تقنية'], [/\bnew\b/gi, 'جديد'],
++];
++
++function replaceTerms(value) {
++  return terms.reduce((result, [english, arabic]) => result.replace(
++    new RegExp(`\\b${english.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'), arabic
++  ), value);
++}
++
++export function localizedProductName(name, language) {
++  if (!name || language !== 'ar' || /[\u0600-\u06ff]/.test(name)) return name || '';
++  return replaceTerms(name).replace(/\s+/g, ' ').trim();
++}
++
++export function localizedProductDescription(description, language) {
++  if (!description || language !== 'ar' || /[\u0600-\u06ff]/.test(description)) return description || '';
++  let translated = replaceTerms(description);
++  translated = sentences.reduce((result, [pattern, arabic]) => result.replace(pattern, arabic), translated);
++  return translated.replace(/\s+([،,.])/g, '$1').replace(/\s+/g, ' ').trim();
++}
++
++export function localizedCategory(category, language) {
++  return localizedProductName(category, language);
++}
+diff --git a/src/pages/Cart/Cart.jsx b/src/pages/Cart/Cart.jsx
+index 29b4399..8d5d8b3 100644
+--- a/src/pages/Cart/Cart.jsx
++++ b/src/pages/Cart/Cart.jsx
+@@ -1,6 +1,8 @@
+ import { translateError } from "../../i18n";
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import i18n from "../../i18n";
++import { localizedProductName } from "../../i18n/productContent";
+ import React, { useEffect, useState } from "react";
+ import { FaTrash, FaShoppingBag } from "react-icons/fa";
+ import {
+@@ -273,13 +275,13 @@ const handleDecrement = async (id) => {
+                 <article className="cart_item" key={item.id}>
+ <ProductImage
+   imagePath={product.image_path}
+-  alt={product.name}
++  alt={localizedProductName(product.name, i18n.language)}
+   size="cart"
+   className="cart_item_image"
+ />
+ 
+                   <div className="cart_item_info">
+-                    <h3>{product.name}</h3>
++                    <h3>{localizedProductName(product.name, i18n.language)}</h3>
+ 
+                     <div className="cart_item_meta">
+                       <p>
+diff --git a/src/pages/Favorites/Favorites.jsx b/src/pages/Favorites/Favorites.jsx
+index 80ee415..b1a8938 100644
+--- a/src/pages/Favorites/Favorites.jsx
++++ b/src/pages/Favorites/Favorites.jsx
+@@ -1,5 +1,7 @@
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import i18n from "../../i18n";
++import { localizedProductDescription, localizedProductName } from "../../i18n/productContent";
+ import React, {
+   useEffect,
+   useState
+@@ -209,7 +211,7 @@ function Favorites() {
+                   {imageUrl && (
+                     <ProductImage
+                       imagePath={product.image_path}
+-                      alt={product.name}
++                      alt={localizedProductName(product.name, i18n.language)}
+                       size="favorite"
+                       className="favorite_image"
+                     />
+@@ -219,11 +221,11 @@ function Favorites() {
+                   <div className="favorite_info">
+ 
+                     <h3>
+-                      {product.name}
++                      {localizedProductName(product.name, i18n.language)}
+                     </h3>
+ 
+                     <p className="favorite_description">
+-                      {product.description}
++                      {localizedProductDescription(product.description, i18n.language)}
+                     </p>
+ 
+                     <strong className="favorite_price">
+diff --git a/src/pages/OrderDetails/OrderDetails.jsx b/src/pages/OrderDetails/OrderDetails.jsx
+index 2d538d2..9b96e17 100644
+--- a/src/pages/OrderDetails/OrderDetails.jsx
++++ b/src/pages/OrderDetails/OrderDetails.jsx
+@@ -1,6 +1,8 @@
+ import { translateError } from "../../i18n";
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import i18n from "../../i18n";
++import { localizedProductName } from "../../i18n/productContent";
+ import { useEffect, useState } from "react";
+ import {
+   useNavigate,
+@@ -344,7 +346,7 @@ function OrderDetails() {
+ 
+                   <div>
+                     <h3>
+-                      {item.product_name}
++                      {localizedProductName(item.product_name, i18n.language)}
+                     </h3>
+ 
+                     <p>{t("SKU:")}{" "}{" "}{item.sku}
+@@ -517,4 +519,4 @@ function OrderDetails() {
+ }
+ 
+ 
+-export default OrderDetails;
+\ No newline at end of file
++export default OrderDetails;
+diff --git a/src/pages/Orders/Orders.jsx b/src/pages/Orders/Orders.jsx
+index 9dfce03..6dc76fd 100644
+--- a/src/pages/Orders/Orders.jsx
++++ b/src/pages/Orders/Orders.jsx
+@@ -1,6 +1,8 @@
+ import { translateError } from "../../i18n";
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import i18n from "../../i18n";
++import { localizedProductName } from "../../i18n/productContent";
+ import { useEffect, useState } from "react";
+ import { useNavigate } from "react-router-dom";
+ 
+@@ -259,7 +261,7 @@ function Orders() {
+                       .slice(0, 3)
+                       .map((item) => (
+                         <span key={item.id}>
+-                          {item.product_name}
++                          {localizedProductName(item.product_name, i18n.language)}
+                           {" × "}
+                           {item.quantity}
+                         </span>
+@@ -336,4 +338,4 @@ function Orders() {
+ }
+ 
+ 
+-export default Orders;
+\ No newline at end of file
++export default Orders;
+diff --git a/src/pages/ProductDetails/ProductDetails.jsx b/src/pages/ProductDetails/ProductDetails.jsx
+index f87113a..df69ffb 100644
+--- a/src/pages/ProductDetails/ProductDetails.jsx
++++ b/src/pages/ProductDetails/ProductDetails.jsx
+@@ -1,5 +1,7 @@
+ import { useTranslation } from "react-i18next";
+ import { translate as t } from "../../i18n";
++import i18n from "../../i18n";
++import { localizedCategory, localizedProductDescription, localizedProductName } from "../../i18n/productContent";
+ import React, { useEffect, useState } from "react";
+ import { useParams, Link } from "react-router-dom";
+ import {
+@@ -169,7 +171,7 @@ function ProductDetails() {
+ 
+           {product.category && (
+             <span className="product_category_badge">
+-              {t(product.category, { defaultValue: product.category })}
++              {localizedCategory(product.category, i18n.language)}
+             </span>
+           )}
+ 
+@@ -179,7 +181,7 @@ function ProductDetails() {
+             {imageUrl ? (
+ <ProductImage
+   imagePath={product.image_path}
+-  alt={product.name}
++  alt={localizedProductName(product.name, i18n.language)}
+   size="details"
+ />
+             ) : (
+@@ -197,7 +199,7 @@ function ProductDetails() {
+ 
+             <p className="product_details_label">{t("Product Details")}</p>
+ 
+-            <h1>{product.name}</h1>
++            <h1>{localizedProductName(product.name, i18n.language)}</h1>
+ 
+           </div>
+ 
+@@ -242,7 +244,7 @@ function ProductDetails() {
+             <h3>{t("About this product")}</h3>
+ 
+             <p>
+-              {product.description ||
++              {localizedProductDescription(product.description, i18n.language) ||
+                 t("No description available for this product.")}
+             </p>
+ 
+diff --git a/src/preferences/PreferencesProvider.jsx b/src/preferences/PreferencesProvider.jsx
+index bc11986..d2c7879 100644
+--- a/src/preferences/PreferencesProvider.jsx
++++ b/src/preferences/PreferencesProvider.jsx
+@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
+ import { CacheProvider } from '@emotion/react';
+ import createCache from '@emotion/cache';
+ import { ThemeProvider, createTheme } from '@mui/material/styles';
+-import CssBaseline from '@mui/material/CssBaseline';
+ import rtlPlugin from '@mui/stylis-plugin-rtl';
+ import { prefixer } from 'stylis';
+ import { PreferencesContext } from './PreferencesContext';
+@@ -34,13 +33,13 @@ export default function PreferencesProvider({ children }) {
+   };
+   const theme = useMemo(() => createTheme({
+     direction,
+-    palette: { mode, primary: { main: mode === 'dark' ? '#87ceeb' : '#167a9e' },
+-      ...(mode === 'dark' ? { background: { default: '#101820', paper: '#1b2833' }, text: { primary: '#edf4f8', secondary: '#bdcbd5' } } : {}) },
++    palette: { mode, primary: { main: '#87ceeb' },
++      ...(mode === 'dark' ? { background: { default: '#0b1218', paper: '#15222c' }, text: { primary: '#f4f8fb', secondary: '#b7c7d2' } } : {}) },
+     typography: { fontFamily: 'Inter, Tahoma, Arial, sans-serif' },
+   }), [direction, mode]);
+   return <PreferencesContext.Provider value={{ preference, mode, setTheme }}>
+     <CacheProvider value={direction === 'rtl' ? rtlCache : ltrCache}>
+-      <ThemeProvider theme={theme}><CssBaseline />{children}</ThemeProvider>
++      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+     </CacheProvider>
+   </PreferencesContext.Provider>;
+ }
+diff --git a/src/preferences/preferences.css b/src/preferences/preferences.css
+index 5e02ff8..5451e61 100644
+--- a/src/preferences/preferences.css
++++ b/src/preferences/preferences.css
+@@ -1,218 +1,57 @@
+-/* Semantic palette shared by storefront, administration and forms. */
+-:root {
+-  --surface: #ffffff;
+-  --surface-soft: #f2f6f8;
+-  --page: #f1f2f3;
+-  --text: #162c39;
+-  --muted: #596d7b;
+-  --border: #d6e1e8;
+-  --accent: #87ceeb;
+-  --accent-soft: #d6edf7;
+-  --link: #146c91;
+-  --on-accent: #ffffff;
+-  --success: #087a50;
+-  --success-soft: #e7f6ef;
+-  --warning: #885c05;
+-  --warning-soft: #fff5d8;
+-  --danger: #bb303b;
+-  --danger-soft: #fff0f1;
+-  --main_color: var(--accent);
+-  --p_color: var(--muted);
+-  --bg_color: var(--surface-soft);
+-  --white_color: var(--surface);
+-  --color_heading: var(--text);
+-  --color_h1: var(--text);
+-  --color_h2: var(--text);
+-  --border_color: var(--border);
+-}
+-html[data-theme='dark'] {
+-  --surface: #1b2833;
+-  --surface-soft: #223441;
+-  --page: #101820;
+-  --text: #edf4f8;
+-  --muted: #bdcbd5;
+-  --border: #415563;
+-  --accent-soft: #213f50;
+-  --link: #87ceeb;
+-  --success: #7dddb4;
+-  --success-soft: #143b31;
+-  --warning: #f7d68a;
+-  --warning-soft: #40361d;
+-  --danger: #ff9da5;
+-  --danger-soft: #46242d;
+-  --main_color: #87ceeb;
+-  --p_color: #bdcbd5;
+-  --bg_color: #223441;
+-  --white_color: #1b2833;
+-  --color_heading: #edf4f8;
+-  --color_h1: #edf4f8;
+-  --color_h2: #edf4f8;
+-  --border_color: #415563;
+-}
+-html body { background: var(--page); color: var(--text); }
+-button, input, select, textarea { font: inherit; }
+-input, textarea, select { color: var(--text); background-color: var(--surface); }
+-input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+-:where(button, a, input, textarea, select):focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+-html[lang='ar'] body { font-family: Tahoma, Arial, sans-serif; }
+-html[lang='ar'] :is(h1,h2,h3,h4,h5,h6) { font-family: Tahoma, Arial, sans-serif; letter-spacing: normal; line-height: 1.5; }
+-input[type='email'], input[type='password'], input[type='number'], .coupon_box input, .coupon_admin_fields input[pattern], .rating_summary { direction: ltr; }
+-input[type='email'], input[type='password'] { text-align: start; }
+-.header_actions { display: flex; direction: ltr; align-items: center; justify-content: flex-end; gap: 10px; justify-self: end; }
+-.header_actions > button { direction: inherit; }
++/* Light mode deliberately inherits the original project CSS unchanged. */
++html[lang='ar'] body, html[lang='ar'] :is(h1,h2,h3,h4,h5,h6) { font-family: Tahoma, Arial, sans-serif; }
++html[lang='ar'] :is(h1,h2,h3,h4,h5,h6) { letter-spacing: normal; line-height: 1.5; }
++input[type='email'], input[type='password'], input[type='number'], .coupon_box input, .rating_summary { direction: ltr; }
++
++.header_actions { align-items: center; display: flex; direction: ltr; gap: 8px; justify-self: end; white-space: nowrap; }
+ html[dir='rtl'] .header_actions > .logout_btn { direction: rtl; }
+-.language_btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; min-height: 44px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); cursor: pointer; white-space: nowrap; }
+-.language_btn span { color: inherit; }
+-.language_btn:hover { background: var(--surface-soft); }
+-.language_btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+-.theme_selector { display: flex; align-items: center; gap: 8px; padding: 12px; color: var(--text); font-size: 14px; }
+-.theme_selector > span { color: inherit; }
+-.theme_selector > svg { flex-shrink: 0; }
+-.theme_selector select { min-height: 40px; min-width: 90px; max-width: 145px; flex: 1; padding: 6px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+-.preferences_toolbar { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding: 12px 20px; }
+-html .top_header { background: var(--accent-soft); }
+-html .btm_header { background: var(--accent-soft); }
+-html .btm_header .container { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 10px; }
+-html .btm_header .nav { display: flex; align-items: center; gap: 24px; flex: 1; }
+-html .btm_header .category_nav { margin: 0; }
+-html .btm_header .nav_links { margin-inline: auto; }
+-html .btm_header .logout_btn { position: static; margin: 0; transform: none; min-height: 44px; padding: 10px 14px; color: var(--text); }
+-html .btm_header .logout_btn span { color: inherit; }
+-html .profile_sidebar { min-width: 260px; max-width: calc(100vw - 24px); background: var(--surface); color: var(--text); }
+-html .profile_sidebar :is(button, button span) { color: var(--text); }
+-html .profile_sidebar .profile_logout { color: var(--danger); }
+-html .profile_sidebar .profile_logout span { color: inherit; }
+-html .hero .content .btn { color: #112028; }
+-html .hero .content > span { color: var(--link); }
+-/* Product photography keeps the same neutral mat in every theme. */
+-html .product_image_unified { background-color: #f7f9fa; }
+-html[data-theme='dark'] .recharts-default-tooltip { background-color: var(--surface) !important; border-color: var(--border) !important; }
+-html[data-theme='dark'] .recharts-cartesian-axis-tick text { fill: var(--muted); }
++.btm_header .header_actions .logout_btn { margin: 0; position: static; transform: none; }
++.language_btn { align-items: center; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.55); border-radius: 10px; color: #112028; cursor: pointer; display: inline-flex; gap: 6px; justify-content: center; min-height: 42px; padding: 9px 12px; }
++.language_btn span, .language_btn svg { color: inherit; }
++.language_btn:hover { background: #fff; transform: translateY(-1px); }
++.theme_selector { align-items: center; color: inherit; display: flex; gap: 8px; padding: 12px; }
++.theme_selector span { color: inherit; }
++.theme_selector select { background: #fff; border: 1px solid #d6d6d6; border-radius: 8px; color: #253237; cursor: pointer; min-height: 38px; padding: 5px 8px; }
++.preferences_toolbar { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding: 12px 20px; }
++
+ html[dir='rtl'] .profile_sidebar { left: auto; right: 0; }
+ html[dir='rtl'] .profile_menu_wrapper { left: auto; }
+ html[dir='rtl'] .category_nav_list { left: auto; right: 0; }
+-html[dir='rtl'] .admin_sidebar { left: auto; right: 0; border-inline-end: 1px solid var(--border); }
++html[dir='rtl'] .admin_sidebar { left: auto; right: 0; }
+ html[dir='rtl'] .admin_layout_content { margin-left: 0; margin-right: 280px; }
+ html[dir='rtl'] .admin_layout.sidebar_collapsed .admin_layout_content { margin-right: 86px; }
+-html[dir='rtl'] .admin_sidebar_toggle svg,
+-html[dir='rtl'] .back_to_products svg,
+-html[dir='rtl'] .back_btn svg { transform: scaleX(-1); }
+-html[dir='rtl'] .hero .swiper-slide::before { right: auto; left: 8%; }
+-
+-/* Dark mode is layered over the existing design so the light layout remains untouched. */
+-html[data-theme='dark'] :is(
+-  .hero .swiper-slide,
+-  .product,
+-  .product_details_card,
+-  .product_main,
+-  .product_info_section,
+-  .product_description,
+-  .cart_item,
+-  .order_summary,
+-  .empty_cart,
+-  .favorite_card,
+-  .empty_favorites,
+-  .orders_list,
+-  .order_card,
+-  .orders_empty,
+-  .order_details_card,
+-  .order_info_card,
+-  .order_items_section,
+-  .status_history_section,
+-  .profile_card,
+-  .profile_section,
+-  .session_modal,
+-  .admin_sidebar,
+-  .admin_stat_card,
+-  .admin_chart_card,
+-  .admin_table_card,
+-  .admin_detail_card,
+-  .admin_form_card,
+-  .admin_product_card,
+-  .feedback_quick_links a
+-) {
+-  background: var(--surface);
+-  border-color: var(--border);
+-  color: var(--text);
+-}
++html[dir='rtl'] :is(.admin_sidebar_toggle,.back_to_products,.back_btn,.product_back_link) svg { transform: scaleX(-1); }
++html[dir='rtl'] .product .icons { left: -55px; right: auto; transition: left .3s ease; }
++html[dir='rtl'] .product:hover .icons { left: 15px; right: auto; }
+ 
+-html[data-theme='dark'] :is(
+-  .cart_page,
+-  .favorites_page,
+-  .orders_page,
+-  .order_details_page,
+-  .admin_layout,
+-  .admin_dashboard_page,
+-  .admin_management_page,
+-  .admin_product_form_page,
+-  .admin_product_edit_page
+-) { background: var(--page); }
++html[data-theme='dark'] { --main_color:#79cbea; --p_color:#b9c8d2; --bg_color:#15232d; --white_color:#111d26; --color_heading:#f3f7fa; --color_h1:#f7fafc; --color_h2:#eaf3f8; --border_color:#344957; color-scheme:dark; }
++html[data-theme='dark'] body { background:#0b131a; color:#eef5f8; }
++html[data-theme='dark'] :is(.top_header,.btm_header) { background:#142630; }
++html[data-theme='dark'] :is(.product,.product_details,.product_details_card,.cart_item,.order_summary,.empty_cart,.favorite_card,.empty_favorites,.order_card,.orders_empty,.order_details_card,.order_info_card,.order_items_section,.status_history_section,.profile_card,.profile_section,.profile_sidebar,.session_modal,.admin_sidebar,.admin_stat_card,.admin_chart_card,.admin_table_card,.admin_detail_card,.admin_form_card,.admin_product_card,.feedback_quick_links a) { background-color:#111d26; border-color:#344957; color:#eef5f8; box-shadow:0 12px 32px rgba(0,0,0,.22); }
++html[data-theme='dark'] :is(.search_box,.search_box input,.search_results,.category_nav_list,input,textarea,select) { background-color:#182731; border-color:#3b5261; color:#f3f7fa; }
++html[data-theme='dark'] :is(input,textarea)::placeholder { color:#94a9b6; opacity:1; }
++html[data-theme='dark'] :is(h1,h2,h3,h4,h5,h6,.profile_sidebar button) { color:#f3f7fa; }
++html[data-theme='dark'] :is(p,label,.rating_info) { color:#b9c8d2; }
++html[data-theme='dark'] :is(.cart_page,.favorites_page,.orders_page,.order_details_page,.product_details_page,.admin_layout,.admin_dashboard_page,.admin_management_page) { background-color:#0b131a; }
++html[data-theme='dark'] .hero .swiper-slide { background:linear-gradient(135deg,#111f29 0%,#172c38 100%); border:1px solid #2c4655; }
++html[data-theme='dark'] .hero .swiper-slide::before { background:radial-gradient(circle,rgba(121,203,234,.24),rgba(121,203,234,.03) 68%); }
++html[data-theme='dark'] .hero .content .btn { color:#0b1a22; }
++html[data-theme='dark'] :is(.product_image_unified,.product_image_frame) { background:#f7f9fa; }
++html[data-theme='dark'] .language_btn { color:#eef5f8; }
++html[data-theme='dark'] .language_btn:hover { background:#243946; }
++html[data-theme='dark'] .theme_selector select { background:#182731; border-color:#3b5261; color:#f3f7fa; }
++html[data-theme='dark'] .MuiPaper-root { background-image:none; }
++html[data-theme='dark'] .recharts-default-tooltip { background:#111d26 !important; border-color:#344957 !important; }
++html[data-theme='dark'] .recharts-cartesian-axis-tick text { fill:#b9c8d2; }
+ 
+-html[data-theme='dark'] :is(
+-  .search_box,
+-  .search_box input,
+-  .profile_sidebar,
+-  .search_results,
+-  .category_nav_list,
+-  .coupon_box input,
+-  .coupon_admin_fields input,
+-  .coupon_admin_fields select,
+-  .review_form textarea,
+-  .admin_toolbar input,
+-  .admin_toolbar select,
+-  .admin_form_group input,
+-  .admin_form_group textarea,
+-  .admin_form_group select
+-) {
+-  background-color: var(--surface);
+-  border-color: var(--border);
+-  color: var(--text);
+-}
+-
+-html[data-theme='dark'] :is(
+-  h1, h2, h3, h4, h5, h6,
+-  .product h3,
+-  .profile_sidebar button,
+-  .category_nav_list button,
+-  .admin_data_table th,
+-  .admin_data_table td
+-) { color: var(--text); }
+-
+-html[data-theme='dark'] :is(p, label, .rating_info, .admin_sidebar_label) { color: var(--muted); }
+-html[data-theme='dark'] :is(.admin_data_table tr, .summary_row, .profile_sidebar button) { border-color: var(--border); }
+-html[data-theme='dark'] .admin_data_table tbody tr:hover { background: var(--surface-soft); }
+-html[data-theme='dark'] .profile_sidebar button:hover { background: var(--surface-soft); }
+-html[data-theme='dark'] .product_image_frame { background: #f7f9fa; }
+-html[data-theme='dark'] .MuiPaper-root { background-image: none; }
+-@media (max-width: 1000px) {
+-  html .btm_header .nav { gap: 12px; }
+-  html .btm_header .category_nav { width: 180px; min-width: 180px; }
+-  html .btm_header .nav_links li a { padding-inline: 12px; }
+-}
+-@media (max-width: 768px) {
+-  html .btm_header .container { display: flex !important; flex-wrap: wrap !important; width: 100% !important; gap: 10px !important; padding: 10px 12px !important; }
+-  html .btm_header .nav { display: flex !important; width: 100% !important; flex: 1 0 100% !important; flex-wrap: wrap !important; gap: 8px !important; }
+-  html .btm_header .category_nav { flex: 1 1 145px !important; width: auto !important; min-width: 130px !important; max-width: none !important; height: 44px !important; }
+-  html .btm_header .category_btn { min-height: 44px !important; padding-inline: 10px !important; }
+-  html .btm_header .category_btn p { font-size: 13px !important; }
+-  html .btm_header .nav_links { flex: 1 1 auto !important; width: auto !important; justify-content: center !important; gap: 3px !important; }
+-  html .btm_header .nav_links li, html .btm_header .nav_links li a { min-height: 44px !important; height: auto !important; }
+-  html .btm_header .nav_links li a { padding-inline: 8px !important; font-size: 13px !important; }
+-  .header_actions { width: 100%; justify-content: flex-end; }
+-  html .btm_header .logout_btn { min-height: 44px !important; padding: 10px 14px !important; font-size: 13px !important; }
+-  html .btm_header .logout_btn span { font-size: inherit !important; }
+-  html .top_header .logo { display: none !important; }
+-  html .top_header .container { grid-template-columns: minmax(85px, 26%) minmax(0, 1fr) auto !important; padding: 10px 8px !important; gap: 8px !important; }
+-  html .top_header .search_wrapper { width: 100% !important; max-width: none !important; }
+-  html .top_header .search_box, html .top_header .search_box input, html .top_header .profile_btn { min-height: 40px !important; height: 40px !important; }
+-  html .top_header .search_box input, html .top_header .search_box input::placeholder { font-size: 12px !important; }
+-  html .top_header .profile_btn span { font-size: 12px !important; }
+-  html .top_header .profile_btn { padding-inline: 6px !important; }
+-  html[dir='rtl'] .hero .swiper-slide::before { left: 50%; transform: translateX(-50%); }
+-  .preferences_toolbar { padding: 8px; gap: 6px; }
+-  html[dir='rtl'] .admin_layout_content,
+-  html[dir='rtl'] .admin_layout.sidebar_collapsed .admin_layout_content { margin-right: 76px; }
+-}
+-@media (prefers-reduced-motion: reduce) {
+-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
++@media (max-width:1024px) and (min-width:769px) { .btm_header .container { grid-template-columns:190px 1fr auto; } }
++@media (max-width:768px) {
++  .header_actions { flex:0 0 auto; gap:4px; }
++  .language_btn { min-height:30px; padding:0 7px; font-size:8px; border-radius:7px; }
++  .language_btn svg { font-size:13px; }
++  .btm_header .header_actions .logout_btn { min-height:30px; }
++  html[dir='rtl'] .product .icons, html[dir='rtl'] .product:hover .icons { left:auto; right:auto; }
++  html[dir='rtl'] .admin_layout_content, html[dir='rtl'] .admin_layout.sidebar_collapsed .admin_layout_content { margin-right:76px; }
++  .preferences_toolbar { gap:6px; padding:8px; }
+ }
++@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+-- 
+2.51.1
+
