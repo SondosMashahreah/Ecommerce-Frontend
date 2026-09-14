@@ -376,7 +376,7 @@ const handleDecrement = async (id) => {
                   {applyingCoupon ? "Applying..." : "Apply"}
                 </button>
               </div>
-              {coupon && <p className="coupon_success">{coupon.code} applied — {coupon.discount_percent}% off</p>}
+              {coupon && <p className="coupon_success">{coupon.code} applied — ${Number(coupon.discount_amount).toFixed(2)} off</p>}
               {couponError && <p className="coupon_error">{couponError}</p>}
             </div>
 

@@ -1549,3 +1549,23 @@ export async function deleteAdminMessage(
 
   return data;
 }
+
+
+async function adminFeedbackRequest(path, options = {}) {
+  const response = await fetch(`${API_URL}/admin/${path}`, {
+    ...options,
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    const detail = Array.isArray(data.detail)
+      ? data.detail.map((item) => item.msg).join(". ") : data.detail;
+    throw new Error(detail || "Request failed. Please try again.");
+  }
+  return data;
+}
+
+export const getAdminReviews = (params) => adminFeedbackRequest(`reviews/?${new URLSearchParams(params)}`);
+export const getAdminCoupons = () => adminFeedbackRequest("coupons/");
+export const createAdminCoupon = (data) => adminFeedbackRequest("coupons/", { method: "POST", body: JSON.stringify(data) });
+export const updateAdminCoupon = (id, data) => adminFeedbackRequest(`coupons/${id}`, { method: "PUT", body: JSON.stringify(data) });

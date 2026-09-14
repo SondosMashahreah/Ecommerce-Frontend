@@ -1,0 +1,18 @@
+.feedback_summary { color: #405969; margin-bottom: 18px; }
+.feedback_actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin: 20px 0; }
+.feedback_actions button:disabled, .feedback_table button:disabled { opacity: .5; cursor: not-allowed; }
+.feedback_table .feedback_comment { max-width: 480px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.feedback_rating_value { display: block; margin-top: 4px; }
+.feedback_error { color: #a62c38; padding: 12px 0; }
+.feedback_success { color: #2c734d; padding: 12px 0; }
+.coupon_admin_form fieldset { border: 0; padding: 0; margin: 18px 0 0; min-width: 0; }
+.coupon_admin_fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.coupon_admin_fields label { display: grid; gap: 8px; color: #405969; font-weight: 600; }
+.coupon_admin_fields input, .coupon_admin_fields select { width: 100%; box-sizing: border-box; min-height: 44px; border: 1px solid #dce5ea; border-radius: 8px; padding: 10px; background: white; color: #274456; font: inherit; }
+.coupon_admin_fields input:focus-visible, .coupon_admin_fields select:focus-visible { outline: 2px solid #79c7e8; outline-offset: 2px; }
+.coupon_active { display: flex; gap: 10px; align-items: center; margin-top: 20px; color: #405969; }
+.coupon_active input { width: 18px; height: 18px; }
+.feedback_quick_links { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 24px; }
+.feedback_quick_links a { border: 1px solid #dce5ea; background: white; padding: 16px 22px; border-radius: 12px; color: #274456; font-weight: 700; }
+.feedback_sr_only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 600px) { .coupon_admin_fields { grid-template-columns: 1fr; } }

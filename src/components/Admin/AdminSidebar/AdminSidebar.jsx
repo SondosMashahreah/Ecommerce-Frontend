@@ -4,6 +4,8 @@ import {
 } from "react";
 
 import {
+  FaStar,
+  FaTicket,
   FaChartPie,
   FaBox,
   FaLayerGroup,
@@ -211,6 +213,8 @@ function AdminSidebar({
           <span>Messages</span>
         </NavLink>
 
+        <NavLink to="/admin/reviews" className={navClass} title="Ratings & Reviews"><FaStar /><span>Ratings & Reviews</span></NavLink>
+        <NavLink to="/admin/coupons" className={navClass} title="Coupons"><FaTicket /><span>Coupons</span></NavLink>
       </nav>
 
 

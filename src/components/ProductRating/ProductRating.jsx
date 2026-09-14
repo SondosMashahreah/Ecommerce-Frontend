@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 import Rating from "@mui/material/Rating";
 
 import { rateProduct, getProductRating, getMyProductRating } from "../../services/api";
 import "./ProductRating.css";
 
-function ProductRating({ productId, size = "small", showReviews = false }) {
+function ProductRatingContent({ productId, size = "small", showReviews = false }) {
+  const reviewsId = useId();
+  const [reviewsOpen, setReviewsOpen] = useState(false);
   const [userRating, setUserRating] = useState(null);
   const [comment, setComment] = useState("");
   const [saving, setSaving] = useState(false);
@@ -15,23 +17,28 @@ function ProductRating({ productId, size = "small", showReviews = false }) {
     reviews: []
   });
 
-  const loadRatings = async () => {
-    try {
-      const summary = await getProductRating(productId);
-      setRatingInfo(summary);
-      try {
-        const mine = await getMyProductRating(productId);
+  useEffect(() => {
+    let active = true;
+    const loadRatings = () => {
+      Promise.all([
+        getProductRating(productId),
+        getMyProductRating(productId).catch(() => null),
+      ]).then(([summary, mine]) => {
+        if (!active) return;
+        setRatingInfo(summary);
         setUserRating(mine?.rating || null);
         setComment(mine?.comment || "");
-      } catch {
-        setUserRating(null);
-      }
-    } catch (error) {
-      console.error("Failed to load ratings:", error);
-    }
-  };
-
-  useEffect(() => { loadRatings(); }, [productId]);
+      }).catch((error) => {
+        if (active) setMessage(error.message || "Failed to load reviews.");
+      });
+    };
+    const refresh = (event) => {
+      if (event.detail?.productId === productId) loadRatings();
+    };
+    loadRatings();
+    window.addEventListener("ratingUpdated", refresh);
+    return () => { active = false; window.removeEventListener("ratingUpdated", refresh); };
+  }, [productId]);
 
   const saveRating = async (rating, reviewComment = null) => {
     setSaving(true);
@@ -55,14 +62,6 @@ function ProductRating({ productId, size = "small", showReviews = false }) {
     if (!showReviews) saveRating(value, comment);
   };
 
-  useEffect(() => {
-    const refresh = (event) => {
-      if (event.detail?.productId === productId) loadRatings();
-    };
-    window.addEventListener("ratingUpdated", refresh);
-    return () => window.removeEventListener("ratingUpdated", refresh);
-  }, [productId]);
-
   return (
     <div className={`product_rating ${showReviews ? "product_rating--reviews" : ""}`}>
       <div className="rating_summary">
@@ -83,6 +82,8 @@ function ProductRating({ productId, size = "small", showReviews = false }) {
         <>
           <div className="review_form">
             <textarea
+              aria-label="Your review"
+              rows={2}
               value={comment}
               onChange={(event) => setComment(event.target.value)}
               maxLength={1000}
@@ -95,17 +96,23 @@ function ProductRating({ productId, size = "small", showReviews = false }) {
             >
               {saving ? "Saving..." : "Submit review"}
             </button>
-            {message && <span className="review_message">{message}</span>}
+            {message && <span className="review_message" role="status">{message}</span>}
           </div>
 
           <div className="reviews_list">
-            <h3>Customer Reviews</h3>
+            <button type="button" className="reviews_toggle" aria-expanded={reviewsOpen}
+              aria-controls={reviewsId} onClick={() => setReviewsOpen((open) => !open)}>
+              {reviewsOpen ? "Hide" : "Show"} customer reviews ({ratingInfo.reviews?.length || 0})
+              <span aria-hidden="true">{reviewsOpen ? "−" : "+"}</span>
+            </button>
+            <div id={reviewsId} hidden={!reviewsOpen}>
             {ratingInfo.reviews?.length ? ratingInfo.reviews.map((review) => (
               <article key={review.id} className="review_item">
                 <div><strong>{review.user_name}</strong><Rating value={review.rating} readOnly size="small" /></div>
                 <p>{review.comment}</p>
               </article>
             )) : <p className="no_reviews">No written reviews yet.</p>}
+            </div>
           </div>
         </>
       )}
@@ -113,4 +120,6 @@ function ProductRating({ productId, size = "small", showReviews = false }) {
   );
 }
 
-export default ProductRating;
+export default function ProductRating(props) {
+  return <ProductRatingContent key={props.productId} {...props} />;
+}

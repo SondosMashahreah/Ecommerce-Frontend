@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import "../Feedback.css";
 import {
   useEffect,
   useState,
@@ -158,6 +160,10 @@ function AdminDashboard() {
           </div>
         </header>
 
+        <nav className="feedback_quick_links" aria-label="Store management">
+          <Link to="/admin/reviews">Ratings & Reviews →</Link>
+          <Link to="/admin/coupons">Manage coupons →</Link>
+        </nav>
         <section className="admin_stats_grid">
           {cards.map((card) => (
             <article

@@ -44,6 +44,9 @@ import AdminCustomerDetails from "./pages/Admin/Customers/AdminCustomerDetails";
 import AdminMessages from "./pages/Admin/Messages/AdminMessages";
 import AdminMessageDetails from "./pages/Admin/Messages/AdminMessageDetails";
 
+import AdminReviews from "./pages/Admin/Reviews/AdminReviews";
+import AdminCoupons from "./pages/Admin/Coupons/AdminCoupons";
+
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 
 
@@ -276,6 +279,9 @@ function App() {
             }
           />
 
+
+          <Route path="reviews" element={<AdminReviews />} />
+          <Route path="coupons" element={<AdminCoupons />} />
 
           <Route
             path="messages"
