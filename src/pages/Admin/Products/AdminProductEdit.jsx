@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useRef,
@@ -27,6 +30,8 @@ import {
 import "./AdminProductEdit.css";
 
 function AdminProductEdit() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -148,7 +153,7 @@ function AdminProductEdit() {
         fileInputRef.current.value = "";
       }
 
-      alert("Product updated");
+      alert(t("Product updated"));
     } catch (error) {
       setError(error.message);
     } finally {
@@ -161,7 +166,7 @@ function AdminProductEdit() {
 
     if (!file.type.startsWith("image/")) {
       setError(
-        "Please select a valid image file"
+        t("Please select a valid image file")
       );
       return;
     }
@@ -230,7 +235,7 @@ function AdminProductEdit() {
 
       await load();
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
@@ -259,7 +264,7 @@ function AdminProductEdit() {
   ) => {
     if (
       !window.confirm(
-        "Delete this variant?"
+        t("Delete this variant?")
       )
     ) {
       return;
@@ -272,31 +277,27 @@ function AdminProductEdit() {
 
       await load();
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
   if (loading) {
     return (
-      <main className="admin_edit_page">
-        Loading product...
-      </main>
+      <main className="admin_edit_page">{t("Loading product...")}</main>
     );
   }
 
   if (error && !product) {
     return (
       <main className="admin_edit_page">
-        {error}
+        {translateError(error)}
       </main>
     );
   }
 
   if (!product) {
     return (
-      <main className="admin_edit_page">
-        Product not found
-      </main>
+      <main className="admin_edit_page">{t("Product not found")}</main>
     );
   }
 
@@ -306,18 +307,13 @@ function AdminProductEdit() {
       <div className="admin_edit_header">
 
         <div>
-          <span>
-            PRODUCT MANAGEMENT
-          </span>
+          <span>{t("PRODUCT MANAGEMENT")}</span>
 
           <h1>
             {product.name}
           </h1>
 
-          <p>
-            Manage product information
-            and inventory.
-          </p>
+          <p>{t("Manage product information and inventory.")}</p>
         </div>
 
         <button
@@ -326,47 +322,37 @@ function AdminProductEdit() {
               "/admin/products"
             )
           }
-        >
-          Back
-        </button>
+        >{t("Back")}</button>
 
       </div>
 
       {error && (
         <div className="admin_edit_error">
-          {error}
+          {translateError(error)}
         </div>
       )}
 
       <section className="admin_edit_card">
 
-        <h2>
-          Product Information
-        </h2>
+        <h2>{t("Product Information")}</h2>
 
         <div className="admin_edit_grid">
 
-          <label>
-            Name
-
-            <input
+          <label>{t("Name")}<input
               name="name"
               value={product.name}
               onChange={changeProduct}
             />
           </label>
 
-          <label>
-            Category
-
-            <input
+          <label>{t("Category")}<input
               name="category"
               list="edit-product-categories"
               value={
                 product.category || ""
               }
               onChange={changeProduct}
-              placeholder="Select or type category"
+              placeholder={t("Select or type category")}
             />
 
             <datalist id="edit-product-categories">
@@ -380,16 +366,10 @@ function AdminProductEdit() {
               )}
             </datalist>
 
-            <small className="admin_edit_hint">
-              Choose an existing category
-              or type a new one.
-            </small>
+            <small className="admin_edit_hint">{t("Choose an existing category or type a new one.")}</small>
           </label>
 
-          <label>
-            Price
-
-            <input
+          <label>{t("Price")}<input
               name="price"
               type="number"
               min="0.01"
@@ -399,10 +379,7 @@ function AdminProductEdit() {
             />
           </label>
 
-          <label className="full">
-            Description
-
-            <textarea
+          <label className="full">{t("Description")}<textarea
               name="description"
               value={
                 product.description ||
@@ -414,9 +391,7 @@ function AdminProductEdit() {
 
           <div className="full">
 
-            <span className="admin_edit_upload_label">
-              Replace product image
-            </span>
+            <span className="admin_edit_upload_label">{t("Replace product image")}</span>
 
             <div
               className={
@@ -459,18 +434,11 @@ function AdminProductEdit() {
                     <FaCloudUploadAlt />
                   </div>
 
-                  <strong>
-                    Drop new product image here
-                  </strong>
+                  <strong>{t("Drop new product image here")}</strong>
 
-                  <span>
-                    or click to browse
-                  </span>
+                  <span>{t("or click to browse")}</span>
 
-                  <small>
-                    Leave empty to keep
-                    the current image
-                  </small>
+                  <small>{t("Leave empty to keep the current image")}</small>
 
                 </div>
               ) : (
@@ -478,7 +446,7 @@ function AdminProductEdit() {
 
                   <img
                     src={imagePreview}
-                    alt="New product preview"
+                    alt={t("New product preview")}
                   />
 
                   <div className="admin_edit_image_info">
@@ -528,31 +496,29 @@ function AdminProductEdit() {
           disabled={saving}
         >
           {saving
-            ? "Saving..."
-            : "Save Product"}
+            ? t("Saving...")
+            : t("Save Product")}
         </button>
 
       </section>
 
       <section className="admin_edit_card">
 
-        <h2>
-          Variants & Inventory
-        </h2>
+        <h2>{t("Variants & Inventory")}</h2>
 
         {product.items?.length > 0 ? (
           <div className="variant_table">
 
             <div className="variant_row head">
-              <span>SKU</span>
-              <span>Size</span>
-              <span>Color</span>
-              <span>Stock</span>
-              <span>Reserved</span>
-              <span>Available</span>
-              <span>Limit</span>
-              <span>Status</span>
-              <span>Actions</span>
+              <span>{t("SKU")}</span>
+              <span>{t("Size")}</span>
+              <span>{t("Color")}</span>
+              <span>{t("Stock")}</span>
+              <span>{t("Reserved")}</span>
+              <span>{t("Available")}</span>
+              <span>{t("Limit")}</span>
+              <span>{t("Status")}</span>
+              <span>{t("Actions")}</span>
             </div>
 
             {product.items.map(
@@ -637,10 +603,10 @@ function AdminProductEdit() {
 
                   <span
                     className={
-                      `stock_badge ${item.stock_status}`
+                      `stock_badge ${t(item.stock_status, { defaultValue: item.stock_status })}`
                     }
                   >
-                    {item.stock_status}
+                    {t(item.stock_status, { defaultValue: item.stock_status })}
                   </span>
 
                   <div className="variant_actions">
@@ -649,9 +615,7 @@ function AdminProductEdit() {
                       onClick={() =>
                         saveItem(item)
                       }
-                    >
-                      Save
-                    </button>
+                    >{t("Save")}</button>
 
                     <button
                       className="danger"
@@ -660,9 +624,7 @@ function AdminProductEdit() {
                           item.id
                         )
                       }
-                    >
-                      Delete
-                    </button>
+                    >{t("Delete")}</button>
 
                   </div>
 
@@ -672,10 +634,7 @@ function AdminProductEdit() {
 
           </div>
         ) : (
-          <div className="admin_no_variants">
-            No inventory variants
-            for this product.
-          </div>
+          <div className="admin_no_variants">{t("No inventory variants for this product.")}</div>
         )}
 
       </section>

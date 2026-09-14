@@ -1,3 +1,4 @@
+import { PreferencesToolbar } from './preferences/Controls';
 import {
   Routes,
   Route,
@@ -73,6 +74,7 @@ function App() {
   return (
     <>
       <SessionManager />
+      {isAuthPage && <PreferencesToolbar />}
 
       {!isAuthPage && !isAdminPage && (
         <header>

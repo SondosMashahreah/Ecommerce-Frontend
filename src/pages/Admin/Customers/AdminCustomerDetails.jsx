@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -16,6 +19,8 @@ import "../AdminManagement.css";
 
 
 function AdminCustomerDetails() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -33,7 +38,7 @@ function AdminCustomerDetails() {
         setCustomer(data);
 
       } catch (error) {
-        alert(error.message);
+        alert(translateError(error.message));
       }
     };
 
@@ -42,9 +47,7 @@ function AdminCustomerDetails() {
 
   if (!customer) {
     return (
-      <main className="admin_management_page">
-        Loading customer...
-      </main>
+      <main className="admin_management_page">{t("Loading customer...")}</main>
     );
   }
 
@@ -58,12 +61,10 @@ function AdminCustomerDetails() {
             "/admin/customers"
           )
         }
-      >
-        Back to Customers
-      </button>
+      >{t("Back to Customers")}</button>
 
       <div className="admin_management_header">
-        <span>CUSTOMER DETAILS</span>
+        <span>{t("CUSTOMER DETAILS")}</span>
 
         <h1>
           {customer.name}
@@ -75,57 +76,57 @@ function AdminCustomerDetails() {
         <div className="admin_detail_grid">
 
           <div className="admin_detail_item">
-            <span>Name</span>
+            <span>{t("Name")}</span>
             <strong>
               {customer.name}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Username</span>
+            <span>{t("Username")}</span>
             <strong>
               {customer.username}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Email</span>
+            <span>{t("Email")}</span>
             <strong>
               {customer.email}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Role</span>
+            <span>{t("Role")}</span>
             <strong>
-              {customer.role}
+              {t(customer.role, { defaultValue: customer.role })}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Status</span>
+            <span>{t("Status")}</span>
             <strong>
               {customer.is_active
-                ? "Active"
-                : "Disabled"}
+                ? t("Active")
+                : t("Disabled")}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Verified</span>
+            <span>{t("Verified")}</span>
             <strong>
               {customer.is_verified
-                ? "Yes"
-                : "No"}
+                ? t("Yes")
+                : t("No")}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Joined</span>
+            <span>{t("Joined")}</span>
             <strong>
               {new Date(
                 customer.created_at
-              ).toLocaleString()}
+              ).toLocaleString(document.documentElement.lang)}
             </strong>
           </div>
 

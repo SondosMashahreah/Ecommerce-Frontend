@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import React, {
   useCallback,
   useEffect,
@@ -32,6 +34,8 @@ function getTokenExpiration(token) {
 
 
 function SessionManager() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [showModal, setShowModal] =
@@ -204,15 +208,11 @@ function SessionManager() {
 
       <div className="session_modal">
 
-        <h2>Session Expired</h2>
+        <h2>{t("Session Expired")}</h2>
 
-        <p>
-          Your session has expired.
-          Would you like to extend your session?
-        </p>
+        <p>{t("Your session has expired. Would you like to extend your session?")}</p>
 
-        <p className="session_timer">
-          Time remaining:{" "}
+        <p className="session_timer">{t("Time remaining:")}{" "}{" "}
           {formatTime(remainingSeconds)}
         </p>
 
@@ -221,16 +221,12 @@ function SessionManager() {
           <button
             className="extend_session_btn"
             onClick={handleExtendSession}
-          >
-            Extend Session
-          </button>
+          >{t("Extend Session")}</button>
 
           <button
             className="logout_session_btn"
             onClick={logout}
-          >
-            Logout
-          </button>
+          >{t("Logout")}</button>
 
         </div>
 

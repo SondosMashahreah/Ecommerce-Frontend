@@ -1,7 +1,12 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import { useEffect, useState } from "react";
 import { getAdminProducts } from "../../../services/api";
 
 function AdminCategories() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,7 +45,7 @@ function AdminCategories() {
         setCategories(categoryList);
       } catch (error) {
         setError(
-          error.message || "Failed to load categories"
+          error.message || t("Failed to load categories")
         );
       } finally {
         setLoading(false);
@@ -53,7 +58,7 @@ function AdminCategories() {
   if (loading) {
     return (
       <main style={styles.page}>
-        <p>Loading categories...</p>
+        <p>{t("Loading categories...")}</p>
       </main>
     );
   }
@@ -61,26 +66,22 @@ function AdminCategories() {
   return (
     <main style={styles.page}>
       <div style={styles.header}>
-        <p style={styles.label}>PRODUCT MANAGEMENT</p>
+        <p style={styles.label}>{t("PRODUCT MANAGEMENT")}</p>
 
-        <h1 style={styles.title}>Categories</h1>
+        <h1 style={styles.title}>{t("Categories")}</h1>
 
-        <p style={styles.subtitle}>
-          View the categories currently used by your products.
-        </p>
+        <p style={styles.subtitle}>{t("View the categories currently used by your products.")}</p>
       </div>
 
       {error && (
         <div style={styles.error}>
-          {error}
+          {translateError(error)}
         </div>
       )}
 
       <div style={styles.stats}>
         <div style={styles.statCard}>
-          <span style={styles.statLabel}>
-            Total Categories
-          </span>
+          <span style={styles.statLabel}>{t("Total Categories")}</span>
 
           <strong style={styles.statValue}>
             {categories.length}
@@ -88,9 +89,7 @@ function AdminCategories() {
         </div>
 
         <div style={styles.statCard}>
-          <span style={styles.statLabel}>
-            Products
-          </span>
+          <span style={styles.statLabel}>{t("Products")}</span>
 
           <strong style={styles.statValue}>
             {categories.reduce(
@@ -105,30 +104,22 @@ function AdminCategories() {
       <section style={styles.card}>
         <div style={styles.cardHeader}>
           <div>
-            <h2 style={styles.cardTitle}>
-              Product Categories
-            </h2>
+            <h2 style={styles.cardTitle}>{t("Product Categories")}</h2>
 
-            <p style={styles.cardDescription}>
-              Categories are generated from the category
-              assigned to each product.
-            </p>
+            <p style={styles.cardDescription}>{t("Categories are generated from the category assigned to each product.")}</p>
           </div>
 
           <span style={styles.countBadge}>
-            {categories.length} categories
-          </span>
+            {categories.length} {" "}{t("categories")}</span>
         </div>
 
         {categories.length === 0 ? (
-          <div style={styles.empty}>
-            No categories found.
-          </div>
+          <div style={styles.empty}>{t("No categories found.")}</div>
         ) : (
           <div style={styles.table}>
             <div style={styles.tableHeader}>
-              <span>Category</span>
-              <span>Products</span>
+              <span>{t("Category")}</span>
+              <span>{t("Products")}</span>
             </div>
 
             {categories.map((category) => (
@@ -148,9 +139,7 @@ function AdminCategories() {
                       {category.name}
                     </strong>
 
-                    <p style={styles.categoryText}>
-                      Product category
-                    </p>
+                    <p style={styles.categoryText}>{t("Product category")}</p>
                   </div>
                 </div>
 

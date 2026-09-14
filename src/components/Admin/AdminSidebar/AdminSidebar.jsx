@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -35,6 +37,8 @@ function AdminSidebar({
   collapsed,
   setCollapsed,
 }) {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [adminUser, setAdminUser] =
@@ -117,8 +121,8 @@ function AdminSidebar({
           }
           title={
             collapsed
-              ? "Open sidebar"
-              : "Close sidebar"
+              ? t("Open sidebar")
+              : t("Close sidebar")
           }
         >
           {collapsed ? (
@@ -131,9 +135,7 @@ function AdminSidebar({
       </div>
 
 
-      <p className="admin_sidebar_label">
-        STORE ADMINISTRATION
-      </p>
+      <p className="admin_sidebar_label">{t("STORE ADMINISTRATION")}</p>
 
 
       {/* NAVIGATION */}
@@ -144,40 +146,40 @@ function AdminSidebar({
           to="/admin"
           end
           className={navClass}
-          title="Overview"
+          title={t("Overview")}
         >
           <FaChartPie />
-          <span>Overview</span>
+          <span>{t("Overview")}</span>
         </NavLink>
 
 
         <NavLink
           to="/admin/products"
           className={navClass}
-          title="Products"
+          title={t("Products")}
         >
           <FaBox />
-          <span>Products</span>
+          <span>{t("Products")}</span>
         </NavLink>
 
 
         <NavLink
           to="/admin/categories"
           className={navClass}
-          title="Categories"
+          title={t("Categories")}
         >
           <FaLayerGroup />
-          <span>Categories</span>
+          <span>{t("Categories")}</span>
         </NavLink>
 
 
         <NavLink
           to="/admin/inventory"
           className={navClass}
-          title="Inventory"
+          title={t("Inventory")}
         >
           <FaWarehouse />
-          <span>Inventory</span>
+          <span>{t("Inventory")}</span>
         </NavLink>
 
 
@@ -187,34 +189,34 @@ function AdminSidebar({
         <NavLink
           to="/admin/orders"
           className={navClass}
-          title="Orders"
+          title={t("Orders")}
         >
           <FaBagShopping />
-          <span>Orders</span>
+          <span>{t("Orders")}</span>
         </NavLink>
 
 
         <NavLink
           to="/admin/customers"
           className={navClass}
-          title="Customers"
+          title={t("Customers")}
         >
           <FaUsers />
-          <span>Customers</span>
+          <span>{t("Customers")}</span>
         </NavLink>
 
 
         <NavLink
           to="/admin/messages"
           className={navClass}
-          title="Messages"
+          title={t("Messages")}
         >
           <FaEnvelope />
-          <span>Messages</span>
+          <span>{t("Messages")}</span>
         </NavLink>
 
-        <NavLink to="/admin/reviews" className={navClass} title="Ratings & Reviews"><FaStar /><span>Ratings & Reviews</span></NavLink>
-        <NavLink to="/admin/coupons" className={navClass} title="Coupons"><FaTicket /><span>Coupons</span></NavLink>
+        <NavLink to="/admin/reviews" className={navClass} title={t("Ratings & Reviews")}><FaStar /><span>{t("Ratings & Reviews")}</span></NavLink>
+        <NavLink to="/admin/coupons" className={navClass} title={t("Coupons")}><FaTicket /><span>{t("Coupons")}</span></NavLink>
       </nav>
 
 
@@ -228,11 +230,9 @@ function AdminSidebar({
           onClick={() =>
             navigate("/")
           }
-          title="View storefront"
+          title={t("View storefront")}
         >
-          <span>
-            View storefront
-          </span>
+          <span>{t("View storefront")}</span>
 
           <FaArrowUpRightFromSquare />
         </button>
@@ -242,12 +242,10 @@ function AdminSidebar({
 
           <div className="admin_account_text">
 
-            <strong>
-              Administrator
-            </strong>
+            <strong>{t("Administrator")}</strong>
 
             <span>
-              {adminUser?.name || "Admin"}
+              {adminUser?.name || t("Admin")}
             </span>
 
           </div>
@@ -257,7 +255,7 @@ function AdminSidebar({
             type="button"
             className="admin_logout_icon"
             onClick={logout}
-            title="Logout"
+            title={t("Logout")}
           >
             <FaArrowRightFromBracket />
           </button>

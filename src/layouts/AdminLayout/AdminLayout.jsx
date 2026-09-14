@@ -1,3 +1,4 @@
+import { PreferencesToolbar } from '../../preferences/Controls';
 import {
   useState,
 } from "react";
@@ -33,6 +34,7 @@ function AdminLayout() {
       />
 
       <section className="admin_layout_content">
+        <PreferencesToolbar />
         <Outlet />
       </section>
 

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import React, { useEffect, useState } from "react";
 import "./ProductImage.css";
 
@@ -113,6 +115,8 @@ function normalizeImage(image) {
 }
 
 function ProductImage({ imagePath, alt, size = "card", className = "" }) {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const imageUrl = imagePath
     ? `${import.meta.env.VITE_API_URL}/api/v1/assets/${imagePath}`
     : "";
@@ -145,7 +149,7 @@ function ProductImage({ imagePath, alt, size = "card", className = "" }) {
           onLoad={handleLoad}
         />
       ) : (
-        <span className="product_image_placeholder">No image</span>
+        <span className="product_image_placeholder">{t("No image")}</span>
       )}
     </div>
   );

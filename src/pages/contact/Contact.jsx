@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import React, { useState } from "react";
 import {
   Box,
@@ -11,6 +13,8 @@ import {
 import { sendContactMessage } from "../../services/api";
 
 function Contact() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -43,23 +47,19 @@ const data = await sendContactMessage(contactData);
   return (
     <Container maxWidth="sm">
       <Box sx={{ py: 6 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Contact Us
-        </Typography>
+        <Typography variant="h4" align="center" gutterBottom>{t("Contact Us")}</Typography>
 
         <Typography
           variant="body1"
           align="center"
           color="text.secondary"
           sx={{ mb: 4 }}
-        >
-          Send us a message and we will get back to you.
-        </Typography>
+        >{t("Send us a message and we will get back to you.")}</Typography>
 
         <form onSubmit={handleSubmit}>
           <Stack spacing={2}>
             <TextField
-              label="Name"
+              label={t("Name")}
               variant="outlined"
               fullWidth
               value={name}
@@ -67,7 +67,7 @@ const data = await sendContactMessage(contactData);
             />
 
             <TextField
-              label="Email"
+              label={t("Email")}
               type="email"
               variant="outlined"
               fullWidth
@@ -76,7 +76,7 @@ const data = await sendContactMessage(contactData);
             />
 
             <TextField
-              label="Subject"
+              label={t("Subject")}
               variant="outlined"
               fullWidth
               value={subject}
@@ -84,7 +84,7 @@ const data = await sendContactMessage(contactData);
             />
 
             <TextField
-              label="Message"
+              label={t("Message")}
               multiline
               rows={5}
               variant="outlined"
@@ -98,9 +98,7 @@ const data = await sendContactMessage(contactData);
               variant="contained"
               size="large"
               fullWidth
-            >
-              Send Message
-            </Button>
+            >{t("Send Message")}</Button>
 
             {responseMessage && (
               <Typography align="center">

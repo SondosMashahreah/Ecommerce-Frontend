@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import React, { useEffect, useState } from "react";
 
 import {
@@ -22,6 +24,8 @@ import ProductImage from "../../ProductImage/ProductImage";
 
 
 function Product({ item }) {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [favoriteId, setFavoriteId] = useState(null);
@@ -69,13 +73,13 @@ function Product({ item }) {
         new Event("cartUpdated")
       );
 
-      alert("Added to cart");
+      alert(t("Added to cart"));
     } catch (error) {
       console.error(error);
 
       alert(
         error.message ||
-          "Failed to add product to cart"
+          t("Failed to add product to cart")
       );
     } finally {
       setAddingToCart(false);
@@ -134,7 +138,7 @@ function Product({ item }) {
 
       alert(
         error.message ||
-          "Failed to update favorites"
+          t("Failed to update favorites")
       );
     } finally {
       setFavoriteLoading(false);
@@ -175,9 +179,7 @@ function Product({ item }) {
 
 
       {item.stock === 0 && (
-        <span className="product_out_stock">
-          Out of Stock
-        </span>
+        <span className="product_out_stock">{t("Out of Stock")}</span>
       )}
 
 
@@ -192,8 +194,8 @@ function Product({ item }) {
           onClick={handleAddToCart}
           title={
             item.stock === 0
-              ? "Out of Stock"
-              : "Add to Cart"
+              ? t("Out of Stock")
+              : t("Add to Cart")
           }
         >
           <FaCartArrowDown />
@@ -209,8 +211,8 @@ function Product({ item }) {
           onClick={handleFavoriteToggle}
           title={
             favoriteId
-              ? "Remove from Favorites"
-              : "Add to Favorites"
+              ? t("Remove from Favorites")
+              : t("Add to Favorites")
           }
         >
           {favoriteId ? (
@@ -226,7 +228,7 @@ function Product({ item }) {
           onClick={() =>
             navigate(`/products/${item.id}`)
           }
-          title="View Details"
+          title={t("View Details")}
         >
           <FaEye />
         </span>

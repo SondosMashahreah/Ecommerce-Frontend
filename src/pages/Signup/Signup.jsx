@@ -1,3 +1,6 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import { useState } from "react";
 
 import {
@@ -16,6 +19,8 @@ import { signupUser } from "../../services/api";
 
 
 function Signup() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -50,7 +55,7 @@ function Signup() {
     } catch (error) {
       setError(
         error.message ||
-        "Failed to create account"
+        t("Failed to create account")
       );
 
     } finally {
@@ -82,25 +87,21 @@ function Signup() {
             textAlign="center"
             fontWeight="bold"
             mb={1}
-          >
-            Create Account
-          </Typography>
+          >{t("Create Account")}</Typography>
 
           <Typography
             variant="body2"
             textAlign="center"
             color="text.secondary"
             mb={3}
-          >
-            Sign up to start shopping
-          </Typography>
+          >{t("Sign up to start shopping")}</Typography>
 
           {error && (
             <Alert
               severity="error"
               sx={{ mb: 2 }}
             >
-              {error}
+              {translateError(error)}
             </Alert>
           )}
 
@@ -109,7 +110,7 @@ function Signup() {
             onSubmit={handleSubmit}
           >
             <TextField
-              label="Full Name"
+              label={t("Full Name")}
               fullWidth
               required
               margin="normal"
@@ -120,7 +121,7 @@ function Signup() {
             />
 
             <TextField
-              label="Username"
+              label={t("Username")}
               fullWidth
               required
               margin="normal"
@@ -130,11 +131,11 @@ function Signup() {
                   event.target.value
                 )
               }
-              helperText="Letters, numbers and underscore only"
+              helperText={t("Letters, numbers and underscore only")}
             />
 
             <TextField
-              label="Email"
+              label={t("Email")}
               type="email"
               fullWidth
               required
@@ -146,7 +147,7 @@ function Signup() {
             />
 
             <TextField
-              label="Password"
+              label={t("Password")}
               type="password"
               fullWidth
               required
@@ -168,8 +169,8 @@ function Signup() {
               sx={{ mt: 3 }}
             >
               {loading
-                ? "Creating Account..."
-                : "Sign Up"}
+                ? t("Creating Account...")
+                : t("Sign Up")}
             </Button>
 
             <Button
@@ -179,9 +180,7 @@ function Signup() {
               onClick={() =>
                 navigate("/signin")
               }
-            >
-              Already have an account? Sign In
-            </Button>
+            >{t("Already have an account? Sign In")}</Button>
           </Box>
         </Paper>
       </Box>

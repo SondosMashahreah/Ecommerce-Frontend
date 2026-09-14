@@ -1,3 +1,6 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
+import { ThemeSelector } from '../../preferences/Controls';
 import React, {
   useEffect,
   useState
@@ -29,6 +32,8 @@ import {
 } from "../../services/api";
 
 function TopHeader() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
@@ -219,7 +224,7 @@ function TopHeader() {
         >
           <img
             src={logo}
-            alt="Logo"
+            alt={t("Logo")}
           />
         </Link>
 
@@ -228,6 +233,8 @@ function TopHeader() {
           <button
             type="button"
             className="profile_btn"
+            aria-expanded={isProfileOpen}
+            aria-controls="profile-options"
             onClick={() =>
               setIsProfileOpen(!isProfileOpen)
             }
@@ -246,11 +253,13 @@ function TopHeader() {
             )}
 
             <span>
-              {headerUser?.name || "Profile"}
+              {headerUser?.name || t("Profile")}
             </span>
           </button>
 
           <div
+            id="profile-options"
+            inert={!isProfileOpen}
             className={`profile_sidebar ${
               isProfileOpen ? "active" : ""
             }`}
@@ -264,7 +273,7 @@ function TopHeader() {
               }}
             >
               <FiUser />
-              <span>My Profile</span>
+              <span>{t("My Profile")}</span>
             </button>
 
             {headerUser && (
@@ -276,9 +285,11 @@ function TopHeader() {
                 }}
               >
                 <MdOutlineShoppingCart />
-                <span>My Orders</span>
+                <span>{t("My Orders")}</span>
               </button>
             )}
+
+            <ThemeSelector />
 
             {headerUser?.role === "admin" && (
               <button
@@ -289,7 +300,7 @@ function TopHeader() {
                 }}
               >
                 <MdDashboard />
-                <span>Dashboard</span>
+                <span>{t("Dashboard")}</span>
               </button>
             )}
 
@@ -299,7 +310,7 @@ function TopHeader() {
               onClick={handleProfileLogout}
             >
               <PiSignOutFill />
-              <span>Logout</span>
+              <span>{t("Logout")}</span>
             </button>
 
           </div>
@@ -315,14 +326,14 @@ function TopHeader() {
               type="text"
               name="search"
               id="search"
-              placeholder="Search for products"
+              placeholder={t("Search for products")}
               value={query}
               onChange={(e) =>
                 setQuery(e.target.value)
               }
             />
 
-            <button type="submit">
+            <button type="submit" aria-label={t("Search")}>
               <FcSearch />
             </button>
           </form>
@@ -351,6 +362,7 @@ function TopHeader() {
 
           <Link
             to="/favorites"
+            aria-label={t("Favorites")}
             className="icon"
           >
             <FiHeart />
@@ -362,6 +374,7 @@ function TopHeader() {
 
           <Link
             to="/cart"
+            aria-label={t("Cart")}
             className="icon"
           >
             <MdOutlineShoppingCart />

@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -15,6 +18,8 @@ import "../AdminManagement.css";
 
 
 function AdminMessages() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [messages, setMessages] =
@@ -37,7 +42,7 @@ function AdminMessages() {
       setMessages(data);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
@@ -56,20 +61,17 @@ function AdminMessages() {
     <main className="admin_management_page">
 
       <div className="admin_management_header">
-        <span>CUSTOMER SUPPORT</span>
+        <span>{t("CUSTOMER SUPPORT")}</span>
 
-        <h1>Messages</h1>
+        <h1>{t("Messages")}</h1>
 
-        <p>
-          Messages sent through
-          the contact form.
-        </p>
+        <p>{t("Messages sent through the contact form.")}</p>
       </div>
 
       <div className="admin_toolbar">
 
         <input
-          placeholder="Search messages..."
+          placeholder={t("Search messages...")}
           value={search}
           onChange={(event) =>
             setSearch(
@@ -91,9 +93,7 @@ function AdminMessages() {
     <span className="unread_toggle_circle" />
   </span>
 
-  <span className="unread_filter_text">
-    Unread only
-  </span>
+  <span className="unread_filter_text">{t("Unread only")}</span>
 </label>
 
       </div>
@@ -101,20 +101,18 @@ function AdminMessages() {
       <section className="admin_table_card">
 
         {messages.length === 0 ? (
-          <div className="admin_empty_state">
-            No messages found.
-          </div>
+          <div className="admin_empty_state">{t("No messages found.")}</div>
 
         ) : (
           <table className="admin_data_table">
 
             <thead>
               <tr>
-                <th>Status</th>
-                <th>From</th>
-                <th>Email</th>
-                <th>Subject</th>
-                <th>Date</th>
+                <th>{t("Status")}</th>
+                <th>{t("From")}</th>
+                <th>{t("Email")}</th>
+                <th>{t("Subject")}</th>
+                <th>{t("Date")}</th>
                 <th />
               </tr>
             </thead>
@@ -133,8 +131,8 @@ function AdminMessages() {
                         }
                       >
                         {message.is_read
-                          ? "Read"
-                          : "New"}
+                          ? t("Read")
+                          : t("New")}
                       </span>
                     </td>
 
@@ -153,7 +151,7 @@ function AdminMessages() {
                     <td>
                       {new Date(
                         message.created_at
-                      ).toLocaleDateString()}
+                      ).toLocaleDateString(document.documentElement.lang)}
                     </td>
 
                     <td>
@@ -164,9 +162,7 @@ function AdminMessages() {
                             `/admin/messages/${message.id}`
                           )
                         }
-                      >
-                        Open
-                      </button>
+                      >{t("Open")}</button>
                     </td>
 
                   </tr>

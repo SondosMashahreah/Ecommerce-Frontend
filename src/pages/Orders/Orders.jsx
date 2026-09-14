@@ -1,3 +1,6 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +23,8 @@ import "./Orders.css";
 
 
 function Orders() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionOrderId, setActionOrderId] =
@@ -39,7 +44,7 @@ function Orders() {
     } catch (error) {
       alert(
         error.message ||
-        "Failed to load orders"
+        t("Failed to load orders")
       );
 
     } finally {
@@ -55,7 +60,7 @@ function Orders() {
 
   const handleCancel = async (orderId) => {
     const confirmed = window.confirm(
-      "Are you sure you want to cancel this order?"
+      t("Are you sure you want to cancel this order?")
     );
 
     if (!confirmed) {
@@ -77,7 +82,7 @@ function Orders() {
       );
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setActionOrderId(null);
@@ -94,13 +99,13 @@ function Orders() {
 
       alert(
         result.message ||
-        "Order added to cart"
+        t("Order added to cart")
       );
 
       navigate("/cart");
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setActionOrderId(null);
@@ -115,7 +120,7 @@ function Orders() {
       await downloadOrderInvoice(orderId);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setActionOrderId(null);
@@ -133,9 +138,7 @@ function Orders() {
   if (loading) {
     return (
       <div className="orders_page">
-        <div className="orders_state">
-          Loading your orders...
-        </div>
+        <div className="orders_state">{t("Loading your orders...")}</div>
       </div>
     );
   }
@@ -146,22 +149,15 @@ function Orders() {
 
       <div className="orders_heading">
         <div>
-          <p className="orders_eyebrow">
-            MY ACCOUNT
-          </p>
+          <p className="orders_eyebrow">{t("MY ACCOUNT")}</p>
 
-          <h1>
-            My Orders
-          </h1>
+          <h1>{t("My Orders")}</h1>
 
-          <p>
-            Track and manage your previous orders.
-          </p>
+          <p>{t("Track and manage your previous orders.")}</p>
         </div>
 
         <div className="orders_total_count">
-          {orders.length} orders
-        </div>
+          {orders.length} {" "}{t("orders")}</div>
       </div>
 
 
@@ -171,23 +167,16 @@ function Orders() {
             <FaBoxOpen />
           </div>
 
-          <h2>
-            No orders yet
-          </h2>
+          <h2>{t("No orders yet")}</h2>
 
-          <p>
-            Once you place an order,
-            it will appear here.
-          </p>
+          <p>{t("Once you place an order, it will appear here.")}</p>
 
           <button
             type="button"
             onClick={() =>
               navigate("/")
             }
-          >
-            Start Shopping
-          </button>
+          >{t("Start Shopping")}</button>
         </section>
       ) : (
         <section className="orders_list">
@@ -212,14 +201,13 @@ function Orders() {
                 <div className="order_card_header">
 
                   <div>
-                    <span className="order_number">
-                      Order #{order.id}
+                    <span className="order_number">{t("Order #")}{" "}{order.id}
                     </span>
 
                     <p>
                       {new Date(
                         order.created_at
-                      ).toLocaleString()}
+                      ).toLocaleString(document.documentElement.lang)}
                     </p>
                   </div>
 
@@ -230,7 +218,7 @@ function Orders() {
                       )
                     }
                   >
-                    {order.status}
+                    {t(order.status, { defaultValue: order.status })}
                   </span>
 
                 </div>
@@ -240,9 +228,7 @@ function Orders() {
 
                   <div className="order_summary_info">
                     <div>
-                      <span>
-                        Items
-                      </span>
+                      <span>{t("Items")}</span>
 
                       <strong>
                         {order.items.reduce(
@@ -255,9 +241,7 @@ function Orders() {
                     </div>
 
                     <div>
-                      <span>
-                        Total
-                      </span>
+                      <span>{t("Total")}</span>
 
                       <strong>
                         $
@@ -284,8 +268,7 @@ function Orders() {
                     {order.items.length > 3 && (
                       <span>
                         +{order.items.length - 3}
-                        {" "}more
-                      </span>
+                        {" "}{t("more")}</span>
                     )}
 
                   </div>
@@ -304,9 +287,7 @@ function Orders() {
                       )
                     }
                   >
-                    <FaEye />
-                    View Details
-                  </button>
+                    <FaEye />{t("View Details")}</button>
 
 
                   <button
@@ -316,9 +297,7 @@ function Orders() {
                     }
                     disabled={isWorking}
                   >
-                    <FaFileInvoice />
-                    Invoice
-                  </button>
+                    <FaFileInvoice />{t("Invoice")}</button>
 
 
                   <button
@@ -328,9 +307,7 @@ function Orders() {
                     }
                     disabled={isWorking}
                   >
-                    <FaRedo />
-                    Reorder
-                  </button>
+                    <FaRedo />{t("Reorder")}</button>
 
 
                   {canCancel && (
@@ -342,9 +319,7 @@ function Orders() {
                       }
                       disabled={isWorking}
                     >
-                      <FaTimesCircle />
-                      Cancel
-                    </button>
+                      <FaTimesCircle />{t("Cancel")}</button>
                   )}
 
                 </div>

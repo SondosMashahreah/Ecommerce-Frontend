@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -17,6 +20,8 @@ import "../AdminManagement.css";
 
 
 function AdminCustomers() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [customers, setCustomers] =
@@ -35,7 +40,7 @@ function AdminCustomers() {
       setCustomers(data);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
@@ -62,7 +67,7 @@ function AdminCustomers() {
       await loadCustomers();
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
@@ -79,7 +84,7 @@ function AdminCustomers() {
       await loadCustomers();
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
@@ -87,18 +92,16 @@ function AdminCustomers() {
     <main className="admin_management_page">
 
       <div className="admin_management_header">
-        <span>USER MANAGEMENT</span>
+        <span>{t("USER MANAGEMENT")}</span>
 
-        <h1>Customers</h1>
+        <h1>{t("Customers")}</h1>
 
-        <p>
-          Search and manage user accounts.
-        </p>
+        <p>{t("Search and manage user accounts.")}</p>
       </div>
 
       <div className="admin_toolbar">
         <input
-          placeholder="Search name, username or email..."
+          placeholder={t("Search name, username or email...")}
           value={search}
           onChange={(event) =>
             setSearch(
@@ -114,12 +117,12 @@ function AdminCustomers() {
 
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Joined</th>
+              <th>{t("Name")}</th>
+              <th>{t("Username")}</th>
+              <th>{t("Email")}</th>
+              <th>{t("Role")}</th>
+              <th>{t("Status")}</th>
+              <th>{t("Joined")}</th>
               <th />
             </tr>
           </thead>
@@ -153,13 +156,9 @@ function AdminCustomers() {
                         )
                       }
                     >
-                      <option value="customer">
-                        Customer
-                      </option>
+                      <option value="customer">{t("Customer")}</option>
 
-                      <option value="admin">
-                        Admin
-                      </option>
+                      <option value="admin">{t("Admin")}</option>
                     </select>
                   </td>
 
@@ -172,15 +171,15 @@ function AdminCustomers() {
                       }
                     >
                       {customer.is_active
-                        ? "Active"
-                        : "Disabled"}
+                        ? t("Active")
+                        : t("Disabled")}
                     </span>
                   </td>
 
                   <td>
                     {new Date(
                       customer.created_at
-                    ).toLocaleDateString()}
+                    ).toLocaleDateString(document.documentElement.lang)}
                   </td>
 
                   <td>
@@ -197,9 +196,7 @@ function AdminCustomers() {
                             `/admin/customers/${customer.id}`
                           )
                         }
-                      >
-                        View
-                      </button>
+                      >{t("View")}</button>
 
                       <button
                         className={
@@ -214,8 +211,8 @@ function AdminCustomers() {
                         }
                       >
                         {customer.is_active
-                          ? "Disable"
-                          : "Enable"}
+                          ? t("Disable")
+                          : t("Enable")}
                       </button>
                     </div>
                   </td>

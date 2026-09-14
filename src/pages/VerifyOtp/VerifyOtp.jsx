@@ -1,3 +1,6 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import { useState } from "react";
 import {
   Alert,
@@ -13,6 +16,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { verifyOtp } from "../../services/api";
 
 function VerifyOtp() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -64,28 +69,24 @@ function VerifyOtp() {
             textAlign="center"
             fontWeight="bold"
             mb={1}
-          >
-            Verify OTP
-          </Typography>
+          >{t("Verify OTP")}</Typography>
 
           <Typography
             variant="body2"
             textAlign="center"
             color="text.secondary"
             mb={3}
-          >
-            Enter the code sent to your email
-          </Typography>
+          >{t("Enter the code sent to your email")}</Typography>
 
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {translateError(error)}
             </Alert>
           )}
 
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
-              label="Email"
+              label={t("Email")}
               type="email"
               fullWidth
               required
@@ -95,7 +96,7 @@ function VerifyOtp() {
             />
 
             <TextField
-              label="OTP Code"
+              label={t("OTP Code")}
               fullWidth
               required
               margin="normal"
@@ -112,9 +113,7 @@ function VerifyOtp() {
               fullWidth
               size="large"
               sx={{ mt: 3 }}
-            >
-              Verify
-            </Button>
+            >{t("Verify")}</Button>
           </Box>
         </Paper>
       </Box>

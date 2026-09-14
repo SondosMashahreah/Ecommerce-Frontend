@@ -1,3 +1,6 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import { useState } from "react";
 
 import {
@@ -22,6 +25,8 @@ import {
 
 
 function Signin() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -109,9 +114,7 @@ function Signin() {
             textAlign="center"
             fontWeight="bold"
             mb={1}
-          >
-            Sign In
-          </Typography>
+          >{t("Sign In")}</Typography>
 
 
           <Typography
@@ -119,9 +122,7 @@ function Signin() {
             textAlign="center"
             color="text.secondary"
             mb={3}
-          >
-            Sign in to your account
-          </Typography>
+          >{t("Sign in to your account")}</Typography>
 
 
           {error && (
@@ -129,7 +130,7 @@ function Signin() {
               severity="error"
               sx={{ mb: 2 }}
             >
-              {error}
+              {translateError(error)}
             </Alert>
           )}
 
@@ -150,7 +151,7 @@ function Signin() {
           >
 
             <TextField
-              label="Email"
+              label={t("Email")}
               type="email"
               fullWidth
               required
@@ -163,7 +164,7 @@ function Signin() {
 
 
             <TextField
-              label="Password"
+              label={t("Password")}
               type="password"
               fullWidth
               required
@@ -183,9 +184,7 @@ function Signin() {
               fullWidth
               size="large"
               sx={{ mt: 3 }}
-            >
-              Sign In
-            </Button>
+            >{t("Sign In")}</Button>
 
 
             <Button
@@ -195,10 +194,7 @@ function Signin() {
               onClick={() =>
                 navigate("/signup")
               }
-            >
-              Don't have an account?
-              Sign Up
-            </Button>
+            >{t("Don't have an account? Sign Up")}</Button>
 
           </Box>
 

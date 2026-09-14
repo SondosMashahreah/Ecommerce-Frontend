@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -18,6 +21,8 @@ import "../AdminManagement.css";
 
 
 function AdminMessageDetails() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -42,7 +47,7 @@ function AdminMessageDetails() {
         setMessage(data);
 
       } catch (error) {
-        alert(error.message);
+        alert(translateError(error.message));
       }
     };
 
@@ -52,7 +57,7 @@ function AdminMessageDetails() {
   const remove = async () => {
     if (
       !window.confirm(
-        "Delete this message?"
+        t("Delete this message?")
       )
     ) {
       return;
@@ -68,15 +73,13 @@ function AdminMessageDetails() {
       );
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
   if (!message) {
     return (
-      <main className="admin_management_page">
-        Loading message...
-      </main>
+      <main className="admin_management_page">{t("Loading message...")}</main>
     );
   }
 
@@ -90,12 +93,10 @@ function AdminMessageDetails() {
             "/admin/messages"
           )
         }
-      >
-        Back to Messages
-      </button>
+      >{t("Back to Messages")}</button>
 
       <div className="admin_management_header">
-        <span>CUSTOMER MESSAGE</span>
+        <span>{t("CUSTOMER MESSAGE")}</span>
 
         <h1>
           {message.subject}
@@ -107,25 +108,25 @@ function AdminMessageDetails() {
         <div className="admin_detail_grid">
 
           <div className="admin_detail_item">
-            <span>From</span>
+            <span>{t("From")}</span>
             <strong>
               {message.name}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Email</span>
+            <span>{t("Email")}</span>
             <strong>
               {message.email}
             </strong>
           </div>
 
           <div className="admin_detail_item">
-            <span>Date</span>
+            <span>{t("Date")}</span>
             <strong>
               {new Date(
                 message.created_at
-              ).toLocaleString()}
+              ).toLocaleString(document.documentElement.lang)}
             </strong>
           </div>
 
@@ -141,9 +142,7 @@ function AdminMessageDetails() {
             marginTop: 20,
           }}
           onClick={remove}
-        >
-          Delete Message
-        </button>
+        >{t("Delete Message")}</button>
 
       </section>
 

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import React from "react";
 
 import Product from "./Product/Product";
@@ -21,19 +23,19 @@ function SlideProduct({
   data = [],
   title
 }) {
+  const { i18n } = useTranslation();
+
   return (
     <div className="Slide_product">
       <div className="container">
 
         <div className="top_slide">
-          <h2>{title}</h2>
+          <h2>{t(title, { defaultValue: title })}</h2>
 
-          <p>
-            Available Devices in the store
-          </p>
+          <p>{t("Available Devices in the store")}</p>
         </div>
 
-        <Swiper
+        <Swiper key={i18n.language} dir={i18n.dir()}
   modules={[Pagination]}
   pagination={{
     clickable: true,

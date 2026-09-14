@@ -1,3 +1,6 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
+import { LanguageButton } from '../../preferences/Controls';
 import React, { useEffect, useState } from "react";
 import { IoMdMenu } from "react-icons/io";
 import { MdArrowDropDown } from "react-icons/md";
@@ -14,6 +17,8 @@ const NavLinks = [
 ];
 
 function BtmHeader() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [categories, setCategories] = useState([]);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
@@ -73,18 +78,22 @@ navigate("/signin");
       <div className="container">
         <nav className="nav">
           <div className="category_nav">
-            <div
+            <button type="button"
+              aria-expanded={isCategoriesOpen}
+              aria-controls="category-options"
               className="category_btn"
               onClick={() =>
                 setIsCategoriesOpen(!isCategoriesOpen)
               }
             >
               <IoMdMenu />
-              <p>Browse Category</p>
+              <p>{t("Browse Category")}</p>
               <MdArrowDropDown />
-            </div>
+            </button>
 
             <div
+              id="category-options"
+              inert={!isCategoriesOpen}
               className={`category_nav_list ${
                 isCategoriesOpen ? "active" : ""
               }`}
@@ -97,7 +106,7 @@ navigate("/signin");
                     handleCategoryClick(category)
                   }
                 >
-                  {category}
+                  {t(category, { defaultValue: category })}
                 </button>
               ))}
             </div>
@@ -114,13 +123,15 @@ navigate("/signin");
                 }
               >
                 <Link to={item.link}>
-                  {item.title}
+                  {t(item.title, { defaultValue: item.title })}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
 
+<div className="header_actions">
+<LanguageButton />
 {token && (
   <button
     className="logout_btn"
@@ -128,9 +139,10 @@ navigate("/signin");
     type="button"
   >
     <PiSignOutFill />
-    <span>Logout</span>
+    <span>{t("Logout")}</span>
   </button>
 )}
+</div>
       </div>
     </div>
   );
