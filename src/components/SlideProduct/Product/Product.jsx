@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
+import i18n from "../../../i18n";
+import { localizedProductName } from "../../../i18n/productContent";
 import React, { useEffect, useState } from "react";
 
 import {
@@ -154,14 +156,14 @@ function Product({ item }) {
 
 <ProductImage
   imagePath={item.image_path}
-  alt={item.name}
+  alt={localizedProductName(item.name, i18n.language)}
   size="card"
   className="img_product"
 />
 
 
       <p className="name_product">
-        {item.name}
+        {localizedProductName(item.name, i18n.language)}
       </p>
 
 

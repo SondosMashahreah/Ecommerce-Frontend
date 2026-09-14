@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductName } from "../../i18n/productContent";
 import { ThemeSelector } from '../../preferences/Controls';
 import React, {
   useEffect,
@@ -349,7 +351,7 @@ function TopHeader() {
                     handleProductClick(product.id)
                   }
                 >
-                  <p>{product.name}</p>
+                  <p>{localizedProductName(product.name, i18n.language)}</p>
                 </div>
               ))}
 

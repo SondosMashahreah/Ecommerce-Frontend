@@ -1,6 +1,8 @@
 import { translateError } from "../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductName } from "../../i18n/productContent";
 import { useEffect, useState } from "react";
 import {
   useNavigate,
@@ -344,7 +346,7 @@ function OrderDetails() {
 
                   <div>
                     <h3>
-                      {item.product_name}
+                      {localizedProductName(item.product_name, i18n.language)}
                     </h3>
 
                     <p>{t("SKU:")}{" "}{" "}{item.sku}

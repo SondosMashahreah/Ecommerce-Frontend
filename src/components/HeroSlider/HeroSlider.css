@@ -51,8 +51,8 @@
 .hero .swiper-slide .content {
   width: 48%;
   z-index: 3;
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 1;
+  transform: none;
 }
 
 .hero .swiper-slide-active .content {
@@ -282,11 +282,25 @@
 }
 
 .hero .swiper-slide .product_image_unified {
-  opacity: 0;
-  transform: translateX(70px) scale(0.9);
+  opacity: 1;
+  transform: none;
 }
 
 .hero .swiper-slide-active
 .product_image_unified {
-  animation: heroImage 0.9s ease 0.1s forwards;
+  animation: heroImage 0.75s ease 0.05s both;
+}
+
+html[dir='rtl'] .hero .swiper-slide::before { left: 8%; right: auto; }
+html[dir='rtl'] .hero .swiper-slide .content { text-align: right; }
+html[dir='rtl'] .hero .swiper-slide-active .product_image_unified { animation-name: heroImageRtl; }
+
+@keyframes heroImageRtl {
+  from { opacity: .6; transform: translateX(-35px) scale(.96); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  html[dir='rtl'] .hero .swiper-slide::before { left: 50%; right: auto; transform: translateX(-50%); }
+  html[dir='rtl'] .hero .swiper-slide .content { text-align: center; }
 }

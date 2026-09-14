@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductDescription, localizedProductName } from "../../i18n/productContent";
 import React, {
   useEffect,
   useState
@@ -209,7 +211,7 @@ function Favorites() {
                   {imageUrl && (
                     <ProductImage
                       imagePath={product.image_path}
-                      alt={product.name}
+                      alt={localizedProductName(product.name, i18n.language)}
                       size="favorite"
                       className="favorite_image"
                     />
@@ -219,11 +221,11 @@ function Favorites() {
                   <div className="favorite_info">
 
                     <h3>
-                      {product.name}
+                      {localizedProductName(product.name, i18n.language)}
                     </h3>
 
                     <p className="favorite_description">
-                      {product.description}
+                      {localizedProductDescription(product.description, i18n.language)}
                     </p>
 
                     <strong className="favorite_price">

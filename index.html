@@ -4,10 +4,14 @@
     <meta charset="UTF-8" />
     <script>
       (() => {
-        let theme = 'system', language = 'en';
+        let theme = 'system';
+        const browserArabic = (navigator.languages || [navigator.language || 'en'])
+          .some((value) => String(value).toLowerCase().startsWith('ar'));
+        let language = browserArabic ? 'ar' : 'en';
         try {
           theme = localStorage.getItem('store.theme') || 'system';
-          language = localStorage.getItem('store.language') === 'ar' ? 'ar' : 'en';
+          const savedLanguage = localStorage.getItem('store.language');
+          if (savedLanguage === 'ar' || savedLanguage === 'en') language = savedLanguage;
         } catch {}
         const dark = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';

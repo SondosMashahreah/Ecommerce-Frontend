@@ -4,6 +4,11 @@ import en from './en.json';
 import ar from './ar.json';
 import { readPreference, savePreference } from '../preferences/storage';
 
+function browserLanguage() {
+  const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+  return languages.some((language) => String(language).toLowerCase().startsWith('ar')) ? 'ar' : 'en';
+}
+
 function applyLanguage(language) {
   const lang = language === 'ar' ? 'ar' : 'en';
   document.documentElement.lang = lang;
@@ -12,7 +17,7 @@ function applyLanguage(language) {
 }
 i18n.use(initReactI18next).init({
   resources: { en: { translation: en }, ar: { translation: ar } },
-  lng: readPreference('store.language', 'en', ['en', 'ar']),
+  lng: readPreference('store.language', browserLanguage(), ['en', 'ar']),
   fallbackLng: 'en', supportedLngs: ['en', 'ar'],
   keySeparator: false, nsSeparator: false,
   interpolation: { escapeValue: false },

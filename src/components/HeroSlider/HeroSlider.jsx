@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
+import { localizedCategory, localizedProductName } from "../../i18n/productContent";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -81,10 +82,13 @@ function HeroSlider({ products = [] }) {
                   <span>{t("Introducing the new")}</span>
 
                   <h3>
-                    {product.name}
+                    {localizedProductName(product.name, i18n.language)}
                   </h3>
 
-                  <p>{t("hero.newProduct", { name: product.name, category: t(product.category, { defaultValue: product.category }) })}</p>
+                  <p>{t("hero.newProduct", {
+                    name: localizedProductName(product.name, i18n.language),
+                    category: localizedCategory(product.category, i18n.language)
+                  })}</p>
 
                   <button
                     type="button"
@@ -99,7 +103,7 @@ function HeroSlider({ products = [] }) {
                 <div className="image">
                   <ProductImage
                     imagePath={product.image_path}
-                    alt={product.name}
+                    alt={localizedProductName(product.name, i18n.language)}
                     size="hero"
                   />
                 </div>

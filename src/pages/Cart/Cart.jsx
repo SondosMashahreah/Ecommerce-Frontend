@@ -1,6 +1,8 @@
 import { translateError } from "../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductName } from "../../i18n/productContent";
 import React, { useEffect, useState } from "react";
 import { FaTrash, FaShoppingBag } from "react-icons/fa";
 import {
@@ -273,13 +275,13 @@ const handleDecrement = async (id) => {
                 <article className="cart_item" key={item.id}>
 <ProductImage
   imagePath={product.image_path}
-  alt={product.name}
+  alt={localizedProductName(product.name, i18n.language)}
   size="cart"
   className="cart_item_image"
 />
 
                   <div className="cart_item_info">
-                    <h3>{product.name}</h3>
+                    <h3>{localizedProductName(product.name, i18n.language)}</h3>
 
                     <div className="cart_item_meta">
                       <p>

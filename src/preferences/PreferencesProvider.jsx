@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import rtlPlugin from '@mui/stylis-plugin-rtl';
 import { prefixer } from 'stylis';
 import { PreferencesContext } from './PreferencesContext';
@@ -34,13 +33,13 @@ export default function PreferencesProvider({ children }) {
   };
   const theme = useMemo(() => createTheme({
     direction,
-    palette: { mode, primary: { main: mode === 'dark' ? '#87ceeb' : '#167a9e' },
-      ...(mode === 'dark' ? { background: { default: '#101820', paper: '#1b2833' }, text: { primary: '#edf4f8', secondary: '#bdcbd5' } } : {}) },
+    palette: { mode, primary: { main: '#87ceeb' },
+      ...(mode === 'dark' ? { background: { default: '#0b1218', paper: '#15222c' }, text: { primary: '#f4f8fb', secondary: '#b7c7d2' } } : {}) },
     typography: { fontFamily: 'Inter, Tahoma, Arial, sans-serif' },
   }), [direction, mode]);
   return <PreferencesContext.Provider value={{ preference, mode, setTheme }}>
     <CacheProvider value={direction === 'rtl' ? rtlCache : ltrCache}>
-      <ThemeProvider theme={theme}><CssBaseline />{children}</ThemeProvider>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </CacheProvider>
   </PreferencesContext.Provider>;
 }

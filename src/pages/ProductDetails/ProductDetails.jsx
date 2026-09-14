@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedCategory, localizedProductDescription, localizedProductName } from "../../i18n/productContent";
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -169,7 +171,7 @@ function ProductDetails() {
 
           {product.category && (
             <span className="product_category_badge">
-              {t(product.category, { defaultValue: product.category })}
+              {localizedCategory(product.category, i18n.language)}
             </span>
           )}
 
@@ -179,7 +181,7 @@ function ProductDetails() {
             {imageUrl ? (
 <ProductImage
   imagePath={product.image_path}
-  alt={product.name}
+  alt={localizedProductName(product.name, i18n.language)}
   size="details"
 />
             ) : (
@@ -197,7 +199,7 @@ function ProductDetails() {
 
             <p className="product_details_label">{t("Product Details")}</p>
 
-            <h1>{product.name}</h1>
+            <h1>{localizedProductName(product.name, i18n.language)}</h1>
 
           </div>
 
@@ -242,7 +244,7 @@ function ProductDetails() {
             <h3>{t("About this product")}</h3>
 
             <p>
-              {product.description ||
+              {localizedProductDescription(product.description, i18n.language) ||
                 t("No description available for this product.")}
             </p>
 
