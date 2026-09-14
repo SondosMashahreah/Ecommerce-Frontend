@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -15,6 +18,8 @@ import "../AdminManagement.css";
 
 
 function AdminOrders() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [orders, setOrders] =
@@ -42,7 +47,7 @@ function AdminOrders() {
       setOrders(data);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setLoading(false);
@@ -64,19 +69,17 @@ function AdminOrders() {
     <main className="admin_management_page">
 
       <div className="admin_management_header">
-        <span>ORDER MANAGEMENT</span>
+        <span>{t("ORDER MANAGEMENT")}</span>
 
-        <h1>Orders</h1>
+        <h1>{t("Orders")}</h1>
 
-        <p>
-          View and manage customer orders.
-        </p>
+        <p>{t("View and manage customer orders.")}</p>
       </div>
 
       <div className="admin_toolbar">
 
         <input
-          placeholder="Search order ID, customer or email..."
+          placeholder={t("Search order ID, customer or email...")}
           value={search}
           onChange={(event) =>
             setSearch(
@@ -86,40 +89,26 @@ function AdminOrders() {
         />
 
         <select
-          value={status}
+          value={t(status, { defaultValue: status })}
           onChange={(event) =>
             setStatus(
               event.target.value
             )
           }
         >
-          <option value="">
-            All statuses
-          </option>
+          <option value="">{t("All statuses")}</option>
 
-          <option value="PENDING">
-            Pending
-          </option>
+          <option value="PENDING">{t("Pending")}</option>
 
-          <option value="CONFIRMED">
-            Confirmed
-          </option>
+          <option value="CONFIRMED">{t("Confirmed")}</option>
 
-          <option value="PROCESSING">
-            Processing
-          </option>
+          <option value="PROCESSING">{t("Processing")}</option>
 
-          <option value="READY">
-            Ready
-          </option>
+          <option value="READY">{t("Ready")}</option>
 
-          <option value="DONE">
-            Done
-          </option>
+          <option value="DONE">{t("Done")}</option>
 
-          <option value="CANCELLED">
-            Cancelled
-          </option>
+          <option value="CANCELLED">{t("Cancelled")}</option>
 
           
         </select>
@@ -129,26 +118,22 @@ function AdminOrders() {
       <section className="admin_table_card">
 
         {loading ? (
-          <div className="admin_empty_state">
-            Loading orders...
-          </div>
+          <div className="admin_empty_state">{t("Loading orders...")}</div>
 
         ) : orders.length === 0 ? (
-          <div className="admin_empty_state">
-            No orders found.
-          </div>
+          <div className="admin_empty_state">{t("No orders found.")}</div>
 
         ) : (
           <table className="admin_data_table">
 
             <thead>
               <tr>
-                <th>Order</th>
-                <th>Customer</th>
-                <th>Email</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th>{t("Order")}</th>
+                <th>{t("Customer")}</th>
+                <th>{t("Email")}</th>
+                <th>{t("Total")}</th>
+                <th>{t("Status")}</th>
+                <th>{t("Date")}</th>
                 <th />
               </tr>
             </thead>
@@ -185,14 +170,14 @@ function AdminOrders() {
 
                     <td>
                       <span className="admin_status_badge">
-                        {order.status}
+                        {t(order.status, { defaultValue: order.status })}
                       </span>
                     </td>
 
                     <td>
                       {new Date(
                         order.created_at
-                      ).toLocaleDateString()}
+                      ).toLocaleDateString(document.documentElement.lang)}
                     </td>
 
                     <td>
@@ -203,9 +188,7 @@ function AdminOrders() {
                             `/admin/orders/${order.id}`
                           )
                         }
-                      >
-                        View
-                      </button>
+                      >{t("View")}</button>
                     </td>
 
                   </tr>

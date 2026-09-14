@@ -1,5 +1,6 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import './i18n';
+import PreferencesProvider from './preferences/PreferencesProvider';
+import './preferences/preferences.css';
 import './index.css'
 import App from './App.jsx'
 import React from 'react'
@@ -12,7 +13,9 @@ initializeClarity()
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
 <BrowserRouter basename='/'>
-<App />
+      <PreferencesProvider>
+        <App />
+      </PreferencesProvider>
 </BrowserRouter>
   </React.StrictMode>,
 )

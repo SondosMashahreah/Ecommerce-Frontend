@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useRef,
@@ -22,6 +25,8 @@ import {
 import "./AdminProductForm.css";
 
 function AdminProductCreate() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -90,7 +95,7 @@ function AdminProductCreate() {
 
     if (!file.type.startsWith("image/")) {
       setError(
-        "Please select a valid image file"
+        t("Please select a valid image file")
       );
       return;
     }
@@ -179,18 +184,11 @@ function AdminProductCreate() {
 
       <div className="admin_form_header">
         <div>
-          <span>
-            PRODUCT MANAGEMENT
-          </span>
+          <span>{t("PRODUCT MANAGEMENT")}</span>
 
-          <h1>
-            Create Product
-          </h1>
+          <h1>{t("Create Product")}</h1>
 
-          <p>
-            Add a new product and its
-            first inventory variant.
-          </p>
+          <p>{t("Add a new product and its first inventory variant.")}</p>
         </div>
       </div>
 
@@ -201,22 +199,17 @@ function AdminProductCreate() {
 
         {error && (
           <div className="admin_form_error">
-            {error}
+            {translateError(error)}
           </div>
         )}
 
         <section className="admin_form_card">
 
-          <h2>
-            Product Information
-          </h2>
+          <h2>{t("Product Information")}</h2>
 
           <div className="admin_form_grid">
 
-            <label>
-              Product name
-
-              <input
+            <label>{t("Product name")}<input
                 name="name"
                 value={form.name}
                 onChange={change}
@@ -224,15 +217,12 @@ function AdminProductCreate() {
               />
             </label>
 
-            <label>
-              Category
-
-              <input
+            <label>{t("Category")}<input
                 name="category"
                 list="product-categories"
                 value={form.category}
                 onChange={change}
-                placeholder="Select or type category"
+                placeholder={t("Select or type category")}
                 required
               />
 
@@ -247,16 +237,10 @@ function AdminProductCreate() {
                 )}
               </datalist>
 
-              <small className="admin_field_hint">
-                Choose an existing category
-                or type a new one.
-              </small>
+              <small className="admin_field_hint">{t("Choose an existing category or type a new one.")}</small>
             </label>
 
-            <label>
-              Price
-
-              <input
+            <label>{t("Price")}<input
                 name="price"
                 type="number"
                 min="0.01"
@@ -267,10 +251,7 @@ function AdminProductCreate() {
               />
             </label>
 
-            <label className="full">
-              Description
-
-              <textarea
+            <label className="full">{t("Description")}<textarea
                 name="description"
                 value={form.description}
                 onChange={change}
@@ -278,9 +259,7 @@ function AdminProductCreate() {
             </label>
 
             <div className="full">
-              <span className="admin_upload_label">
-                Product image
-              </span>
+              <span className="admin_upload_label">{t("Product image")}</span>
 
               <div
                 className={
@@ -323,17 +302,11 @@ function AdminProductCreate() {
                       <FaCloudUploadAlt />
                     </div>
 
-                    <strong>
-                      Drop product image here
-                    </strong>
+                    <strong>{t("Drop product image here")}</strong>
 
-                    <span>
-                      or click to browse
-                    </span>
+                    <span>{t("or click to browse")}</span>
 
-                    <small>
-                      PNG, JPG, JPEG or WEBP
-                    </small>
+                    <small>{t("PNG, JPG, JPEG or WEBP")}</small>
 
                   </div>
                 ) : (
@@ -341,7 +314,7 @@ function AdminProductCreate() {
 
                     <img
                       src={imagePreview}
-                      alt="Product preview"
+                      alt={t("Product preview")}
                     />
 
                     <div className="admin_image_preview_info">
@@ -388,16 +361,11 @@ function AdminProductCreate() {
 
         <section className="admin_form_card">
 
-          <h2>
-            Initial Variant
-          </h2>
+          <h2>{t("Initial Variant")}</h2>
 
           <div className="admin_form_grid">
 
-            <label>
-              SKU
-
-              <input
+            <label>{t("SKU")}<input
                 name="sku"
                 value={form.sku}
                 onChange={change}
@@ -405,30 +373,21 @@ function AdminProductCreate() {
               />
             </label>
 
-            <label>
-              Size
-
-              <input
+            <label>{t("Size")}<input
                 name="size"
                 value={form.size}
                 onChange={change}
               />
             </label>
 
-            <label>
-              Color
-
-              <input
+            <label>{t("Color")}<input
                 name="color"
                 value={form.color}
                 onChange={change}
               />
             </label>
 
-            <label>
-              Stock
-
-              <input
+            <label>{t("Stock")}<input
                 name="stock"
                 type="number"
                 min="0"
@@ -437,10 +396,7 @@ function AdminProductCreate() {
               />
             </label>
 
-            <label>
-              Low stock limit
-
-              <input
+            <label>{t("Low stock limit")}<input
                 name="stock_limit"
                 type="number"
                 min="0"
@@ -463,17 +419,15 @@ function AdminProductCreate() {
                 "/admin/products"
               )
             }
-          >
-            Cancel
-          </button>
+          >{t("Cancel")}</button>
 
           <button
             type="submit"
             disabled={saving}
           >
             {saving
-              ? "Saving..."
-              : "Create Product"}
+              ? t("Saving...")
+              : t("Create Product")}
           </button>
 
         </div>

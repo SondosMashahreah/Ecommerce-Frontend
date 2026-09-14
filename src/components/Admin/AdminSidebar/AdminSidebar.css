@@ -4,6 +4,7 @@
 
   width: 280px;
   height: 100vh;
+  box-sizing: border-box;
 
   padding: 26px 20px 18px;
 
@@ -11,19 +12,44 @@
   flex-direction: column;
 
   background: #ffffff;
-
   border-right: 1px solid #dfeaf1;
 
   box-shadow:
     6px 0 24px rgba(31, 79, 112, 0.05);
 
-  overflow: hidden;
+  /* =========================
+     SIDEBAR SCROLL
+  ========================= */
+  overflow-y: auto;
+  overflow-x: hidden;
 
   z-index: 100;
 
   transition:
     width 0.28s ease,
     padding 0.28s ease;
+
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #c9e1ec transparent;
+}
+
+/* Chrome / Edge / Safari */
+.admin_sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.admin_sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin_sidebar::-webkit-scrollbar-thumb {
+  background: #c9e1ec;
+  border-radius: 10px;
+}
+
+.admin_sidebar::-webkit-scrollbar-thumb:hover {
+  background: #9fcadd;
 }
 
 
@@ -39,22 +65,21 @@
   justify-content: space-between;
 
   gap: 10px;
-}
 
+  /* ما يصغر الهيدر */
+  flex-shrink: 0;
+}
 
 .admin_sidebar_brand {
   color: #0f2f46;
 
   font-size: 26px;
   font-weight: 900;
-
   letter-spacing: 5px;
 
   white-space: nowrap;
-
   overflow: hidden;
 }
-
 
 .admin_brand_short {
   display: none;
@@ -63,10 +88,8 @@
 
   font-size: 27px;
   font-weight: 900;
-
   letter-spacing: 0;
 }
-
 
 .admin_sidebar_toggle {
   width: 34px;
@@ -82,7 +105,6 @@
   border-radius: 9px;
 
   background: #f7fbfd;
-
   color: #4f7d95;
 
   cursor: pointer;
@@ -94,18 +116,14 @@
     transform 0.2s ease;
 }
 
-
 .admin_sidebar_toggle svg {
   width: 15px;
   height: 15px;
 }
 
-
 .admin_sidebar_toggle:hover {
   background: #e7f5fb;
-
   border-color: #bee3f2;
-
   color: #168ed0;
 
   transform: translateY(-1px);
@@ -123,10 +141,12 @@
 
   font-size: 11px;
   font-weight: 700;
-
   letter-spacing: 2px;
 
   white-space: nowrap;
+
+  /* مهم حتى ما تنضغط */
+  flex-shrink: 0;
 }
 
 
@@ -135,23 +155,24 @@
 ========================= */
 
 .admin_sidebar_nav {
-  flex: 1;
-
-  min-height: 0;
+  /*
+    ما بنستخدم flex: 1 هون
+    حتى ما يقص العناصر الموجودة بالأسفل.
+    الـ sidebar نفسها هي اللي بتعمل scroll.
+  */
+  flex: none;
+  min-height: auto;
 
   display: flex;
   flex-direction: column;
 
   gap: 5px;
 
-  /* no internal scrollbar */
-  overflow: hidden;
+  overflow: visible;
 }
-
 
 .admin_nav_item {
   min-height: 48px;
-
   padding: 0 16px;
 
   flex-shrink: 0;
@@ -178,42 +199,36 @@
     transform 0.2s ease;
 }
 
-
 .admin_nav_item svg {
   width: 18px;
   height: 18px;
-
   min-width: 18px;
 
   color: #79c7e8;
 }
 
-
 .admin_nav_item:hover {
   background: #eef8fc;
-
   color: #1a5f85;
 
   transform: translateX(2px);
 }
 
-
 .admin_nav_item.active {
   background: #e4f4fb;
-
   color: #167eb5;
 }
-
 
 .admin_nav_item.active svg {
   color: #168ed0;
 }
 
-
 .admin_sidebar_divider {
   margin: 6px 0;
 
   border-top: 1px solid #e5eef3;
+
+  flex-shrink: 0;
 }
 
 
@@ -222,11 +237,17 @@
 ========================= */
 
 .admin_sidebar_bottom {
+  /*
+    auto بخلي الجزء السفلي ينزل لآخر
+    الـ sidebar لما يكون في مساحة.
+  */
+  margin-top: auto;
+
   flex-shrink: 0;
 
   padding-top: 12px;
+  padding-bottom: 6px;
 }
-
 
 .admin_storefront_btn {
   width: 100%;
@@ -242,7 +263,6 @@
   border-radius: 10px;
 
   background: #f9fdff;
-
   color: #287ca6;
 
   font-size: 13px;
@@ -258,21 +278,16 @@
     color 0.2s ease;
 }
 
-
 .admin_storefront_btn:hover {
   background: #eaf7fc;
-
   border-color: #bde2f2;
-
   color: #176a95;
 }
-
 
 .admin_account {
   margin-top: 10px;
 
   min-height: 54px;
-
   padding: 8px;
 
   display: flex;
@@ -282,8 +297,9 @@
   gap: 8px;
 
   border-radius: 10px;
-}
 
+  flex-shrink: 0;
+}
 
 .admin_account_text {
   min-width: 0;
@@ -294,7 +310,6 @@
   gap: 3px;
 }
 
-
 .admin_account_text strong {
   color: #17374a;
 
@@ -303,7 +318,6 @@
   white-space: nowrap;
 }
 
-
 .admin_account_text span {
   color: #8ea3af;
 
@@ -311,9 +325,9 @@
 
   overflow: hidden;
   text-overflow: ellipsis;
+
   white-space: nowrap;
 }
-
 
 .admin_logout_icon {
   width: 34px;
@@ -329,7 +343,6 @@
   border-radius: 8px;
 
   background: transparent;
-
   color: #517487;
 
   cursor: pointer;
@@ -339,10 +352,8 @@
     color 0.2s ease;
 }
 
-
 .admin_logout_icon:hover {
   background: #eaf7fc;
-
   color: #168ed0;
 }
 
@@ -358,7 +369,6 @@
   padding-right: 14px;
 }
 
-
 .admin_sidebar.collapsed
 .admin_sidebar_header {
   flex-direction: column;
@@ -368,35 +378,29 @@
   gap: 12px;
 }
 
-
 .admin_sidebar.collapsed
 .admin_brand_full {
   display: none;
 }
-
 
 .admin_sidebar.collapsed
 .admin_brand_short {
   display: block;
 }
 
-
 .admin_sidebar.collapsed
 .admin_sidebar_label {
   display: none;
 }
-
 
 .admin_sidebar.collapsed
 .admin_sidebar_nav {
   margin-top: 18px;
 }
 
-
 .admin_sidebar.collapsed
 .admin_nav_item {
   width: 58px;
-
   min-height: 52px;
 
   padding: 0;
@@ -408,32 +412,26 @@
   margin-inline: auto;
 }
 
-
 .admin_sidebar.collapsed
 .admin_nav_item span {
   display: none;
 }
-
 
 .admin_sidebar.collapsed
 .admin_nav_item:hover {
   transform: none;
 }
 
-
 .admin_sidebar.collapsed
 .admin_sidebar_divider {
   width: 58px;
 
-  margin:
-    6px auto;
+  margin: 6px auto;
 }
-
 
 .admin_sidebar.collapsed
 .admin_storefront_btn {
   width: 58px;
-
   height: 50px;
 
   margin-inline: auto;
@@ -443,12 +441,10 @@
   justify-content: center;
 }
 
-
 .admin_sidebar.collapsed
 .admin_storefront_btn span {
   display: none;
 }
-
 
 .admin_sidebar.collapsed
 .admin_account {
@@ -457,12 +453,10 @@
   justify-content: center;
 }
 
-
 .admin_sidebar.collapsed
 .admin_account_text {
   display: none;
 }
-
 
 .admin_sidebar.collapsed
 .admin_logout_icon {
@@ -481,8 +475,13 @@
 
     padding:
       18px 10px 14px;
-  }
 
+    /*
+      بيضل الـ scroll شغال على الموبايل
+    */
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   .admin_sidebar_header {
     flex-direction: column;
@@ -492,11 +491,9 @@
     gap: 10px;
   }
 
-
   .admin_brand_full {
     display: none;
   }
-
 
   .admin_brand_short {
     display: block;
@@ -504,28 +501,26 @@
     font-size: 25px;
   }
 
-
   .admin_sidebar_toggle {
     width: 31px;
     height: 31px;
   }
 
-
   .admin_sidebar_label {
     display: none;
   }
-
 
   .admin_sidebar_nav {
     margin-top: 14px;
 
     gap: 4px;
-  }
 
+    flex: none;
+    overflow: visible;
+  }
 
   .admin_nav_item {
     width: 54px;
-
     min-height: 48px;
 
     padding: 0;
@@ -535,24 +530,19 @@
     margin-inline: auto;
   }
 
-
   .admin_nav_item span {
     display: none;
   }
-
 
   .admin_nav_item:hover {
     transform: none;
   }
 
-
   .admin_sidebar_divider {
     width: 54px;
 
-    margin:
-      5px auto;
+    margin: 5px auto;
   }
-
 
   .admin_storefront_btn {
     width: 54px;
@@ -565,11 +555,9 @@
     justify-content: center;
   }
 
-
   .admin_storefront_btn span {
     display: none;
   }
-
 
   .admin_account {
     min-height: auto;
@@ -581,14 +569,11 @@
     justify-content: center;
   }
 
-
   .admin_account_text {
     display: none;
   }
 
-
   /* smaller logout on phone */
-
   .admin_logout_icon {
     width: 29px;
     height: 29px;
@@ -598,12 +583,10 @@
     border-radius: 7px;
   }
 
-
   .admin_logout_icon svg {
     width: 14px;
     height: 14px;
   }
-
 
   .admin_sidebar.collapsed {
     width: 76px;
@@ -614,45 +597,56 @@
 }
 
 
-/* very short screens */
+/* =========================
+   VERY SHORT SCREENS
+========================= */
 
 @media (max-height: 680px) {
 
   .admin_sidebar {
     padding-top: 14px;
     padding-bottom: 10px;
-  }
 
+    /*
+      مهم جداً للشاشات القصيرة:
+      إذا المحتوى أطول من الشاشة
+      بنقدر ننزل بالـ scroll.
+    */
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   .admin_sidebar_label {
     margin-top: 14px;
     margin-bottom: 10px;
   }
 
-
   .admin_sidebar_nav {
     gap: 2px;
-  }
 
+    flex: none;
+    overflow: visible;
+  }
 
   .admin_nav_item {
     min-height: 42px;
   }
 
-
   .admin_sidebar_divider {
-    margin:
-      3px 0;
+    margin: 3px 0;
   }
-
 
   .admin_storefront_btn {
     height: 42px;
   }
 
-
   .admin_account {
     min-height: 42px;
+
     margin-top: 4px;
+  }
+
+  .admin_sidebar_bottom {
+    padding-bottom: 4px;
   }
 }

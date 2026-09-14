@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -23,6 +26,8 @@ import "./AdminProducts.css";
 
 
 function AdminProducts() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [products, setProducts] =
@@ -63,7 +68,7 @@ function AdminProducts() {
   ) => {
     const confirmed =
       window.confirm(
-        "Delete this product?"
+        t("Delete this product?")
       );
 
     if (!confirmed) return;
@@ -82,16 +87,14 @@ function AdminProducts() {
       );
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
     }
   };
 
 
   if (loading) {
     return (
-      <main className="admin_products_page">
-        Loading products...
-      </main>
+      <main className="admin_products_page">{t("Loading products...")}</main>
     );
   }
 
@@ -104,18 +107,11 @@ function AdminProducts() {
         <div className="admin_products_header">
 
           <div>
-            <span>
-              ADMIN PANEL
-            </span>
+            <span>{t("ADMIN PANEL")}</span>
 
-            <h1>
-              Product Management
-            </h1>
+            <h1>{t("Product Management")}</h1>
 
-            <p>
-              Manage products,
-              variants and inventory.
-            </p>
+            <p>{t("Manage products, variants and inventory.")}</p>
           </div>
 
 
@@ -127,16 +123,14 @@ function AdminProducts() {
               )
             }
           >
-            <FaPlus />
-            Add Product
-          </button>
+            <FaPlus />{t("Add Product")}</button>
 
         </div>
 
 
         {error && (
           <div className="admin_products_error">
-            {error}
+            {translateError(error)}
           </div>
         )}
 
@@ -144,12 +138,12 @@ function AdminProducts() {
         <div className="admin_products_table">
 
           <div className="admin_products_table_head">
-            <span>Product</span>
-            <span>Category</span>
-            <span>Price</span>
-            <span>Stock</span>
-            <span>Status</span>
-            <span>Actions</span>
+            <span>{t("Product")}</span>
+            <span>{t("Category")}</span>
+            <span>{t("Price")}</span>
+            <span>{t("Stock")}</span>
+            <span>{t("Status")}</span>
+            <span>{t("Actions")}</span>
           </div>
 
 
@@ -225,7 +219,7 @@ function AdminProducts() {
 
 
                 <span>
-                  {product.category}
+                  {t(product.category, { defaultValue: product.category })}
                 </span>
 
 
@@ -242,7 +236,7 @@ function AdminProducts() {
 
 
                 <span>
-                  {status}
+                  {t(status, { defaultValue: status })}
                 </span>
 
 

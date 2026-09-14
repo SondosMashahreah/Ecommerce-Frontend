@@ -1,3 +1,6 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +29,8 @@ import "./Profile.css";
 
 
 function Profile() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [user, setUser] = useState(null);
 
   const [error, setError] = useState("");
@@ -83,7 +88,7 @@ const [uploadingImage, setUploadingImage] =
       } catch (error) {
         setError(
           error.message ||
-          "Failed to load profile"
+          t("Failed to load profile")
         );
 
       } finally {
@@ -133,7 +138,7 @@ const [uploadingImage, setUploadingImage] =
 
     if (cleanName.length < 2) {
       setError(
-        "Name must contain at least 2 characters."
+        t("Name must contain at least 2 characters.")
       );
 
       return;
@@ -141,7 +146,7 @@ const [uploadingImage, setUploadingImage] =
 
     if (cleanUsername.length < 3) {
       setError(
-        "Username must contain at least 3 characters."
+        t("Username must contain at least 3 characters.")
       );
 
       return;
@@ -156,7 +161,7 @@ const [uploadingImage, setUploadingImage] =
       )
     ) {
       setError(
-        "Username can contain letters, numbers and underscore only."
+        t("Username can contain letters, numbers and underscore only.")
       );
 
       return;
@@ -183,13 +188,13 @@ const [uploadingImage, setUploadingImage] =
       setEditing(false);
 
       setSuccess(
-        "Profile updated successfully."
+        t("Profile updated successfully.")
       );
 
     } catch (error) {
       setError(
         error.message ||
-        "Failed to update profile"
+        t("Failed to update profile")
       );
 
     } finally {
@@ -234,7 +239,7 @@ const handleChangePassword = async (event) => {
     !confirmPassword
   ) {
     setError(
-      "Please fill in all password fields."
+      t("Please fill in all password fields.")
     );
 
     return;
@@ -242,7 +247,7 @@ const handleChangePassword = async (event) => {
 
   if (newPassword.length < 6) {
     setError(
-      "New password must contain at least 6 characters."
+      t("New password must contain at least 6 characters.")
     );
 
     return;
@@ -250,7 +255,7 @@ const handleChangePassword = async (event) => {
 
   if (newPassword !== confirmPassword) {
     setError(
-      "New password and confirmation do not match."
+      t("New password and confirmation do not match.")
     );
 
     return;
@@ -258,7 +263,7 @@ const handleChangePassword = async (event) => {
 
   if (currentPassword === newPassword) {
     setError(
-      "New password must be different from current password."
+      t("New password must be different from current password.")
     );
 
     return;
@@ -280,13 +285,13 @@ const handleChangePassword = async (event) => {
 
     setSuccess(
       result.message ||
-      "Password changed successfully."
+      t("Password changed successfully.")
     );
 
   } catch (error) {
     setError(
       error.message ||
-      "Failed to change password."
+      t("Failed to change password.")
     );
 
   } finally {
@@ -312,7 +317,7 @@ const handleProfileImageChange = async (
 
   if (!allowedTypes.includes(file.type)) {
     setError(
-      "Please select a JPG, PNG or WEBP image."
+      t("Please select a JPG, PNG or WEBP image.")
     );
 
     event.target.value = "";
@@ -325,7 +330,7 @@ const handleProfileImageChange = async (
 
   if (file.size > maxSize) {
     setError(
-      "Profile image must be smaller than 5 MB."
+      t("Profile image must be smaller than 5 MB.")
     );
 
     event.target.value = "";
@@ -345,13 +350,13 @@ const handleProfileImageChange = async (
     setUser(updatedUser);
 
     setSuccess(
-      "Profile picture updated successfully."
+      t("Profile picture updated successfully.")
     );
 
   } catch (error) {
     setError(
       error.message ||
-      "Failed to upload profile picture."
+      t("Failed to upload profile picture.")
     );
 
   } finally {
@@ -381,9 +386,7 @@ const handleProfileImageChange = async (
         <div className="profile_spinner">
         </div>
 
-        <p>
-          Loading your profile...
-        </p>
+        <p>{t("Loading your profile...")}</p>
       </div>
     );
   }
@@ -400,24 +403,17 @@ const handleProfileImageChange = async (
       <div className="profile_content">
 
         <div className="profile_heading">
-          <p className="profile_small_title">
-            MY ACCOUNT
-          </p>
+          <p className="profile_small_title">{t("MY ACCOUNT")}</p>
 
-          <h1>
-            My Profile
-          </h1>
+          <h1>{t("My Profile")}</h1>
 
-          <p>
-            Manage your personal information
-            and account settings.
-          </p>
+          <p>{t("Manage your personal information and account settings.")}</p>
         </div>
 
 
         {error && (
           <div className="profile_error">
-            {error}
+            {translateError(error)}
           </div>
         )}
 
@@ -459,7 +455,7 @@ const handleProfileImageChange = async (
         : ""
     }`
   }
-  title="Change profile picture"
+  title={t("Change profile picture")}
 >
 
   <input
@@ -484,9 +480,7 @@ const handleProfileImageChange = async (
 
 
               <div className="profile_welcome">
-                <span>
-                  Welcome back,
-                </span>
+                <span>{t("Welcome back,")}</span>
 
                 <h2>
                   {user.name}
@@ -511,9 +505,7 @@ const handleProfileImageChange = async (
         </div>
 
         <div className="profile_info_text">
-          <span>
-            Full Name
-          </span>
+          <span>{t("Full Name")}</span>
 
           <strong>
             {user.name}
@@ -530,9 +522,7 @@ const handleProfileImageChange = async (
         </div>
 
         <div className="profile_info_text">
-          <span>
-            Username
-          </span>
+          <span>{t("Username")}</span>
 
           <strong>
             @{user.username}
@@ -549,9 +539,7 @@ const handleProfileImageChange = async (
         </div>
 
         <div className="profile_info_text">
-          <span>
-            Email Address
-          </span>
+          <span>{t("Email Address")}</span>
 
           <strong>
             {user.email}
@@ -572,9 +560,7 @@ const handleProfileImageChange = async (
       >
         <FaPen />
 
-        <span>
-          Edit Profile
-        </span>
+        <span>{t("Edit Profile")}</span>
       </button>
 
 
@@ -585,9 +571,7 @@ const handleProfileImageChange = async (
       >
         <FaKey />
 
-        <span>
-          Change Password
-        </span>
+        <span>{t("Change Password")}</span>
       </button>
 
 
@@ -598,9 +582,7 @@ const handleProfileImageChange = async (
       >
         <FaSignOutAlt />
 
-        <span>
-          Logout
-        </span>
+        <span>{t("Logout")}</span>
       </button>
 
     </div>
@@ -617,13 +599,9 @@ const handleProfileImageChange = async (
     <div className="profile_edit_header">
 
       <div>
-        <span>
-          PERSONAL INFORMATION
-        </span>
+        <span>{t("PERSONAL INFORMATION")}</span>
 
-        <h3>
-          Edit Profile
-        </h3>
+        <h3>{t("Edit Profile")}</h3>
       </div>
 
 
@@ -641,9 +619,7 @@ const handleProfileImageChange = async (
 
     <div className="profile_form_group">
 
-      <label htmlFor="profile-name">
-        Full Name
-      </label>
+      <label htmlFor="profile-name">{t("Full Name")}</label>
 
       <div className="profile_input_wrapper">
 
@@ -656,7 +632,7 @@ const handleProfileImageChange = async (
           onChange={(event) =>
             setName(event.target.value)
           }
-          placeholder="Your full name"
+          placeholder={t("Your full name")}
           required
           disabled={saving}
         />
@@ -668,9 +644,7 @@ const handleProfileImageChange = async (
 
     <div className="profile_form_group">
 
-      <label htmlFor="profile-username">
-        Username
-      </label>
+      <label htmlFor="profile-username">{t("Username")}</label>
 
       <div className="profile_input_wrapper">
 
@@ -683,16 +657,14 @@ const handleProfileImageChange = async (
           onChange={(event) =>
             setUsername(event.target.value)
           }
-          placeholder="Your username"
+          placeholder={t("Your username")}
           required
           disabled={saving}
         />
 
       </div>
 
-      <small>
-        Letters, numbers and underscore only.
-      </small>
+      <small>{t("Letters, numbers and underscore only.")}</small>
 
     </div>
 
@@ -705,9 +677,7 @@ const handleProfileImageChange = async (
         onClick={handleCancelEdit}
         disabled={saving}
       >
-        <FaTimes />
-        Cancel
-      </button>
+        <FaTimes />{t("Cancel")}</button>
 
 
       <button
@@ -718,8 +688,8 @@ const handleProfileImageChange = async (
         <FaSave />
 
         {saving
-          ? "Saving..."
-          : "Save Changes"}
+          ? t("Saving...")
+          : t("Save Changes")}
       </button>
 
     </div>
@@ -737,13 +707,9 @@ const handleProfileImageChange = async (
     <div className="profile_edit_header">
 
       <div>
-        <span>
-          ACCOUNT SECURITY
-        </span>
+        <span>{t("ACCOUNT SECURITY")}</span>
 
-        <h3>
-          Change Password
-        </h3>
+        <h3>{t("Change Password")}</h3>
       </div>
 
 
@@ -762,18 +728,13 @@ const handleProfileImageChange = async (
     <div className="profile_password_notice">
       <FaKey />
 
-      <p>
-        Choose a strong password that you
-        don't use on another account.
-      </p>
+      <p>{t("Choose a strong password that you don't use on another account.")}</p>
     </div>
 
 
     <div className="profile_form_group">
 
-      <label htmlFor="current-password">
-        Current Password
-      </label>
+      <label htmlFor="current-password">{t("Current Password")}</label>
 
       <div className="profile_input_wrapper">
 
@@ -792,7 +753,7 @@ const handleProfileImageChange = async (
               event.target.value
             )
           }
-          placeholder="Enter current password"
+          placeholder={t("Enter current password")}
           autoComplete="current-password"
           disabled={passwordSaving}
           required
@@ -810,8 +771,8 @@ const handleProfileImageChange = async (
           tabIndex="-1"
         >
           {showCurrentPassword
-            ? "Hide"
-            : "Show"}
+            ? t("Hide")
+            : t("Show")}
         </button>
 
       </div>
@@ -821,9 +782,7 @@ const handleProfileImageChange = async (
 
     <div className="profile_form_group">
 
-      <label htmlFor="new-password">
-        New Password
-      </label>
+      <label htmlFor="new-password">{t("New Password")}</label>
 
       <div className="profile_input_wrapper">
 
@@ -842,7 +801,7 @@ const handleProfileImageChange = async (
               event.target.value
             )
           }
-          placeholder="Enter new password"
+          placeholder={t("Enter new password")}
           autoComplete="new-password"
           disabled={passwordSaving}
           required
@@ -860,25 +819,20 @@ const handleProfileImageChange = async (
           tabIndex="-1"
         >
           {showNewPassword
-            ? "Hide"
-            : "Show"}
+            ? t("Hide")
+            : t("Show")}
         </button>
 
       </div>
 
-      <small>
-        Password must contain at least
-        6 characters.
-      </small>
+      <small>{t("Password must contain at least 6 characters.")}</small>
 
     </div>
 
 
     <div className="profile_form_group">
 
-      <label htmlFor="confirm-password">
-        Confirm New Password
-      </label>
+      <label htmlFor="confirm-password">{t("Confirm New Password")}</label>
 
       <div className="profile_input_wrapper">
 
@@ -897,7 +851,7 @@ const handleProfileImageChange = async (
               event.target.value
             )
           }
-          placeholder="Confirm new password"
+          placeholder={t("Confirm new password")}
           autoComplete="new-password"
           disabled={passwordSaving}
           required
@@ -915,8 +869,8 @@ const handleProfileImageChange = async (
           tabIndex="-1"
         >
           {showConfirmPassword
-            ? "Hide"
-            : "Show"}
+            ? t("Hide")
+            : t("Show")}
         </button>
 
       </div>
@@ -932,10 +886,7 @@ const handleProfileImageChange = async (
         onClick={handleCancelPasswordChange}
         disabled={passwordSaving}
       >
-        <FaTimes />
-
-        Cancel
-      </button>
+        <FaTimes />{t("Cancel")}</button>
 
 
       <button
@@ -946,8 +897,8 @@ const handleProfileImageChange = async (
         <FaKey />
 
         {passwordSaving
-          ? "Changing..."
-          : "Change Password"}
+          ? t("Changing...")
+          : t("Change Password")}
       </button>
 
     </div>
@@ -958,9 +909,7 @@ const handleProfileImageChange = async (
           </>
         ) : (
           !error && (
-            <div className="profile_error">
-              User information is unavailable.
-            </div>
+            <div className="profile_error">{t("User information is unavailable.")}</div>
           )
         )}
 

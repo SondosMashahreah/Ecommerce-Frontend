@@ -1,3 +1,8 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductName } from "../../i18n/productContent";
 import { useEffect, useState } from "react";
 import {
   useNavigate,
@@ -36,6 +41,8 @@ const ORDER_STEPS = [
 
 
 function OrderDetails() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -57,7 +64,7 @@ function OrderDetails() {
     } catch (error) {
       setError(
         error.message ||
-        "Failed to load order"
+        t("Failed to load order")
       );
 
     } finally {
@@ -73,7 +80,7 @@ function OrderDetails() {
 
   const handleCancel = async () => {
     const confirmed = window.confirm(
-      "Are you sure you want to cancel this order?"
+      t("Are you sure you want to cancel this order?")
     );
 
     if (!confirmed) {
@@ -89,7 +96,7 @@ function OrderDetails() {
       setOrder(updated);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -99,7 +106,7 @@ function OrderDetails() {
 
   const handleReturn = async () => {
     const confirmed = window.confirm(
-      "Do you want to request a return for this order?"
+      t("Do you want to request a return for this order?")
     );
 
     if (!confirmed) {
@@ -115,7 +122,7 @@ function OrderDetails() {
       setOrder(updated);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -125,7 +132,7 @@ function OrderDetails() {
 
   const handleRefund = async () => {
     const confirmed = window.confirm(
-      "Do you want to request a refund for this order?"
+      t("Do you want to request a refund for this order?")
     );
 
     if (!confirmed) {
@@ -141,7 +148,7 @@ function OrderDetails() {
       setOrder(updated);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -158,13 +165,13 @@ function OrderDetails() {
 
       alert(
         result.message ||
-        "Order added to cart"
+        t("Order added to cart")
       );
 
       navigate("/cart");
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -179,7 +186,7 @@ function OrderDetails() {
       await downloadOrderInvoice(order.id);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -210,9 +217,7 @@ function OrderDetails() {
   if (loading) {
     return (
       <div className="order_details_page">
-        <div className="order_details_state">
-          Loading order details...
-        </div>
+        <div className="order_details_state">{t("Loading order details...")}</div>
       </div>
     );
   }
@@ -222,7 +227,7 @@ function OrderDetails() {
     return (
       <div className="order_details_page">
         <div className="order_details_error">
-          {error || "Order not found"}
+          {error || t("Order not found")}
         </div>
       </div>
     );
@@ -252,27 +257,21 @@ function OrderDetails() {
           className="back_orders_btn"
           onClick={() => navigate("/orders")}
         >
-          <FaArrowLeft />
-          Back to Orders
-        </button>
+          <FaArrowLeft />{t("Back to Orders")}</button>
 
 
         <div className="order_details_header">
 
           <div>
-            <p className="order_details_eyebrow">
-              ORDER DETAILS
-            </p>
+            <p className="order_details_eyebrow">{t("ORDER DETAILS")}</p>
 
-            <h1>
-              Order #{order.id}
+            <h1>{t("Order #")}{" "}{order.id}
             </h1>
 
-            <p>
-              Placed on{" "}
+            <p>{t("Placed on")}{" "}{" "}
               {new Date(
                 order.created_at
-              ).toLocaleString()}
+              ).toLocaleString(document.documentElement.lang)}
             </p>
           </div>
 
@@ -282,7 +281,7 @@ function OrderDetails() {
               getStatusClass(order.status)
             }
           >
-            {order.status}
+            {t(order.status, { defaultValue: order.status })}
           </span>
 
         </div>
@@ -290,9 +289,7 @@ function OrderDetails() {
 
         <section className="order_timeline_section">
 
-          <h2>
-            Order Progress
-          </h2>
+          <h2>{t("Order Progress")}</h2>
 
           <div className="order_timeline">
 
@@ -313,7 +310,7 @@ function OrderDetails() {
                 </div>
 
                 <span>
-                  {step}
+                  {t(step, { defaultValue: step })}
                 </span>
 
                 {index <
@@ -335,9 +332,7 @@ function OrderDetails() {
 
             <div className="section_title">
               <FaBox />
-              <h2>
-                Items
-              </h2>
+              <h2>{t("Items")}</h2>
             </div>
 
 
@@ -351,19 +346,17 @@ function OrderDetails() {
 
                   <div>
                     <h3>
-                      {item.product_name}
+                      {localizedProductName(item.product_name, i18n.language)}
                     </h3>
 
-                    <p>
-                      SKU: {item.sku}
+                    <p>{t("SKU:")}{" "}{" "}{item.sku}
                     </p>
                   </div>
 
 
                   <div className="order_item_numbers">
 
-                    <span>
-                      Qty: {item.quantity}
+                    <span>{t("Qty:")}{" "}{" "}{item.quantity}
                     </span>
 
                     <span>
@@ -392,14 +385,10 @@ function OrderDetails() {
 
           <aside className="order_details_summary">
 
-            <h2>
-              Order Summary
-            </h2>
+            <h2>{t("Order Summary")}</h2>
 
             <div className="details_summary_row">
-              <span>
-                Items
-              </span>
+              <span>{t("Items")}</span>
 
               <strong>
                 {order.items.reduce(
@@ -412,13 +401,9 @@ function OrderDetails() {
 
 
             <div className="details_summary_row">
-              <span>
-                Shipping
-              </span>
+              <span>{t("Shipping")}</span>
 
-              <strong>
-                Free
-              </strong>
+              <strong>{t("Free")}</strong>
             </div>
 
 
@@ -426,9 +411,7 @@ function OrderDetails() {
 
 
             <div className="details_summary_total">
-              <span>
-                Total
-              </span>
+              <span>{t("Total")}</span>
 
               <strong>
                 $
@@ -446,9 +429,7 @@ function OrderDetails() {
                 onClick={handleInvoice}
                 disabled={working}
               >
-                <FaFileInvoice />
-                Download Invoice
-              </button>
+                <FaFileInvoice />{t("Download Invoice")}</button>
 
 
               <button
@@ -456,9 +437,7 @@ function OrderDetails() {
                 onClick={handleReorder}
                 disabled={working}
               >
-                <FaRedo />
-                Reorder
-              </button>
+                <FaRedo />{t("Reorder")}</button>
 
 
               {canCancel && (
@@ -468,9 +447,7 @@ function OrderDetails() {
                   onClick={handleCancel}
                   disabled={working}
                 >
-                  <FaTimesCircle />
-                  Cancel Order
-                </button>
+                  <FaTimesCircle />{t("Cancel Order")}</button>
               )}
 
 
@@ -480,9 +457,7 @@ function OrderDetails() {
                   onClick={handleReturn}
                   disabled={working}
                 >
-                  <FaUndoAlt  />
-                  Request Return
-                </button>
+                  <FaUndoAlt  />{t("Request Return")}</button>
               )}
 
 
@@ -492,9 +467,7 @@ function OrderDetails() {
                   onClick={handleRefund}
                   disabled={working}
                 >
-                  <FaMoneyBillWave  />
-                  Request Refund
-                </button>
+                  <FaMoneyBillWave  />{t("Request Refund")}</button>
               )}
 
             </div>
@@ -506,9 +479,7 @@ function OrderDetails() {
 
         <section className="status_history_section">
 
-          <h2>
-            Status History
-          </h2>
+          <h2>{t("Status History")}</h2>
 
           <div className="status_history_list">
 
@@ -525,13 +496,13 @@ function OrderDetails() {
                       )
                     }
                   >
-                    {history.status}
+                    {t(history.status, { defaultValue: history.status })}
                   </span>
 
                   <time>
                     {new Date(
                       history.created_at
-                    ).toLocaleString()}
+                    ).toLocaleString(document.documentElement.lang)}
                   </time>
                 </div>
               )

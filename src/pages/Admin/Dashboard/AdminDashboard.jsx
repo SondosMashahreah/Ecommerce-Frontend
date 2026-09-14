@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import { Link } from "react-router-dom";
 import "../Feedback.css";
 import {
@@ -35,6 +37,8 @@ import {
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [dashboard, setDashboard] =
     useState(null);
 
@@ -66,9 +70,7 @@ function AdminDashboard() {
   if (loading) {
     return (
       <main className="admin_dashboard_page">
-        <div className="admin_state">
-          Loading dashboard...
-        </div>
+        <div className="admin_state">{t("Loading dashboard...")}</div>
       </main>
     );
   }
@@ -78,7 +80,7 @@ function AdminDashboard() {
       <main className="admin_dashboard_page">
         <div className="admin_error">
           {error ||
-            "Failed to load dashboard"}
+            t("Failed to load dashboard")}
         </div>
       </main>
     );
@@ -88,7 +90,7 @@ function AdminDashboard() {
 
   const cards = [
     {
-      label: "Revenue",
+      label: t("Revenue"),
       value:
         `$${Number(
           stats.revenue
@@ -96,22 +98,22 @@ function AdminDashboard() {
       icon: <FaDollarSign />,
     },
     {
-      label: "Orders",
+      label: t("Orders"),
       value: stats.orders,
       icon: <FaShoppingBag />,
     },
     {
-      label: "Customers",
+      label: t("Customers"),
       value: stats.customers,
       icon: <FaUsers />,
     },
     {
-      label: "Products",
+      label: t("Products"),
       value: stats.products,
       icon: <FaBox />,
     },
     {
-      label: "Low Stock",
+      label: t("Low Stock"),
       value:
         stats.low_stock_products,
       icon: (
@@ -119,18 +121,18 @@ function AdminDashboard() {
       ),
     },
     {
-      label: "Pending Orders",
+      label: t("Pending Orders"),
       value:
         stats.pending_orders,
       icon: <FaClock />,
     },
     {
-      label: "Refunds",
+      label: t("Refunds"),
       value: stats.refunds,
       icon: <FaUndo />,
     },
     {
-      label: "Avg. Order",
+      label: t("Avg. Order"),
       value:
         `$${Number(
           stats.average_order_value
@@ -145,24 +147,17 @@ function AdminDashboard() {
 
         <header className="admin_dashboard_header">
           <div>
-            <span>
-              ADMIN PANEL
-            </span>
+            <span>{t("ADMIN PANEL")}</span>
 
-            <h1>
-              Dashboard
-            </h1>
+            <h1>{t("Dashboard")}</h1>
 
-            <p>
-              Overview of your store
-              performance.
-            </p>
+            <p>{t("Overview of your store performance.")}</p>
           </div>
         </header>
 
-        <nav className="feedback_quick_links" aria-label="Store management">
-          <Link to="/admin/reviews">Ratings & Reviews →</Link>
-          <Link to="/admin/coupons">Manage coupons →</Link>
+        <nav className="feedback_quick_links" aria-label={t("Store management")}>
+          <Link to="/admin/reviews">{t("Ratings & Reviews →")}</Link>
+          <Link to="/admin/coupons">{t("Manage coupons →")}</Link>
         </nav>
         <section className="admin_stats_grid">
           {cards.map((card) => (
@@ -176,7 +171,7 @@ function AdminDashboard() {
 
               <div>
                 <span>
-                  {card.label}
+                  {t(card.label, { defaultValue: card.label })}
                 </span>
 
                 <strong>
@@ -190,9 +185,7 @@ function AdminDashboard() {
         <section className="admin_charts_grid">
 
           <article className="admin_chart_card">
-            <h2>
-              Orders Over Time
-            </h2>
+            <h2>{t("Orders Over Time")}</h2>
 
             <ResponsiveContainer
               width="100%"
@@ -226,9 +219,7 @@ function AdminDashboard() {
           </article>
 
           <article className="admin_chart_card">
-            <h2>
-              New Customers
-            </h2>
+            <h2>{t("New Customers")}</h2>
 
             <ResponsiveContainer
               width="100%"

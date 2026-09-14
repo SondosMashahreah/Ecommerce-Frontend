@@ -1,3 +1,6 @@
+import { translateError } from "../../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -28,6 +31,8 @@ const ORDER_STEPS = [
 
 
 function AdminOrderDetails() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -51,7 +56,7 @@ function AdminOrderDetails() {
       setOrder(data);
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setLoading(false);
@@ -76,7 +81,7 @@ function AdminOrderDetails() {
 
     const confirmed =
       window.confirm(
-        `Change order status from ${order.status} to ${newStatus}?`
+        t("order.changeStatus", { from: t(order.status), to: t(newStatus) })
       );
 
     if (!confirmed) {
@@ -94,7 +99,7 @@ function AdminOrderDetails() {
       await loadOrder();
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -105,7 +110,7 @@ function AdminOrderDetails() {
   const cancel = async () => {
     if (
       !window.confirm(
-        "Cancel this order?"
+        t("Cancel this order?")
       )
     ) {
       return;
@@ -121,7 +126,7 @@ function AdminOrderDetails() {
       await loadOrder();
 
     } catch (error) {
-      alert(error.message);
+      alert(translateError(error.message));
 
     } finally {
       setWorking(false);
@@ -156,18 +161,14 @@ function AdminOrderDetails() {
 
   if (loading) {
     return (
-      <main className="admin_management_page">
-        Loading order...
-      </main>
+      <main className="admin_management_page">{t("Loading order...")}</main>
     );
   }
 
 
   if (!order) {
     return (
-      <main className="admin_management_page">
-        Order not found
-      </main>
+      <main className="admin_management_page">{t("Order not found")}</main>
     );
   }
 
@@ -187,21 +188,16 @@ function AdminOrderDetails() {
         onClick={() =>
           navigate("/admin/orders")
         }
-      >
-        Back to Orders
-      </button>
+      >{t("Back to Orders")}</button>
 
 
       <div className="admin_management_header">
-        <span>ORDER DETAILS</span>
+        <span>{t("ORDER DETAILS")}</span>
 
-        <h1>
-          Order #{order.id}
+        <h1>{t("Order #")}{" "}{order.id}
         </h1>
 
-        <p>
-          Customer and order information.
-        </p>
+        <p>{t("Customer and order information.")}</p>
       </div>
 
 
@@ -210,7 +206,7 @@ function AdminOrderDetails() {
         <div className="admin_detail_grid">
 
           <div className="admin_detail_item">
-            <span>Customer</span>
+            <span>{t("Customer")}</span>
 
             <strong>
               {order.customer.name}
@@ -219,7 +215,7 @@ function AdminOrderDetails() {
 
 
           <div className="admin_detail_item">
-            <span>Email</span>
+            <span>{t("Email")}</span>
 
             <strong>
               {order.customer.email}
@@ -228,16 +224,16 @@ function AdminOrderDetails() {
 
 
           <div className="admin_detail_item">
-            <span>Status</span>
+            <span>{t("Status")}</span>
 
             <strong>
-              {order.status}
+              {t(order.status, { defaultValue: order.status })}
             </strong>
           </div>
 
 
           <div className="admin_detail_item">
-            <span>Total</span>
+            <span>{t("Total")}</span>
 
             <strong>
               $
@@ -260,9 +256,7 @@ function AdminOrderDetails() {
                 order.id
               )
             }
-          >
-            Download Invoice
-          </button>
+          >{t("Download Invoice")}</button>
 
 
           {![
@@ -279,9 +273,7 @@ function AdminOrderDetails() {
               className="admin_action_btn danger"
               onClick={cancel}
               disabled={working}
-            >
-              Cancel Order
-            </button>
+            >{t("Cancel Order")}</button>
 
           )}
 
@@ -294,16 +286,13 @@ function AdminOrderDetails() {
 
         <div className="admin_order_progress_header">
           <div>
-            <h2>Order Progress</h2>
+            <h2>{t("Order Progress")}</h2>
 
-            <p>
-              Select a stage to update
-              the order status.
-            </p>
+            <p>{t("Select a stage to update the order status.")}</p>
           </div>
 
           <span className="admin_current_status">
-            {order.status}
+            {t(order.status, { defaultValue: order.status })}
           </span>
         </div>
 
@@ -334,7 +323,7 @@ function AdminOrderDetails() {
                       changeStatus(step)
                     }
                     disabled={working}
-                    title={`Change status to ${step}`}
+                    title={t("order.changeTo", { status: t(step) })}
                   >
                     {index + 1}
                   </button>
@@ -350,7 +339,7 @@ function AdminOrderDetails() {
                       }`
                     }
                   >
-                    {step}
+                    {t(step, { defaultValue: step })}
                   </span>
 
 
@@ -382,12 +371,8 @@ function AdminOrderDetails() {
 
         ) : (
 
-          <div className="admin_special_status">
-
-            Current order status:
-
-            <strong>
-              {order.status}
+          <div className="admin_special_status">{t("Current order status:")}<strong>
+              {t(order.status, { defaultValue: order.status })}
             </strong>
 
           </div>
@@ -399,17 +384,17 @@ function AdminOrderDetails() {
 
       <section className="admin_detail_card">
 
-        <h2>Items</h2>
+        <h2>{t("Items")}</h2>
 
         <table className="admin_data_table">
 
           <thead>
             <tr>
-              <th>Product</th>
-              <th>SKU</th>
-              <th>Price</th>
-              <th>Qty</th>
-              <th>Subtotal</th>
+              <th>{t("Product")}</th>
+              <th>{t("SKU")}</th>
+              <th>{t("Price")}</th>
+              <th>{t("Qty")}</th>
+              <th>{t("Subtotal")}</th>
             </tr>
           </thead>
 
@@ -461,7 +446,7 @@ function AdminOrderDetails() {
 
       <section className="admin_detail_card">
 
-        <h2>Status History</h2>
+        <h2>{t("Status History")}</h2>
 
         <div className="admin_status_history">
 
@@ -474,13 +459,13 @@ function AdminOrderDetails() {
               >
 
                 <strong>
-                  {history.status}
+                  {t(history.status, { defaultValue: history.status })}
                 </strong>
 
                 <span>
                   {new Date(
                     history.created_at
-                  ).toLocaleString()}
+                  ).toLocaleString(document.documentElement.lang)}
                 </span>
 
               </div>

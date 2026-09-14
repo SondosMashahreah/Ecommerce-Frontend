@@ -1,3 +1,8 @@
+import { translateError } from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductName } from "../../i18n/productContent";
 import React, { useEffect, useState } from "react";
 import { FaTrash, FaShoppingBag } from "react-icons/fa";
 import {
@@ -19,6 +24,8 @@ import "./Cart.css";
 import ProductImage from "../../components/ProductImage/ProductImage";
 
 function Cart() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,7 +73,7 @@ const handleRemove = async (id) => {
       new Event("cartUpdated")
     );
   } catch (error) {
-    alert(error.message);
+    alert(translateError(error.message));
   } finally {
     setUpdatingItemId(null);
   }
@@ -105,7 +112,7 @@ const handleIncrement = async (id) => {
       new Event("cartUpdated")
     );
   } catch (error) {
-    alert(error.message);
+    alert(translateError(error.message));
   } finally {
     setUpdatingItemId(null);
   }
@@ -113,7 +120,7 @@ const handleIncrement = async (id) => {
 
 const handleCreateOrder = async () => {
   const confirmed = window.confirm(
-    "Are you sure you want to place this order?"
+    t("Are you sure you want to place this order?")
   );
 
   if (!confirmed) {
@@ -136,7 +143,7 @@ const handleCreateOrder = async () => {
   } catch (error) {
     alert(
       error.message ||
-      "Failed to create order"
+      t("Failed to create order")
     );
 
   } finally {
@@ -189,7 +196,7 @@ const handleDecrement = async (id) => {
       new Event("cartUpdated")
     );
   } catch (error) {
-    alert(error.message);
+    alert(translateError(error.message));
   } finally {
     setUpdatingItemId(null);
   }
@@ -224,9 +231,7 @@ const handleDecrement = async (id) => {
   if (loading) {
     return (
       <div className="cart_page">
-        <div className="cart_state">
-          Loading your cart...
-        </div>
+        <div className="cart_state">{t("Loading your cart...")}</div>
       </div>
     );
   }
@@ -235,13 +240,13 @@ const handleDecrement = async (id) => {
     <main className="cart_page">
       <div className="cart_heading">
         <div>
-          <p className="cart_eyebrow">Shopping Cart</p>
-          <h1>My Cart</h1>
+          <p className="cart_eyebrow">{t("Shopping Cart")}</p>
+          <h1>{t("My Cart")}</h1>
         </div>
 
         {cart.length > 0 && (
           <span className="cart_count">
-            {itemsCount} {itemsCount === 1 ? "item" : "items"}
+            {t("cart.items", { count: itemsCount })}
           </span>
         )}
       </div>
@@ -252,12 +257,10 @@ const handleDecrement = async (id) => {
             <FaShoppingBag />
           </div>
 
-          <h2>Your cart is empty</h2>
-          <p>Add some products and they will appear here.</p>
+          <h2>{t("Your cart is empty")}</h2>
+          <p>{t("Add some products and they will appear here.")}</p>
 
-          <Link to="/" className="continue_shopping_btn">
-            Continue Shopping
-          </Link>
+          <Link to="/" className="continue_shopping_btn">{t("Continue Shopping")}</Link>
         </section>
       ) : (
         <div className="cart_layout">
@@ -272,24 +275,22 @@ const handleDecrement = async (id) => {
                 <article className="cart_item" key={item.id}>
 <ProductImage
   imagePath={product.image_path}
-  alt={product.name}
+  alt={localizedProductName(product.name, i18n.language)}
   size="cart"
   className="cart_item_image"
 />
 
                   <div className="cart_item_info">
-                    <h3>{product.name}</h3>
+                    <h3>{localizedProductName(product.name, i18n.language)}</h3>
 
                     <div className="cart_item_meta">
                       <p>
-                        <span>Price</span>
+                        <span>{t("Price")}</span>
                         <strong>${Number(product.price).toFixed(2)}</strong>
                       </p>
 
 <div className="quantity_section">
-  <span className="quantity_label">
-    Quantity
-  </span>
+  <span className="quantity_label">{t("Quantity")}</span>
 
   <div className="quantity_control">
 <button
@@ -314,17 +315,13 @@ const handleDecrement = async (id) => {
 </button>
   </div>
 {product.stock === 0 && (
-  <span className="stock_out">
-    Out of Stock
-  </span>
+  <span className="stock_out">{t("Out of Stock")}</span>
 )}
 </div>
                     </div>
 
                     <div className="cart_item_bottom">
-                      <p className="item_total">
-                        Item total:
-                        <strong>${itemTotal.toFixed(2)}</strong>
+                      <p className="item_total">{t("Item total:")}<strong>${itemTotal.toFixed(2)}</strong>
                       </p>
 
 <button
@@ -334,7 +331,7 @@ const handleDecrement = async (id) => {
   disabled={updatingItemId === item.id}
 >
   <FaTrash />
-  <span>Remove</span>
+  <span>{t("Remove")}</span>
 </button>
                     </div>
                   </div>
@@ -344,21 +341,21 @@ const handleDecrement = async (id) => {
           </section>
 
           <aside className="order_summary">
-            <h2>Order Summary</h2>
+            <h2>{t("Order Summary")}</h2>
 
             <div className="summary_row">
-              <span>Items</span>
+              <span>{t("Items")}</span>
               <strong>{itemsCount}</strong>
             </div>
 
             <div className="summary_row">
-              <span>Subtotal</span>
+              <span>{t("Subtotal")}</span>
               <strong>${subtotal.toFixed(2)}</strong>
             </div>
 
             <div className="summary_row">
-              <span>Shipping</span>
-              <strong>Free</strong>
+              <span>{t("Shipping")}</span>
+              <strong>{t("Free")}</strong>
             </div>
 
             <div className="coupon_box">
@@ -370,19 +367,19 @@ const handleDecrement = async (id) => {
                     setCoupon(null);
                     setCouponError("");
                   }}
-                  placeholder="Coupon code"
+                  placeholder={t("Coupon code")}
                 />
                 <button type="button" onClick={handleApplyCoupon} disabled={applyingCoupon}>
-                  {applyingCoupon ? "Applying..." : "Apply"}
+                  {applyingCoupon ? t("Applying...") : t("Apply")}
                 </button>
               </div>
-              {coupon && <p className="coupon_success">{coupon.code} applied — ${Number(coupon.discount_amount).toFixed(2)} off</p>}
-              {couponError && <p className="coupon_error">{couponError}</p>}
+              {coupon && <p className="coupon_success">{t("cart.couponApplied", { code: coupon.code, amount: new Intl.NumberFormat(document.documentElement.lang, { style: "currency", currency: "USD" }).format(coupon.discount_amount) })}</p>}
+              {couponError && <p className="coupon_error">{translateError(couponError)}</p>}
             </div>
 
             {coupon && (
               <div className="summary_row discount_row">
-                <span>Discount</span>
+                <span>{t("Discount")}</span>
                 <strong>-${coupon.discount_amount.toFixed(2)}</strong>
               </div>
             )}
@@ -390,7 +387,7 @@ const handleDecrement = async (id) => {
             <div className="summary_divider" />
 
             <div className="summary_total">
-              <span>Total</span>
+              <span>{t("Total")}</span>
               <strong>${total.toFixed(2)}</strong>
             </div>
 
@@ -401,13 +398,11 @@ const handleDecrement = async (id) => {
   disabled={creatingOrder}
 >
   {creatingOrder
-    ? "Placing Order..."
-    : "Place Order"}
+    ? t("Placing Order...")
+    : t("Place Order")}
 </button>
 
-            <Link to="/" className="continue_shopping_link">
-              Continue Shopping
-            </Link>
+            <Link to="/" className="continue_shopping_link">{t("Continue Shopping")}</Link>
           </aside>
         </div>
       )}

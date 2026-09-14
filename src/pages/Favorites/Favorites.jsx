@@ -1,3 +1,7 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedProductDescription, localizedProductName } from "../../i18n/productContent";
 import React, {
   useEffect,
   useState
@@ -21,6 +25,8 @@ import "./Favorites.css";
 import ProductImage from "../../components/ProductImage/ProductImage";
 
 function Favorites() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const navigate = useNavigate();
 
   const [favorites, setFavorites] =
@@ -77,7 +83,7 @@ function Favorites() {
 
       alert(
         error.message ||
-          "Failed to remove favorite"
+          t("Failed to remove favorite")
       );
     } finally {
       setRemovingId(null);
@@ -99,13 +105,13 @@ function Favorites() {
         new Event("cartUpdated")
       );
 
-      alert("Added to cart");
+      alert(t("Added to cart"));
     } catch (error) {
       console.error(error);
 
       alert(
         error.message ||
-          "Failed to add product to cart"
+          t("Failed to add product to cart")
       );
     }
   };
@@ -114,9 +120,7 @@ function Favorites() {
   if (loading) {
     return (
       <main className="favorites_page">
-        <div className="favorites_state">
-          Loading favorites...
-        </div>
+        <div className="favorites_state">{t("Loading favorites...")}</div>
       </main>
     );
   }
@@ -128,11 +132,9 @@ function Favorites() {
       <div className="favorites_heading">
 
         <div>
-          <span>Saved Products</span>
+          <span>{t("Saved Products")}</span>
 
-          <h1>
-            My Favorites
-          </h1>
+          <h1>{t("My Favorites")}</h1>
         </div>
 
         {favorites.length > 0 && (
@@ -154,23 +156,16 @@ function Favorites() {
             <FaHeart />
           </div>
 
-          <h2>
-            No favorites yet
-          </h2>
+          <h2>{t("No favorites yet")}</h2>
 
-          <p>
-            Products you love will appear
-            here.
-          </p>
+          <p>{t("Products you love will appear here.")}</p>
 
           <button
             type="button"
             onClick={() =>
               navigate("/")
             }
-          >
-            Explore Products
-          </button>
+          >{t("Explore Products")}</button>
 
         </section>
 
@@ -207,7 +202,7 @@ function Favorites() {
                       removingId ===
                       favorite.id
                     }
-                    title="Remove from Favorites"
+                    title={t("Remove from Favorites")}
                   >
                     <FaHeart />
                   </button>
@@ -216,7 +211,7 @@ function Favorites() {
                   {imageUrl && (
                     <ProductImage
                       imagePath={product.image_path}
-                      alt={product.name}
+                      alt={localizedProductName(product.name, i18n.language)}
                       size="favorite"
                       className="favorite_image"
                     />
@@ -226,11 +221,11 @@ function Favorites() {
                   <div className="favorite_info">
 
                     <h3>
-                      {product.name}
+                      {localizedProductName(product.name, i18n.language)}
                     </h3>
 
                     <p className="favorite_description">
-                      {product.description}
+                      {localizedProductDescription(product.description, i18n.language)}
                     </p>
 
                     <strong className="favorite_price">
@@ -242,9 +237,7 @@ function Favorites() {
 
 
                     {product.stock === 0 && (
-                      <span className="favorite_stock_out">
-                        Out of Stock
-                      </span>
+                      <span className="favorite_stock_out">{t("Out of Stock")}</span>
                     )}
 
 
@@ -265,8 +258,8 @@ function Favorites() {
                         <FaShoppingCart />
 
                         {product.stock === 0
-                          ? "Out of Stock"
-                          : "Add to Cart"}
+                          ? t("Out of Stock")
+                          : t("Add to Cart")}
                       </button>
 
 
@@ -279,9 +272,7 @@ function Favorites() {
                           )
                         }
                       >
-                        <FaEye />
-                        View
-                      </button>
+                        <FaEye />{t("View")}</button>
 
                     </div>
 

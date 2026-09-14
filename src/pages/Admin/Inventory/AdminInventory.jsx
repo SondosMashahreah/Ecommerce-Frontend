@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../../i18n";
 import {
   useEffect,
   useState,
@@ -8,6 +10,8 @@ import {
 } from "../../../services/api";
 
 function AdminInventory() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [items, setItems] =
     useState([]);
 
@@ -38,27 +42,22 @@ function AdminInventory() {
     <main className="admin_form_page">
 
       <div className="admin_form_header">
-        <span>INVENTORY</span>
+        <span>{t("INVENTORY")}</span>
 
-        <h1>
-          Inventory Management
-        </h1>
+        <h1>{t("Inventory Management")}</h1>
 
-        <p>
-          Monitor stock,
-          reservations and availability.
-        </p>
+        <p>{t("Monitor stock, reservations and availability.")}</p>
       </div>
 
       <div className="admin_products_table">
 
         <div className="admin_products_table_head">
-          <span>Product</span>
-          <span>SKU</span>
-          <span>Stock</span>
-          <span>Reserved</span>
-          <span>Available</span>
-          <span>Status</span>
+          <span>{t("Product")}</span>
+          <span>{t("SKU")}</span>
+          <span>{t("Stock")}</span>
+          <span>{t("Reserved")}</span>
+          <span>{t("Available")}</span>
+          <span>{t("Status")}</span>
         </div>
 
         {items.map((item) => (
@@ -87,7 +86,7 @@ function AdminInventory() {
             </span>
 
             <span>
-              {item.stock_status}
+              {t(item.stock_status, { defaultValue: item.stock_status })}
             </span>
           </div>
         ))}

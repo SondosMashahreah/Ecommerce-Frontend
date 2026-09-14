@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
 import {
   useEffect,
   useState,
@@ -12,7 +14,9 @@ import {
 } from "../../services/api";
 
 
-function AdminRoute({ children }) { 
+function AdminRoute({ children }) {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const [user, setUser] =
     useState(null);
 
@@ -49,9 +53,7 @@ function AdminRoute({ children }) {
           justifyContent: "center",
           alignItems: "center",
         }}
-      >
-        Checking admin access...
-      </div>
+      >{t("Checking admin access...")}</div>
     );
   }
 

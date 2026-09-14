@@ -1,3 +1,7 @@
+import { useTranslation } from "react-i18next";
+import { translate as t } from "../../i18n";
+import i18n from "../../i18n";
+import { localizedCategory, localizedProductDescription, localizedProductName } from "../../i18n/productContent";
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -21,6 +25,8 @@ import "./ProductDetails.css";
 import ProductImage from "../../components/ProductImage/ProductImage";
 
 function ProductDetails() {
+  useTranslation(); // Subscribe this screen to language changes.
+
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);
@@ -72,12 +78,12 @@ function ProductDetails() {
         new Event("cartUpdated")
       );
 
-      alert("Added to cart");
+      alert(t("Added to cart"));
     } catch (error) {
       console.error(error);
       alert(
         error.message ||
-          "Failed to add product to cart"
+          t("Failed to add product to cart")
       );
     } finally {
       setAddingToCart(false);
@@ -95,12 +101,12 @@ function ProductDetails() {
         new Event("favoritesUpdated")
       );
 
-      alert("Added to favorites");
+      alert(t("Added to favorites"));
     } catch (error) {
       console.error(error);
       alert(
         error.message ||
-          "Failed to add product to favorites"
+          t("Failed to add product to favorites")
       );
     } finally {
       setAddingToFavorites(false);
@@ -113,7 +119,7 @@ function ProductDetails() {
       <main className="product_details_page">
         <div className="product_details_state">
           <div className="product_loader"></div>
-          <p>Loading product...</p>
+          <p>{t("Loading product...")}</p>
         </div>
       </main>
     );
@@ -124,12 +130,10 @@ function ProductDetails() {
     return (
       <main className="product_details_page">
         <div className="product_details_state">
-          <h2>Product not found</h2>
+          <h2>{t("Product not found")}</h2>
 
           <Link to="/" className="back_home_btn">
-            <FaArrowLeft />
-            Back to Products
-          </Link>
+            <FaArrowLeft />{t("Back to Products")}</Link>
         </div>
       </main>
     );
@@ -158,9 +162,7 @@ function ProductDetails() {
     <main className="product_details_page">
 
       <Link to="/" className="product_back_link">
-        <FaArrowLeft />
-        Back to Products
-      </Link>
+        <FaArrowLeft />{t("Back to Products")}</Link>
 
 
       <section className="product_details">
@@ -169,7 +171,7 @@ function ProductDetails() {
 
           {product.category && (
             <span className="product_category_badge">
-              {product.category}
+              {localizedCategory(product.category, i18n.language)}
             </span>
           )}
 
@@ -179,13 +181,11 @@ function ProductDetails() {
             {imageUrl ? (
 <ProductImage
   imagePath={product.image_path}
-  alt={product.name}
+  alt={localizedProductName(product.name, i18n.language)}
   size="details"
 />
             ) : (
-              <div className="product_no_image">
-                No image available
-              </div>
+              <div className="product_no_image">{t("No image available")}</div>
             )}
 
           </div>
@@ -197,11 +197,9 @@ function ProductDetails() {
 
           <div className="product_title_section">
 
-            <p className="product_details_label">
-              Product Details
-            </p>
+            <p className="product_details_label">{t("Product Details")}</p>
 
-            <h1>{product.name}</h1>
+            <h1>{localizedProductName(product.name, i18n.language)}</h1>
 
           </div>
 
@@ -215,14 +213,10 @@ function ProductDetails() {
           >
             {outOfStock ? (
               <>
-                <FaTimesCircle />
-                Out of Stock
-              </>
+                <FaTimesCircle />{t("Out of Stock")}</>
             ) : (
               <>
-                <FaCheckCircle />
-                In Stock
-              </>
+                <FaCheckCircle />{t("In Stock")}</>
             )}
           </div>
 
@@ -237,7 +231,7 @@ function ProductDetails() {
 
 
           <div className="product_details_price">
-            <span>Price</span>
+            <span>{t("Price")}</span>
 
             <strong>
               ${Number(product.price).toFixed(2)}
@@ -247,11 +241,11 @@ function ProductDetails() {
 
           <div className="product_description">
 
-            <h3>About this product</h3>
+            <h3>{t("About this product")}</h3>
 
             <p>
-              {product.description ||
-                "No description available for this product."}
+              {localizedProductDescription(product.description, i18n.language) ||
+                t("No description available for this product.")}
             </p>
 
           </div>
@@ -271,10 +265,10 @@ function ProductDetails() {
               <FaCartArrowDown />
 
               {outOfStock
-                ? "Out of Stock"
+                ? t("Out of Stock")
                 : addingToCart
-                  ? "Adding..."
-                  : "Add to Cart"}
+                  ? t("Adding...")
+                  : t("Add to Cart")}
             </button>
 
 
@@ -287,8 +281,8 @@ function ProductDetails() {
               <FaRegHeart />
 
               {addingToFavorites
-                ? "Adding..."
-                : "Add to Favorites"}
+                ? t("Adding...")
+                : t("Add to Favorites")}
             </button>
 
           </div>
@@ -297,7 +291,7 @@ function ProductDetails() {
           {(audioUrl || videoUrl) && (
             <div className="product_media">
 
-              <h3>Product Media</h3>
+              <h3>{t("Product Media")}</h3>
 
 
               {audioUrl && (
