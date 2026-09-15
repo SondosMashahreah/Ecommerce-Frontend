@@ -1274,3 +1274,126 @@
     height: 34px !important;
   }
 }
+
+/* Guest-only layout. Keep the signed-in header rules above unchanged. */
+.btm_header.btm_header--guest .container {
+  grid-template-columns: 220px minmax(0, 1fr) auto;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-inline-start: 82px !important;
+}
+.btm_header.btm_header--guest .header_actions {
+  direction: inherit;
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+}
+html[dir="rtl"] .btm_header.btm_header--guest .category_nav_list {
+  left: auto;
+  right: 0;
+}
+html[dir="rtl"] .btm_header.btm_header--guest .category_nav_list button {
+  text-align: right;
+}
+@media (min-width: 769px) and (max-width: 1100px) {
+  .btm_header.btm_header--guest .container {
+    width: 98%;
+    grid-template-columns: minmax(130px, 190px) minmax(0, 1fr) auto;
+    gap: 8px;
+    padding-inline-start: 56px !important;
+  }
+  .btm_header.btm_header--guest .category_nav {
+    width: 100% !important;
+    min-width: 0;
+  }
+  .btm_header.btm_header--guest .nav_links li a { padding-inline: 8px; }
+}
+@media (max-width: 768px) {
+  .btm_header.btm_header--guest { min-height: 52px !important; }
+  .btm_header.btm_header--guest .container {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-height: 52px !important;
+    display: grid !important;
+    grid-template-columns: clamp(52px, 17vw, 110px) minmax(0, 1fr) auto !important;
+    grid-template-rows: auto;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: clamp(2px, .6vw, 5px) !important;
+    padding: 0 !important;
+    padding-inline: 40px 4px !important;
+  }
+  .btm_header.btm_header--guest .nav { display: contents !important; }
+  .btm_header.btm_header--guest .category_nav {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 32px !important;
+    margin: 0 !important;
+  }
+  .btm_header.btm_header--guest .category_btn {
+    height: 32px !important;
+    padding-inline: 3px !important;
+    gap: 2px !important;
+  }
+  .btm_header.btm_header--guest .category_btn p {
+    min-width: 0;
+    font-size: clamp(7px, 1.8vw, 11px) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .btm_header.btm_header--guest .category_btn svg {
+    flex-shrink: 0 !important;
+    font-size: 10px !important;
+  }
+  .btm_header.btm_header--guest .category_nav_list { width: max(180px, 100%); }
+  .btm_header.btm_header--guest .nav_links {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 0 !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    order: 0 !important;
+  }
+  .btm_header.btm_header--guest .nav_links li {
+    min-width: 0 !important;
+    flex: 0 1 auto !important;
+    height: 32px !important;
+  }
+  .btm_header.btm_header--guest .nav_links li a {
+    height: 32px !important;
+    padding-inline: clamp(2px, .7vw, 6px) !important;
+    font-size: clamp(7px, 1.8vw, 11px) !important;
+    white-space: nowrap !important;
+  }
+  .btm_header.btm_header--guest .header_actions {
+    grid-column: 3;
+    grid-row: 1;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    gap: 3px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .btm_header.btm_header--guest .header_actions :is(.language_btn, .guest_signin, .logout_btn) {
+    box-sizing: border-box;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 0 3px !important;
+    margin: 0 !important;
+    gap: 2px !important;
+    font-size: clamp(7px, 1.8vw, 11px) !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
+  }
+  .btm_header.btm_header--guest .language_btn svg { font-size: 10px !important; }
+}
