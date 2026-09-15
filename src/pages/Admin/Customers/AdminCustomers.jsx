@@ -133,19 +133,19 @@ function AdminCustomers() {
                 <tr key={customer.id}>
 
                   <td>
-                    {customer.name}
+                    {customer.role === "guest" ? t("Guest") : customer.name}
                   </td>
 
                   <td>
-                    {customer.username}
+                    {customer.role === "guest" ? "—" : customer.username}
                   </td>
 
                   <td>
-                    {customer.email}
+                    {customer.role === "guest" ? "—" : customer.email}
                   </td>
 
                   <td>
-                    <select
+                    <select disabled={customer.role === "guest"}
                       value={
                         customer.role
                       }
@@ -156,6 +156,7 @@ function AdminCustomers() {
                         )
                       }
                     >
+                      {customer.role === "guest" && <option value="guest">{t("Guest")}</option>}
                       <option value="customer">{t("Customer")}</option>
 
                       <option value="admin">{t("Admin")}</option>

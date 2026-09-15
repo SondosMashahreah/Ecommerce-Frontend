@@ -1,3 +1,5 @@
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
 import { translateError } from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
@@ -124,19 +126,19 @@ function AdminCategories() {
 
             {categories.map((category) => (
               <div
-                key={category.name}
+                key={localizedProductName(category.name, i18n.language)}
                 style={styles.row}
               >
                 <div style={styles.categoryInfo}>
                   <div style={styles.categoryIcon}>
-                    {category.name
+                    {localizedProductName(category.name, i18n.language)
                       .charAt(0)
                       .toUpperCase()}
                   </div>
 
                   <div>
                     <strong style={styles.categoryName}>
-                      {category.name}
+                      {localizedProductName(category.name, i18n.language)}
                     </strong>
 
                     <p style={styles.categoryText}>{t("Product category")}</p>
@@ -159,7 +161,7 @@ const styles = {
   page: {
     minHeight: "100vh",
     padding: "42px",
-    background: "#f5f8fa",
+    background: "var(--surface-base, #f5f8fa)",
   },
 
   header: {
@@ -168,7 +170,7 @@ const styles = {
 
   label: {
     margin: 0,
-    color: "#7493a2",
+    color: "var(--text-muted, #7493a2)",
     fontSize: "11px",
     fontWeight: 800,
     letterSpacing: "2px",
@@ -176,13 +178,13 @@ const styles = {
 
   title: {
     margin: "7px 0",
-    color: "#152d40",
+    color: "var(--text-strong, #152d40)",
     fontSize: "34px",
   },
 
   subtitle: {
     margin: 0,
-    color: "#81909d",
+    color: "var(--text-muted, #81909d)",
     fontSize: "15px",
   },
 
@@ -207,24 +209,24 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "8px",
-    background: "#ffffff",
+    background: "var(--surface-card, #ffffff)",
     border: "1px solid #e1e8ed",
     borderRadius: "14px",
   },
 
   statLabel: {
-    color: "#7b8f9d",
+    color: "var(--text-muted, #7b8f9d)",
     fontSize: "13px",
   },
 
   statValue: {
-    color: "#152d40",
+    color: "var(--text-strong, #152d40)",
     fontSize: "28px",
   },
 
   card: {
     overflow: "hidden",
-    background: "#ffffff",
+    background: "var(--surface-card, #ffffff)",
     border: "1px solid #e1e8ed",
     borderRadius: "15px",
   },
@@ -240,13 +242,13 @@ const styles = {
 
   cardTitle: {
     margin: "0 0 5px",
-    color: "#233c4f",
+    color: "var(--text-strong, #233c4f)",
     fontSize: "19px",
   },
 
   cardDescription: {
     margin: 0,
-    color: "#81909d",
+    color: "var(--text-muted, #81909d)",
     fontSize: "13px",
   },
 
@@ -267,8 +269,8 @@ const styles = {
     padding: "13px 26px",
     display: "grid",
     gridTemplateColumns: "1fr 120px",
-    color: "#80929f",
-    background: "#fafcfd",
+    color: "var(--text-muted, #80929f)",
+    background: "var(--surface-raised, #fafcfd)",
     fontSize: "11px",
     fontWeight: 700,
     textTransform: "uppercase",
@@ -302,13 +304,13 @@ const styles = {
   },
 
   categoryName: {
-    color: "#233c4f",
+    color: "var(--text-strong, #233c4f)",
     fontSize: "14px",
   },
 
   categoryText: {
     margin: "3px 0 0",
-    color: "#93a1aa",
+    color: "var(--text-muted, #93a1aa)",
     fontSize: "12px",
   },
 
@@ -325,7 +327,7 @@ const styles = {
   empty: {
     padding: "50px",
     textAlign: "center",
-    color: "#81909d",
+    color: "var(--text-muted, #81909d)",
   },
 };
 

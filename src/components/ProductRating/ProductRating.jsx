@@ -1,3 +1,4 @@
+import { translateError } from '../../i18n';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
 import { useEffect, useState, useId } from "react";
@@ -100,7 +101,7 @@ function ProductRatingContent({ productId, size = "small", showReviews = false }
             >
               {saving ? t("Saving...") : t("Submit review")}
             </button>
-            {message && <span className="review_message" role="status">{message}</span>}
+            {message && <span className="review_message" role="status">{translateError(message)}</span>}
           </div>
 
           <div className="reviews_list">
@@ -112,7 +113,7 @@ function ProductRatingContent({ productId, size = "small", showReviews = false }
             <div id={reviewsId} hidden={!reviewsOpen}>
             {ratingInfo.reviews?.length ? ratingInfo.reviews.map((review) => (
               <article key={review.id} className="review_item">
-                <div><strong>{review.user_name}</strong><Rating getLabelText={(value) => t("rating.stars", { count: value })} value={review.rating} readOnly size="small" /></div>
+                <div><strong>{review.user_name === "Guest" ? t("Guest") : review.user_name}</strong><Rating getLabelText={(value) => t("rating.stars", { count: value })} value={review.rating} readOnly size="small" /></div>
                 <p>{review.comment}</p>
               </article>
             )) : <p className="no_reviews">{t("No written reviews yet.")}</p>}

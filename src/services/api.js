@@ -1,3 +1,6 @@
+import i18n from '../i18n';
+import { localizedProductName, localizedProductDescription } from '../i18n/productContent';
+import { getSessionToken, hasShoppingSession, mergeGuestSession } from './session';
 const API_URL = `${import.meta.env.VITE_API_URL}/api/v1`; 
 
 export const sendContactMessage = async (contactData) => {
@@ -78,6 +81,7 @@ export const signinUser = async (loginData) => {
     );
   }
 
+  await mergeGuestSession(data.access_token);
   return data;
 };
 
@@ -115,7 +119,7 @@ export const updateProfile = async (
           "application/json",
 
         Authorization:
-          `Bearer ${getToken()}`
+          `Bearer ${await getToken()}`
       },
 
       body: JSON.stringify(
@@ -150,7 +154,7 @@ export const changePassword = async (
           "application/json",
 
         Authorization:
-          `Bearer ${getToken()}`
+          `Bearer ${await getToken()}`
       },
 
       body: JSON.stringify(
@@ -183,6 +187,17 @@ export async function getProducts() {
 }
 
 export async function searchProducts(query) {
+  if (i18n.language === 'ar') {
+    const normalize = (value) => String(value).normalize('NFKC').replace(/[\u064B-\u065F\u0670]/g, '').replace(/[أإآ]/g, 'ا').toLowerCase();
+    const term = normalize(query.trim());
+    const products = await getProducts();
+    return products.filter((product) => normalize([
+      product.name,
+      localizedProductName(product.name, 'ar'),
+      localizedProductDescription(product.description, 'ar'),
+    ].join(' ')).includes(term));
+  }
+
   const response = await fetch(
     `${API_URL}/products/search?q=${encodeURIComponent(query)}`
   );
@@ -206,9 +221,7 @@ export async function getProductById(id) {
   return response.json();
 }
 
-function getToken() {
-  return localStorage.getItem("access_token");
-}
+const getToken = getSessionToken;
 
 
 export async function addToCart(productId) {
@@ -216,7 +229,7 @@ export async function addToCart(productId) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify({
       product_id: productId,
@@ -238,9 +251,10 @@ export async function addToCart(productId) {
 }
 
 export async function getCart() {
+  if (!hasShoppingSession()) return [];
   const response = await fetch(`${API_URL}/cart/`, {
     headers: {
-      Authorization: `Bearer ${getToken()}`
+      Authorization: `Bearer ${await getToken()}`
     }
   });
 
@@ -258,7 +272,7 @@ export async function removeCartItem(cartItemId) {
     {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -283,7 +297,7 @@ export async function addToFavorites(productId) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       },
       body: JSON.stringify({
         product_id: productId
@@ -308,11 +322,12 @@ export async function addToFavorites(productId) {
 
 
 export async function getFavorites() {
+  if (!hasShoppingSession()) return [];
   const response = await fetch(
     `${API_URL}/favorites/`,
     {
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -333,7 +348,7 @@ export async function removeFavorite(favoriteId) {
     {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -372,7 +387,7 @@ export async function rateProduct(productId, rating, comment = null) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       },
       body: JSON.stringify({
         product_id: productId,
@@ -403,11 +418,12 @@ export async function getProductRating(productId) {
 
 
 export async function getMyProductRating(productId) {
+  if (!hasShoppingSession()) return null;
   const response = await fetch(
     `${API_URL}/ratings/me/${productId}`,
     {
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -450,7 +466,7 @@ export async function incrementCartItem(cartItemId) {
     {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -477,7 +493,7 @@ export async function decrementCartItem(cartItemId) {
     {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -514,7 +530,7 @@ export const uploadProfileImage = async (
 
       headers: {
         Authorization:
-          `Bearer ${getToken()}`
+          `Bearer ${await getToken()}`
       },
 
       body: formData
@@ -539,7 +555,7 @@ export async function validateCoupon(code, subtotal) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify({ code, subtotal })
   });
@@ -555,7 +571,7 @@ export async function createOrder(couponCode = null) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       },
       body: JSON.stringify({ coupon_code: couponCode || null })
     }
@@ -579,11 +595,12 @@ export async function createOrder(couponCode = null) {
 
 
 export async function getOrders() {
+  if (!hasShoppingSession()) return [];
   const response = await fetch(
     `${API_URL}/orders/`,
     {
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -606,7 +623,7 @@ export async function getOrderById(orderId) {
     `${API_URL}/orders/${orderId}`,
     {
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -630,7 +647,7 @@ export async function cancelOrder(orderId) {
     {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -656,7 +673,7 @@ export async function requestOrderReturn(
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -682,7 +699,7 @@ export async function requestOrderRefund(
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -706,7 +723,7 @@ export async function reorderOrder(orderId) {
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -738,7 +755,7 @@ export async function updateOrderStatus(
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       },
       body: JSON.stringify({
         status
@@ -766,7 +783,7 @@ export async function downloadOrderInvoice(
     `${API_URL}/orders/${orderId}/invoice`,
     {
       headers: {
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${await getToken()}`
       }
     }
   );
@@ -843,7 +860,7 @@ export async function getAdminProducts() {
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -870,7 +887,7 @@ export async function createAdminProduct(
       method: "POST",
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
       body: formData,
     }
@@ -900,7 +917,7 @@ export async function updateAdminProduct(
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
       body: JSON.stringify(productData),
     }
@@ -928,7 +945,7 @@ export async function deleteAdminProduct(
       method: "DELETE",
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -963,7 +980,7 @@ export async function uploadAdminProductImage(
       method: "POST",
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
       body: formData,
     }
@@ -993,7 +1010,7 @@ export async function createAdminProductItem(
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
       body: JSON.stringify(itemData),
     }
@@ -1023,7 +1040,7 @@ export async function updateAdminProductItem(
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
       body: JSON.stringify(itemData),
     }
@@ -1051,7 +1068,7 @@ export async function deleteAdminProductItem(
       method: "DELETE",
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1076,7 +1093,7 @@ export async function getAdminProduct(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1119,7 +1136,7 @@ export async function getAdminOrders(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1146,7 +1163,7 @@ export async function getAdminOrderById(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1179,7 +1196,7 @@ export async function updateAdminOrderStatus(
           "application/json",
 
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
 
       body: JSON.stringify({
@@ -1212,7 +1229,7 @@ export async function cancelAdminOrder(
 
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1239,7 +1256,7 @@ export async function downloadAdminOrderInvoice(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1299,7 +1316,7 @@ export async function getAdminCustomers(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1326,7 +1343,7 @@ export async function getAdminCustomerById(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1359,7 +1376,7 @@ export async function updateAdminCustomerStatus(
           "application/json",
 
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
 
       body: JSON.stringify({
@@ -1396,7 +1413,7 @@ export async function updateAdminCustomerRole(
           "application/json",
 
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
 
       body: JSON.stringify({
@@ -1447,7 +1464,7 @@ export async function getAdminMessages(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1474,7 +1491,7 @@ export async function getAdminMessageById(
     {
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1503,7 +1520,7 @@ export async function markAdminMessageRead(
 
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1532,7 +1549,7 @@ export async function deleteAdminMessage(
 
       headers: {
         Authorization:
-          `Bearer ${getToken()}`,
+          `Bearer ${await getToken()}`,
       },
     }
   );
@@ -1554,7 +1571,7 @@ export async function deleteAdminMessage(
 async function adminFeedbackRequest(path, options = {}) {
   const response = await fetch(`${API_URL}/admin/${path}`, {
     ...options,
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${await getToken()}` },
   });
   const data = await response.json();
   if (!response.ok) {

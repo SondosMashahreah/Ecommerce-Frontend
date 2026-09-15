@@ -1,3 +1,5 @@
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
 import {
@@ -66,7 +68,7 @@ function AdminInventory() {
             key={item.id}
           >
             <strong>
-              {item.product_name}
+              {localizedProductName(item.product_name, i18n.language)}
             </strong>
 
             <span>

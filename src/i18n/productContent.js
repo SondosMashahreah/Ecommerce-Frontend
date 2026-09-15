@@ -1,3 +1,4 @@
+import catalogArabic from './catalog.ar.json';
 const terms = [
   ['smartphones', 'هواتف ذكية'], ['smartphone', 'هاتف ذكي'],
   ['headphones', 'سماعات رأس'], ['headphone', 'سماعة رأس'],
@@ -42,12 +43,14 @@ function replaceTerms(value) {
 }
 
 export function localizedProductName(name, language) {
-  if (!name || language !== 'ar' || /[\u0600-\u06ff]/.test(name)) return name || '';
+  if (language === 'ar' && catalogArabic[String(name || '').trim().toLowerCase()]) return catalogArabic[String(name).trim().toLowerCase()];
+  if (!name || language !== 'ar' ) return name || '';
   return replaceTerms(name).replace(/\s+/g, ' ').trim();
 }
 
 export function localizedProductDescription(description, language) {
-  if (!description || language !== 'ar' || /[\u0600-\u06ff]/.test(description)) return description || '';
+  if (language === 'ar' && catalogArabic[String(description || '').trim().toLowerCase()]) return catalogArabic[String(description).trim().toLowerCase()];
+  if (!description || language !== 'ar' ) return description || '';
   let translated = replaceTerms(description);
   translated = sentences.reduce((result, [pattern, arabic]) => result.replace(pattern, arabic), translated);
   return translated.replace(/\s+([،,.])/g, '$1').replace(/\s+/g, ' ').trim();

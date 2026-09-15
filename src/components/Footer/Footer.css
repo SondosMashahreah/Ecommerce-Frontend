@@ -1,0 +1,10 @@
+.site_footer { border-top:1px solid #d6e3ea; background:#eaf2f7; padding:30px 0; margin-top:40px; }
+.site_footer .container { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:18px 30px; }
+.site_footer p { color:#465f6c; font-size:13px; line-height:1.9; }
+.site_footer strong { color:#193746; font-weight:700; }
+.site_footer nav { display:flex; flex-wrap:wrap; gap:22px; font-size:12px; }
+.site_footer small { color:#596f7c; font-size:11px; }
+html[data-theme='dark'] .site_footer { background:#10212c; border-color:#304754; }
+html[data-theme='dark'] .site_footer :is(p,small) { color:#b4c6d2; }
+html[data-theme='dark'] .site_footer :is(strong,a) { color:#e3f1fa; }
+@media(max-width:700px) { .site_footer .container { flex-direction:column; text-align:center; gap:16px; } }

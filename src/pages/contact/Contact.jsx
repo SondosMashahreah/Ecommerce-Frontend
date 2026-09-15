@@ -1,3 +1,4 @@
+import { translateError } from "../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
 import React, { useState } from "react";
@@ -102,7 +103,7 @@ const data = await sendContactMessage(contactData);
 
             {responseMessage && (
               <Typography align="center">
-                {responseMessage}
+                {translateError(responseMessage)}
               </Typography>
             )}
           </Stack>

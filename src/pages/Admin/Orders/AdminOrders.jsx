@@ -89,7 +89,7 @@ function AdminOrders() {
         />
 
         <select
-          value={t(status, { defaultValue: status })}
+          value={status}
           onChange={(event) =>
             setStatus(
               event.target.value

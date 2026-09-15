@@ -1,3 +1,6 @@
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
+import LocalizedCatalogInput from '../../../components/LocalizedCatalogInput/LocalizedCatalogInput';
 import { translateError } from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
@@ -209,7 +212,7 @@ function AdminProductCreate() {
 
           <div className="admin_form_grid">
 
-            <label>{t("Product name")}<input
+            <label>{t("Product name")}<LocalizedCatalogInput
                 name="name"
                 value={form.name}
                 onChange={change}
@@ -217,8 +220,8 @@ function AdminProductCreate() {
               />
             </label>
 
-            <label>{t("Category")}<input
-                name="category"
+            <label>{t("Category")}<LocalizedCatalogInput
+                name="category" choices={categories}
                 list="product-categories"
                 value={form.category}
                 onChange={change}
@@ -230,7 +233,7 @@ function AdminProductCreate() {
                 {categories.map(
                   (category) => (
                     <option
-                      value={category}
+                      value={localizedProductName(category, i18n.language)}
                       key={category}
                     />
                   )
@@ -251,7 +254,7 @@ function AdminProductCreate() {
               />
             </label>
 
-            <label className="full">{t("Description")}<textarea
+            <label className="full">{t("Description")}<LocalizedCatalogInput multiline
                 name="description"
                 value={form.description}
                 onChange={change}
@@ -332,7 +335,7 @@ function AdminProductCreate() {
                             1024 /
                             1024
                           ).toFixed(2)}
-                          {" "}MB
+                          {" "}{t("MB")}
                         </span>
                       </div>
 

@@ -1,3 +1,6 @@
+import { isSignedIn, signOut } from '../../services/session';
+import i18n from '../../i18n';
+import { localizedCategory } from '../../i18n/productContent';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
 import { LanguageButton } from '../../preferences/Controls';
@@ -25,7 +28,12 @@ function BtmHeader() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("access_token");
+  const [signedIn, setSignedIn] = useState(isSignedIn);
+  useEffect(() => {
+    const sync = () => setSignedIn(isSignedIn());
+    window.addEventListener('authChanged', sync);
+    return () => window.removeEventListener('authChanged', sync);
+  }, []);
 
   useEffect(() => {
     async function loadCategories() {
@@ -41,14 +49,8 @@ function BtmHeader() {
   }, []);
 
   const handleLogout = () => {
-localStorage.removeItem("access_token");
-localStorage.removeItem("refresh_token");
-
-window.dispatchEvent(
-  new Event("authChanged")
-);
-
-navigate("/signin");
+    signOut();
+    navigate("/");
   };
 
   const handleCategoryClick = (category) => {
@@ -74,7 +76,7 @@ navigate("/signin");
   };
 
   return (
-    <div className="btm_header">
+    <div className={`btm_header ${signedIn ? "" : "btm_header--guest"}`}>
       <div className="container">
         <nav className="nav">
           <div className="category_nav">
@@ -106,7 +108,7 @@ navigate("/signin");
                     handleCategoryClick(category)
                   }
                 >
-                  {t(category, { defaultValue: category })}
+                  {localizedCategory(category, i18n.language)}
                 </button>
               ))}
             </div>
@@ -132,7 +134,7 @@ navigate("/signin");
 
 <div className="header_actions">
 <LanguageButton />
-{token && (
+{signedIn ? (
   <button
     className="logout_btn"
     onClick={handleLogout}
@@ -141,6 +143,11 @@ navigate("/signin");
     <PiSignOutFill />
     <span>{t("Logout")}</span>
   </button>
+) : (
+  <>
+    <Link className="guest_signin" to="/signin">{t("Sign In")}</Link>
+    <Link className="logout_btn" to="/signup">{t("Sign Up")}</Link>
+  </>
 )}
 </div>
       </div>
