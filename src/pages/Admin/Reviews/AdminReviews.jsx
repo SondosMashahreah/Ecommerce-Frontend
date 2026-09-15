@@ -1,3 +1,5 @@
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
 import { translateError } from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
@@ -44,7 +46,7 @@ export default function AdminReviews() {
           {!data.items.length ? <div className="admin_empty_state">{t("No reviews match your filters.")}</div> : <table className="admin_data_table feedback_table">
             <thead><tr><th>{t("Product")}</th><th>{t("Customer")}</th><th>{t("Rating")}</th><th>{t("Review")}</th></tr></thead>
             <tbody>{data.items.map((review) => <tr key={review.id}>
-              <td><Link to={`/admin/products/${review.product_id}`}>{review.product_name}</Link></td><td>{review.user_name}</td>
+              <td><Link to={`/admin/products/${review.product_id}`}>{localizedProductName(review.product_name, i18n.language)}</Link></td><td>{review.user_name === "Guest" ? t("Guest") : review.user_name}</td>
               <td><Rating getLabelText={(value) => t("rating.stars", { count: value })} value={review.rating} readOnly size="small" /><span className="feedback_rating_value">{review.rating}/5</span></td>
               <td className="feedback_comment">{review.comment || t("Rating only — no written review")}</td>
             </tr>)}</tbody>

@@ -1,3 +1,4 @@
+import { localizedCategory } from '../../i18n/productContent';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
 import React from "react";
@@ -30,7 +31,7 @@ function SlideProduct({
       <div className="container">
 
         <div className="top_slide">
-          <h2>{t(title, { defaultValue: title })}</h2>
+          <h2>{localizedCategory(title, i18n.language)}</h2>
 
           <p>{t("Available Devices in the store")}</p>
         </div>

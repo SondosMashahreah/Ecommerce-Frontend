@@ -3,12 +3,12 @@ import { FiGlobe, FiSun, FiMoon, FiMonitor } from 'react-icons/fi';
 import { usePreferences } from './PreferencesContext';
 
 export function LanguageButton() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const arabic = i18n.language === 'ar';
-  return <button type="button" className="language_btn" lang={arabic ? 'en' : 'ar'}
-    aria-label={arabic ? 'Switch to English' : 'التبديل إلى العربية'}
+  return <button type="button" className="language_btn" lang="ar"
+    aria-label={arabic ? t('Switch to English') : 'التبديل إلى العربية'}
     onClick={() => i18n.changeLanguage(arabic ? 'en' : 'ar')}>
-    <FiGlobe aria-hidden="true" /><span>{arabic ? 'English' : 'العربية'}</span>
+    <FiGlobe aria-hidden="true" /><span>{arabic ? t('English') : 'العربية'}</span>
   </button>;
 }
 export function ThemeSelector() {

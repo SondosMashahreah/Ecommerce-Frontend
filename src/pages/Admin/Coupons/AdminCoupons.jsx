@@ -56,7 +56,7 @@ export default function AdminCoupons() {
       <form onSubmit={save} className="coupon_admin_form">
         <fieldset disabled={saving || loading || Boolean(loadError)}>
           <div className="coupon_admin_fields">
-            <label>{t("Coupon code")}<input ref={codeInput} required maxLength={50} pattern="[A-Za-z0-9_\-]+" placeholder="SUMMER15" value={form.code} onChange={(e) => change("code", e.target.value.toUpperCase())} /></label>
+            <label>{t("Coupon code")}<input ref={codeInput} required maxLength={50} pattern="[A-Za-z0-9_\-]+" placeholder={t("Enter a coupon code")} value={form.code} onChange={(e) => change("code", e.target.value.toUpperCase())} /></label>
             <label>{t("Discount type")}<select value={form.discount_type} onChange={(e) => change("discount_type", e.target.value)}><option value="percent">{t("Percentage (%)")}</option><option value="fixed">{t("Fixed amount ($)")}</option></select></label>
             <label>{form.discount_type === "percent" ? t("Discount (%)") : t("Discount ($)")}<input required type="number" min="0.01" max={form.discount_type === "percent" ? "100" : "9999999999.99"} step="0.01" value={form.discount_value} onChange={(e) => change("discount_value", e.target.value)} /></label>
             <label>{t("Minimum order ($)")}<input required type="number" min="0" max="9999999999.99" step="0.01" value={form.minimum_order} onChange={(e) => change("minimum_order", e.target.value)} /></label>

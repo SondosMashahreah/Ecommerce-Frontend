@@ -104,11 +104,11 @@ function AdminSidebar({
 
         <div className="admin_sidebar_brand">
           <span className="admin_brand_full">
-            ECOMMERCE
+            {t("ECOMMERCE")}
           </span>
 
           <span className="admin_brand_short">
-            E
+            {t("Store initial")}
           </span>
         </div>
 

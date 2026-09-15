@@ -1,3 +1,4 @@
+import { translateError, locale } from '../../../i18n';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
 import { Link } from "react-router-dom";
@@ -79,14 +80,18 @@ function AdminDashboard() {
     return (
       <main className="admin_dashboard_page">
         <div className="admin_error">
-          {error ||
-            t("Failed to load dashboard")}
+          {translateError(error) || t("Failed to load dashboard")}
         </div>
       </main>
     );
   }
 
   const stats = dashboard.stats;
+  const chartDate = (value) => {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? t(value) : date.toLocaleDateString(locale(), { month: 'short', day: 'numeric' });
+  };
+  const chartNumber = (value) => Number(value).toLocaleString(locale());
 
   const cards = [
     {
@@ -202,15 +207,15 @@ function AdminDashboard() {
                 />
 
                 <XAxis
-                  dataKey="label"
+                  dataKey="label" tickFormatter={chartDate}
                 />
 
-                <YAxis />
+                <YAxis tickFormatter={chartNumber} allowDecimals={false} />
 
-                <Tooltip />
+                <Tooltip labelFormatter={chartDate} formatter={(value, name) => [chartNumber(value), name]} />
 
                 <Bar
-                 dataKey="value"
+                 dataKey="value" name={t("Orders")}
                  fill="#79c7e8"
                  radius={[8, 8, 0, 0]}
                 />
@@ -236,16 +241,16 @@ function AdminDashboard() {
                 />
 
                 <XAxis
-                  dataKey="label"
+                  dataKey="label" tickFormatter={chartDate}
                 />
 
-                <YAxis />
+                <YAxis tickFormatter={chartNumber} allowDecimals={false} />
 
-                <Tooltip />
+                <Tooltip labelFormatter={chartDate} formatter={(value, name) => [chartNumber(value), name]} />
 
                 <Line
                   type="monotone"
-                  dataKey="value"
+                  dataKey="value" name={t("New Customers")} stroke="#79c7e8" strokeWidth={2}
                 />
               </LineChart>
             </ResponsiveContainer>

@@ -1,3 +1,4 @@
+import { signOut } from '../../services/session';
 import { translateError } from "../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
@@ -368,15 +369,9 @@ const handleProfileImageChange = async (
 
 
   const handleLogout = () => {
-    localStorage.removeItem(
-      "access_token"
-    );
+    signOut();
 
-    localStorage.removeItem(
-      "refresh_token"
-    );
-
-    navigate("/signin");
+    navigate("/");
   };
 
 
@@ -420,7 +415,7 @@ const handleProfileImageChange = async (
 
         {success && (
           <div className="profile_success">
-            {success}
+            {translateError(success)}
           </div>
         )}
 

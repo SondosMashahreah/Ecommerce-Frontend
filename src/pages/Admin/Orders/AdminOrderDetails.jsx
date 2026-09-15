@@ -1,3 +1,5 @@
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
 import { translateError } from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
@@ -209,7 +211,7 @@ function AdminOrderDetails() {
             <span>{t("Customer")}</span>
 
             <strong>
-              {order.customer.name}
+              {order.customer.name === "Guest" ? t("Guest") : order.customer.name}
             </strong>
           </div>
 
@@ -407,7 +409,7 @@ function AdminOrderDetails() {
                 <tr key={item.id}>
 
                   <td>
-                    {item.product_name}
+                    {localizedProductName(item.product_name, i18n.language)}
                   </td>
 
                   <td>

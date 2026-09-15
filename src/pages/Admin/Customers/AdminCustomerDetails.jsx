@@ -67,7 +67,7 @@ function AdminCustomerDetails() {
         <span>{t("CUSTOMER DETAILS")}</span>
 
         <h1>
-          {customer.name}
+          {customer.role === "guest" ? t("Guest") : customer.name}
         </h1>
       </div>
 
@@ -78,21 +78,21 @@ function AdminCustomerDetails() {
           <div className="admin_detail_item">
             <span>{t("Name")}</span>
             <strong>
-              {customer.name}
+              {customer.role === "guest" ? t("Guest") : customer.name}
             </strong>
           </div>
 
           <div className="admin_detail_item">
             <span>{t("Username")}</span>
             <strong>
-              {customer.username}
+              {customer.role === "guest" ? "—" : customer.username}
             </strong>
           </div>
 
           <div className="admin_detail_item">
             <span>{t("Email")}</span>
             <strong>
-              {customer.email}
+              {customer.role === "guest" ? "—" : customer.email}
             </strong>
           </div>
 

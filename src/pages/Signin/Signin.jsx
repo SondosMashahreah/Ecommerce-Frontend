@@ -1,3 +1,4 @@
+import { notifySessionChange } from '../../services/session';
 import { translateError } from "../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
@@ -34,6 +35,8 @@ function Signin() {
     location.state?.email || ""
   );
 
+  const [submitting, setSubmitting] = useState(false);
+
   const [password, setPassword] =
     useState("");
 
@@ -49,6 +52,7 @@ function Signin() {
     event.preventDefault();
 
     setError("");
+    setSubmitting(true);
 
     try {
       const data = await signinUser({
@@ -68,9 +72,7 @@ function Signin() {
 
       const user = await getCurrentUser();
 
-      window.dispatchEvent(
-        new Event("authChanged")
-      );
+      notifySessionChange();
 
       if (user.role === "admin") {
         navigate("/admin", {
@@ -84,6 +86,8 @@ function Signin() {
 
     } catch (error) {
       setError(error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -140,7 +144,7 @@ function Signin() {
               severity="success"
               sx={{ mb: 2 }}
             >
-              {success}
+              {translateError(success)}
             </Alert>
           )}
 
@@ -180,6 +184,7 @@ function Signin() {
 
             <Button
               type="submit"
+              disabled={submitting}
               variant="contained"
               fullWidth
               size="large"
@@ -196,6 +201,13 @@ function Signin() {
               }
             >{t("Don't have an account? Sign Up")}</Button>
 
+            <Button fullWidth variant="outlined" sx={{ mt: 2 }} disabled={submitting}
+              onClick={() => navigate("/", { replace: true })}>
+              {t("Continue as guest")}
+            </Button>
+            <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 2 }}>
+              {t("Your guest cart stays on this browser when you return.")}
+            </Typography>
           </Box>
 
         </Paper>

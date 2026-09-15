@@ -1,3 +1,5 @@
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
 import { translateError } from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
@@ -203,7 +205,7 @@ function AdminProducts() {
                   {imageUrl ? (
                     <img
                       src={imageUrl}
-                      alt={product.name}
+                      alt={localizedProductName(product.name, i18n.language)}
                     />
                   ) : (
                     <div className="admin_product_placeholder">
@@ -212,14 +214,14 @@ function AdminProducts() {
                   )}
 
                   <strong>
-                    {product.name}
+                    {localizedProductName(product.name, i18n.language)}
                   </strong>
 
                 </div>
 
 
                 <span>
-                  {t(product.category, { defaultValue: product.category })}
+                  {localizedProductName(product.category, i18n.language)}
                 </span>
 
 

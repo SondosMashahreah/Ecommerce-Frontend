@@ -1,3 +1,4 @@
+import Footer from './components/Footer/Footer';
 import { PreferencesToolbar } from './preferences/Controls';
 import {
   Routes,
@@ -88,9 +89,7 @@ function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
+            <Home />
           }
         />
 
@@ -98,9 +97,7 @@ function App() {
         <Route
           path="/about"
           element={
-            <ProtectedRoute>
-              <About />
-            </ProtectedRoute>
+            <About />
           }
         />
 
@@ -108,9 +105,7 @@ function App() {
         <Route
           path="/contact"
           element={
-            <ProtectedRoute>
-              <Contact />
-            </ProtectedRoute>
+            <Contact />
           }
         />
 
@@ -146,9 +141,7 @@ function App() {
         <Route
           path="/products/:id"
           element={
-            <ProtectedRoute>
-              <ProductDetails />
-            </ProtectedRoute>
+            <ProductDetails />
           }
         />
 
@@ -156,9 +149,7 @@ function App() {
         <Route
           path="/cart"
           element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
+            <Cart />
           }
         />
 
@@ -166,9 +157,7 @@ function App() {
         <Route
           path="/favorites"
           element={
-            <ProtectedRoute>
-              <Favorites />
-            </ProtectedRoute>
+            <Favorites />
           }
         />
 
@@ -176,9 +165,7 @@ function App() {
         <Route
           path="/orders"
           element={
-            <ProtectedRoute>
-              <Orders />
-            </ProtectedRoute>
+            <Orders />
           }
         />
 
@@ -186,9 +173,7 @@ function App() {
         <Route
           path="/orders/:id"
           element={
-            <ProtectedRoute>
-              <OrderDetails />
-            </ProtectedRoute>
+            <OrderDetails />
           }
         />
 
@@ -303,6 +288,7 @@ function App() {
         </Route>
 
       </Routes>
+      {!isAuthPage && !isAdminPage && <Footer />}
     </>
   );
 }

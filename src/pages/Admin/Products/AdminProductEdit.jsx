@@ -1,3 +1,6 @@
+import LocalizedCatalogInput from '../../../components/LocalizedCatalogInput/LocalizedCatalogInput';
+import i18n from '../../../i18n';
+import { localizedProductName } from '../../../i18n/productContent';
 import { translateError } from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../../i18n";
@@ -310,7 +313,7 @@ function AdminProductEdit() {
           <span>{t("PRODUCT MANAGEMENT")}</span>
 
           <h1>
-            {product.name}
+            {localizedProductName(product.name, i18n.language)}
           </h1>
 
           <p>{t("Manage product information and inventory.")}</p>
@@ -338,15 +341,15 @@ function AdminProductEdit() {
 
         <div className="admin_edit_grid">
 
-          <label>{t("Name")}<input
+          <label>{t("Name")}<LocalizedCatalogInput
               name="name"
               value={product.name}
               onChange={changeProduct}
             />
           </label>
 
-          <label>{t("Category")}<input
-              name="category"
+          <label>{t("Category")}<LocalizedCatalogInput
+              name="category" choices={categories}
               list="edit-product-categories"
               value={
                 product.category || ""
@@ -360,7 +363,7 @@ function AdminProductEdit() {
                 (category) => (
                   <option
                     key={category}
-                    value={category}
+                    value={localizedProductName(category, i18n.language)}
                   />
                 )
               )}
@@ -379,7 +382,7 @@ function AdminProductEdit() {
             />
           </label>
 
-          <label className="full">{t("Description")}<textarea
+          <label className="full">{t("Description")}<LocalizedCatalogInput multiline
               name="description"
               value={
                 product.description ||
@@ -464,7 +467,7 @@ function AdminProductEdit() {
                           1024 /
                           1024
                         ).toFixed(2)}
-                        {" "}MB
+                        {" "}{t("MB")}
                       </span>
                     </div>
 
@@ -539,7 +542,7 @@ function AdminProductEdit() {
                     }
                   />
 
-                  <input
+                  <LocalizedCatalogInput
                     value={
                       item.size || ""
                     }
@@ -552,7 +555,7 @@ function AdminProductEdit() {
                     }
                   />
 
-                  <input
+                  <LocalizedCatalogInput
                     value={
                       item.color || ""
                     }
@@ -603,7 +606,7 @@ function AdminProductEdit() {
 
                   <span
                     className={
-                      `stock_badge ${t(item.stock_status, { defaultValue: item.stock_status })}`
+                      `stock_badge ${item.stock_status}`
                     }
                   >
                     {t(item.stock_status, { defaultValue: item.stock_status })}

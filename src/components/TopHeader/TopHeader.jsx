@@ -1,3 +1,4 @@
+import { signOut } from '../../services/session';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
 import i18n from "../../i18n";
@@ -155,16 +156,11 @@ function TopHeader() {
   }, []);
 
   const handleProfileLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-
-    window.dispatchEvent(
-      new Event("authChanged")
-    );
+    signOut();
 
     setIsProfileOpen(false);
 
-    navigate("/signin");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -255,7 +251,7 @@ function TopHeader() {
             )}
 
             <span>
-              {headerUser?.name || t("Profile")}
+              {headerUser?.name || t("Guest")}
             </span>
           </button>
 
@@ -271,14 +267,14 @@ function TopHeader() {
               type="button"
               onClick={() => {
                 setIsProfileOpen(false);
-                navigate("/profile");
+                navigate(headerUser ? "/profile" : "/signup");
               }}
             >
               <FiUser />
-              <span>{t("My Profile")}</span>
+              <span>{headerUser ? t("My Profile") : t("Sign Up")}</span>
             </button>
 
-            {headerUser && (
+            {(
               <button
                 type="button"
                 onClick={() => {
@@ -309,10 +305,10 @@ function TopHeader() {
             <button
               type="button"
               className="profile_logout"
-              onClick={handleProfileLogout}
+              onClick={headerUser ? handleProfileLogout : () => { setIsProfileOpen(false); navigate("/signin"); }}
             >
               <PiSignOutFill />
-              <span>{t("Logout")}</span>
+              <span>{headerUser ? t("Logout") : t("Sign In")}</span>
             </button>
 
           </div>

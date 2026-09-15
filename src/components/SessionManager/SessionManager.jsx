@@ -1,3 +1,4 @@
+import { signOut } from '../../services/session';
 import { useTranslation } from "react-i18next";
 import { translate as t } from "../../i18n";
 import React, {
@@ -45,8 +46,7 @@ function SessionManager() {
     useState(0);
 
   const logout = useCallback(() => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    signOut();
 
     setShowModal(false);
 
@@ -54,7 +54,7 @@ function SessionManager() {
       new Event("authChanged")
     );
 
-    navigate("/signin");
+    navigate("/");
   }, [navigate]);
 
 
